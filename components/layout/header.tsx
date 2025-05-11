@@ -177,20 +177,20 @@ export default function Header() {
         {/* Main Header */}
         <div
           className={cn(
-            "py-2 transition-all duration-300 border-2 border-red-500",
+            "py-2 transition-all duration-300",
             isScrolled && "py-2"
           )}
         >
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
+          <div className="container ml-4 mr-8 px-4 ">
+            <div className="flex items-center justify-between ">
+              <div className="flex items-center ">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
                       variant={isScrolled ? "ghost" : "outline"}
                       size="icon"
                       className={cn(
-                        "mr-2 lg:hidden",
+                        "mr-2 md:hidden",
                         !isScrolled &&
                           "text-amber-800 border-amber-200 hover:bg-amber-50"
                       )}
@@ -204,7 +204,7 @@ export default function Header() {
                   </TooltipContent>
                 </Tooltip>
 
-                <Link href="/" className="flex items-center">
+                <Link href="/" className="flex items-center ">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -219,7 +219,7 @@ export default function Header() {
                         J
                       </span>
                     </div>
-                    <div>
+                    <div className="mr-12 ">
                       <h1
                         className="text-2xl font-bold text-amber-800"
                         style={{ fontFamily: "'Playfair Display', serif" }}
@@ -237,7 +237,7 @@ export default function Header() {
                 </Link>
               </div>
 
-              <nav className="hidden lg:flex items-center space-x-1">
+              <nav className="hidden md:flex items-center space-x-1">
                 <Link
                   href="/"
                   className={cn(
@@ -481,7 +481,7 @@ export default function Header() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="rounded-full relative border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 hover:border-amber-400 hidden sm:flex"
+                        className="ml-8 rounded-full relative border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 hover:border-amber-400 hidden sm:flex"
                       >
                         <ShoppingCart className="h-4 w-4 mr-2" />
                         <span style={{ fontFamily: "'Poppins', sans-serif" }}>
@@ -549,7 +549,7 @@ export default function Header() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="fixed inset-0 bg-white z-50 lg:hidden overflow-y-auto h-screen"
+              className="fixed inset-0 bg-white z-50 md:hidden overflow-y-auto h-screen"
             >
               <div className="flex justify-between items-center p-4 border-b border-amber-100">
                 <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
@@ -830,7 +830,7 @@ export default function Header() {
       <div
         className={cn(
           "w-full transition-all duration-300",
-          isScrolled ? "h-16" : "h-24 md:h-32"
+          isScrolled ? "h-20" : "h-16"
         )}
       ></div>
     </TooltipProvider>

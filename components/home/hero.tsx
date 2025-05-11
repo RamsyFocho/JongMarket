@@ -48,11 +48,11 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="relative overflow-hidden border-2 border-green-500">
+    <section className=" h-[90vh] relative overflow-hidden ">
       {slides.map((slide, index) => (
         <motion.div
           key={slide.id}
-          className={`w-full ${currentSlide === index ? "block" : "hidden"}`}
+          className={`w-full h-screen ${currentSlide === index ? "block" : "hidden"}`}
           initial={{ opacity: 0 }}
           animate={{
             opacity: currentSlide === index ? 1 : 0,
@@ -61,7 +61,7 @@ export default function Hero() {
           transition={{ duration: 1 }}
         >
           {/* Mobile layout (full width with image background) */}
-          <div className="lg:hidden relative min-h-[60vh] md:min-h-[70vh]">
+          <div className="md:hidden relative min-h-[60vh] md:min-h-[70vh]">
             <div className="absolute inset-0 bg-gray-900">
               <Image
                 src={slide.image || "/placeholder.svg?height=600&width=1200"}
@@ -104,7 +104,7 @@ export default function Hero() {
           </div>
 
           {/* Desktop split layout (only visible on lg screens and up) */}
-          <div className="hidden lg:grid lg:grid-cols-2 min-h-[70vh] xl:min-h-[75vh] 2xl:min-h-[80vh]">
+          <div className="hidden h-screen  md:grid md:grid-cols-2 min-h-[70vh] xl:min-h-[75vh] 2xl:min-h-[80vh]">
             {/* Text Section */}
             <div className="relative z-10 flex items-center bg-gradient-to-r from-gray-900 to-gray-800 p-6 md:p-12 lg:p-16">
               <motion.div
