@@ -64,7 +64,7 @@ export default function ProductsPage() {
   }))
 
   return (
-    <div className="container mx-auto px-4 py-16">
+    <div className="w-full px-4 py-16 ">
       {/* Breadcrumb */}
       <div className="flex items-center text-sm text-gray-500 mb-8">
         <Link href="/" className="hover:text-amber-600">
@@ -74,7 +74,7 @@ export default function ProductsPage() {
         <span className="text-gray-700 font-medium">All Products</span>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-8 w-100% ">
         {/* Sidebar Filters */}
         <div className="w-full md:w-64 shrink-0">
           <div className="bg-white rounded-lg shadow-md p-6 sticky top-24">
@@ -156,7 +156,7 @@ export default function ProductsPage() {
           </div>
 
           {filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProducts.map((product) => (
                 <motion.div
                   key={product.id}
@@ -165,7 +165,8 @@ export default function ProductsPage() {
                   transition={{ duration: 0.3 }}
                   className="group"
                 >
-                  <div className="bg-white rounded-lg shadow-md overflow-hidden transition-shadow hover:shadow-lg">
+                  {/*-----------Product Cart---------- */}
+                  <div className="bg-white w-72 rounded-lg shadow-md overflow-hidden transition-shadow hover:shadow-lg ">
                     <Link href={`/product/${product.slug}`}>
                       <div className="relative aspect-square overflow-hidden">
                         <Image
@@ -216,8 +217,9 @@ export default function ProductsPage() {
                         <span className="font-bold text-lg">{formatCurrency(product.price)}</span>
 
                         <div className="flex items-center">
-                          <WishlistButton product={product} variant="icon" />
+                          <WishlistButton  product={product} variant="icon" />
                           <Button
+                            title="Add to cart"
                             size="icon"
                             className="h-9 w-9 rounded-full bg-amber-600 hover:bg-amber-700 ml-2"
                             disabled={!product.inStock}

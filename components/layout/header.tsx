@@ -177,12 +177,12 @@ export default function Header() {
         {/* Main Header */}
         <div
           className={cn(
-            "py-2 transition-all duration-300",
+            "py-2 transition-all duration-300 ",
             isScrolled && "py-2"
           )}
         >
-          <div className="container ml-4 mr-8 px-4 ">
-            <div className="flex items-center justify-between ">
+          <div className="container ml-4 px-4">
+            <div className="flex items-center justify-between">
               <div className="flex items-center ">
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -204,7 +204,7 @@ export default function Header() {
                   </TooltipContent>
                 </Tooltip>
 
-                <Link href="/" className="flex items-center ">
+                <Link href="/" className="flex items-center">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -219,7 +219,7 @@ export default function Header() {
                         J
                       </span>
                     </div>
-                    <div className="mr-12 ">
+                    <div>
                       <h1
                         className="text-2xl font-bold text-amber-800"
                         style={{ fontFamily: "'Playfair Display', serif" }}
@@ -237,7 +237,7 @@ export default function Header() {
                 </Link>
               </div>
 
-              <nav className="hidden md:flex items-center space-x-1">
+              <nav className="hidden md:flex items-center space-x-1 ml-16">
                 <Link
                   href="/"
                   className={cn(
@@ -373,7 +373,7 @@ export default function Header() {
                 </Link>
               </nav>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 ml-8 ">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
@@ -481,7 +481,7 @@ export default function Header() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="ml-8 rounded-full relative border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 hover:border-amber-400 hidden sm:flex"
+                        className="rounded-full relative border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 hover:border-amber-400 hidden sm:flex"
                       >
                         <ShoppingCart className="h-4 w-4 mr-2" />
                         <span style={{ fontFamily: "'Poppins', sans-serif" }}>
@@ -830,7 +830,7 @@ export default function Header() {
       <div
         className={cn(
           "w-full transition-all duration-300",
-          isScrolled ? "h-20" : "h-16"
+          isScrolled ? "h-16" : "h-16 md:h-16"
         )}
       ></div>
     </TooltipProvider>

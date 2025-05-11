@@ -86,8 +86,9 @@ export default function CategoryGallery() {
   }
 
   return (
-    <section className="py-16 bg-gradient-to-b from-white to-gray-50">
-      <div className="container mx-auto px-4">
+    <section className=" px-2 py-16 bg-gradient-to-b from-white to-gray-50  ">
+      {/* In case of error, include container class in the classes  */}
+      <div className="ml-2 px-4 w-70% mr-2 ">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold mb-4">Explore Our Categories</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
@@ -197,7 +198,7 @@ export default function CategoryGallery() {
         </div>
 
         {/* Category Thumbnails */}
-        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 ">
           {categoryItems.map((category, index) => (
             <motion.div
               key={category.slug}

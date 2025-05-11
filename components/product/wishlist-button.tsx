@@ -46,6 +46,7 @@ export default function WishlistButton({ product, variant = "full" }: WishlistBu
     return (
       <Button
         variant="ghost"
+        title="Add to Wishlist"
         size="icon"
         className={`h-9 w-9 rounded-full ${isInWishlistState ? "text-red-500" : "text-gray-500"}`}
         onClick={toggleWishlist}
@@ -57,6 +58,7 @@ export default function WishlistButton({ product, variant = "full" }: WishlistBu
 
   return (
     <Button
+      title="Add to wishlist"
       variant="outline"
       className={`flex-1 ${isInWishlistState ? "bg-red-50 text-red-600 border-red-200" : "text-gray-700"}`}
       onClick={toggleWishlist}

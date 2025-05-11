@@ -40,7 +40,7 @@ export default function TrendingDrinks() {
 
   return (
     <section className="py-16 bg-white">
-      <div className="container mx-auto px-4">
+      <div className="w-70% ml-2 mr-2 px-4 ">
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center mb-2">
             <TrendingUp className="h-5 w-5 text-amber-600 mr-2" />
@@ -62,10 +62,10 @@ export default function TrendingDrinks() {
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8  place-items-center"
         >
           {trendingProducts.map((product, index) => (
-            <motion.div key={product.id} variants={itemVariants} className="relative group">
+            <motion.div key={product.id} variants={itemVariants} className="relative group w-80">
               <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-300"></div>
               <div className="relative bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="absolute top-3 left-3 bg-amber-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
