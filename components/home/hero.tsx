@@ -48,7 +48,7 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="h-[90vh] relative overflow-hidden ">
+    <section className="h-[60vh] md:h-[90vh] relative overflow-hidden ">
       {slides.map((slide, index) => (
         <motion.div
           key={slide.id}
