@@ -9,11 +9,12 @@ import { Star, Minus, Plus, ShoppingCart, Share2, Check, AlertTriangle, ChevronR
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useCart } from "@/context/cart-context"
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/hooks/use-toast"
 import { useLanguage } from "@/context/language-context"
 import { products, formatCurrency } from "@/data/products"
 import WishlistButton from "@/components/product/wishlist-button"
 import ProductSchema from "@/components/seo/product-schema"
+import { Toaster } from "@/components/ui/toaster"
 
 export default function ProductClientPage({ params }: { params: { slug: string } }) {
   const [quantity, setQuantity] = useState(1)
@@ -58,13 +59,13 @@ export default function ProductClientPage({ params }: { params: { slug: string }
       name: product.name,
       price: product.price,
       image: product.image,
-      quantity: quantity,
+      quantity: quantity // Always set to selected quantity
     })
 
     toast({
       title: "Added to cart",
       description: `${product.name} has been added to your cart.`,
-    })
+    }) 
   }
 
   const relatedProducts = product.relatedProducts
@@ -85,6 +86,9 @@ export default function ProductClientPage({ params }: { params: { slug: string }
     <>
       {/* Structured Data for SEO */}
       <ProductSchema product={product} url={fullUrl} />
+      <Toaster />
+      {/* Toaster for toast notifications */}
+      <Toaster />
 
       <div className="container mx-auto px-4 py-16">
         {/* Breadcrumb */}

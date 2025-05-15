@@ -74,7 +74,7 @@ export default function TrendingDrinks() {
                 </div>
 
                 <Link href={`/product/${product.slug}`}>
-                  <div className="relative aspect-square overflow-hidden h-80 w-full border-2 border-red-500">
+                  <div className="relative aspect-square overflow-hidden h-80 w-full ">
                     <Image
                       src={product.image}
                       alt={product.name}

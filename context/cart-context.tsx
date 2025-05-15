@@ -62,9 +62,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const existingItemIndex = prevItems.findIndex((i) => i.id === item.id)
 
       if (existingItemIndex !== -1) {
-        // Item already exists, update quantity
+        // Item already exists, set quantity to the new value (not increment)
         const updatedItems = [...prevItems]
-        updatedItems[existingItemIndex].quantity += item.quantity
+        updatedItems[existingItemIndex].quantity = item.quantity
         return updatedItems
       } else {
         // Item doesn't exist, add it

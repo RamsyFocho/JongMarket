@@ -51,7 +51,7 @@ export default function ContactPage() {
   return (
     <div>
       {/* Hero Section */}
-      <div className="relative h-[300px] overflow-hidden">
+      <div className="relative h-[400px] overflow-hidden ">
         <Image
           src="/placeholder.svg?height=600&width=1600&text=Contact+Us"
           alt="Contact Us"
@@ -185,8 +185,8 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-bold text-lg">Our Location</h3>
-                      <p className="text-gray-600">123 Drink Avenue</p>
-                      <p className="text-gray-600">Yaoundé, Cameroon</p>
+                      <p className="text-gray-600">Avenue des Banques, Douala Cameroon</p>
+                      <p className="text-gray-600">Bonamoussadi Immeuble K Homes</p>
                     </div>
                   </div>
 
@@ -196,8 +196,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-bold text-lg">Email Us</h3>
-                      <p className="text-gray-600">info@jongmarket.com</p>
-                      <p className="text-gray-600">support@jongmarket.com</p>
+                      <p className="text-gray-600">sales@jongmarket.com</p>
                     </div>
                   </div>
 
@@ -207,8 +206,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-bold text-lg">Call Us</h3>
-                      <p className="text-gray-600">+237 677 889 900</p>
-                      <p className="text-gray-600">+237 698 765 432</p>
+                      <p className="text-gray-600">(+237) 683 181 515</p>
                     </div>
                   </div>
 

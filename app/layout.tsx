@@ -86,6 +86,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body>
+        <Toaster />
         <LanguageProvider>
           <WishlistProvider>
             <CartProvider>
@@ -96,7 +97,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <main className="flex-1">{children}</main>
                   <Footer />
                 </div>
-                <Toaster />
               </TooltipProvider>
             </CartProvider>
           </WishlistProvider>

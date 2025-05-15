@@ -53,7 +53,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default function CategoryPage({ params }: { params: { slug: string } }) {
-  const category = categories[params.slug]
+  // Normalize slug to match category keys (lowercase, hyphens)
+  const normalizedSlug = params.slug.toLowerCase().replace(/\s+/g, "-")
+  // Use type assertion to index categories
+  const category = (categories as any)[normalizedSlug]
 
   if (!category) {
     notFound()
@@ -61,12 +64,12 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
 
   // Base URL for schema
   const baseUrl = "https://jongmarket.com"
-  const fullUrl = `${baseUrl}/category/${params.slug}`
+  const fullUrl = `${baseUrl}/category/${normalizedSlug}`
 
   return (
     <>
-      <CategorySchema slug={params.slug} url={fullUrl} />
-      <CategoryClientPage params={params} />
+      <CategorySchema slug={normalizedSlug} url={fullUrl} />
+      <CategoryClientPage params={{ slug: normalizedSlug }} />
     </>
   )
 }

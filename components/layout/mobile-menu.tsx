@@ -95,9 +95,17 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
             {/* Header */}
             <div className="flex flex-col gap-2 p-4 border-b">
               <div className="flex items-center justify-between">
-                <span className="text-xl font-bold text-amber-600 font-serif">
-                  Jong<span className="text-amber-800">Market</span>
-                </span>
+                <Link href="/" className="flex items-center">
+                  <div className="relative h-10 w-32 flex items-center justify-center bg-white rounded-lg shadow border-2 border-amber-600 overflow-hidden">
+                    <Image
+                      src="/images/logo/jongmarket.jpg"
+                      alt="JongMarket Logo"
+                      fill
+                      className="object-contain"
+                      priority
+                    />
+                  </div>
+                </Link>
                 <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close menu">
                   <X className="h-5 w-5" />
                 </Button>

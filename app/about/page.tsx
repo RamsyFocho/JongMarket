@@ -43,6 +43,51 @@ export default function AboutPage() {
         </div>
       </div>
 
+      {/* About Us */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <h2 className="text-3xl font-bold mb-6">About Us</h2>
+              <p className="text-gray-600 mb-4">
+                Discover Premium Wines, Beers, Spirits & Mixers at Jong market
+                Proudly independent and based in the heart of Cameroon, Jong market is your go-to destination for the finest selection of alcoholic beverages.
+                We are committed to providing exceptional service with quick order processing and delivery across Cameroon and to other African countries.
+              </p>
+              <p className="text-gray-600 mb-4">
+                Our passion lies in sourcing unique, rare, and hard-to-find spirits.
+                From exceptional single malt whiskies and premium gins to rare rums and cocktail essentials,
+                 our carefully curated catalog features one of the most extensive drink selections you’ll find anywhere in the world.
+              </p>
+              <p className="text-gray-600">
+                Our online alcohol store is constantly growing, with new additions added regularly.
+                If you're searching for a specific product and can’t find it on our website, just reach out—we’ll go the extra mile to help you locate it.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="relative h-[400px] rounded-lg overflow-hidden shadow-xl"
+            >
+              <Image
+                src="/placeholder.svg?height=800&width=800&text=Our+Story"
+                alt="Our Story"
+                fill
+                className="object-cover"
+              />
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* Our Story */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
