@@ -5,6 +5,9 @@ interface ProductSchemaProps {
   url: string
 }
 
+// Fix: Compute priceValidUntil statically to avoid hydration mismatch
+const priceValidUntil = new Date(Date.UTC(new Date().getUTCFullYear() + 1, 0, 1)).toISOString().split("T")[0]
+
 export default function ProductSchema({ product, url }: ProductSchemaProps) {
   // Create the structured data for the product
   const productSchema = {
@@ -25,7 +28,7 @@ export default function ProductSchema({ product, url }: ProductSchemaProps) {
       url: url,
       priceCurrency: "XAF",
       price: product.price * 600, // Convert to FCFA
-      priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split("T")[0],
+      priceValidUntil,
       itemCondition: "https://schema.org/NewCondition",
       availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       seller: {

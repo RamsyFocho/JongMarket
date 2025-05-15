@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
           alt: product.name,
         },
       ],
-      type: "product",
+      type: "website", // Fix: OpenGraph type must be a valid value like 'website', not 'product'
       locale: "en_US",
       siteName: "Jong Market",
     },

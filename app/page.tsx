@@ -95,14 +95,14 @@ export default function HomePage() {
       <Hero />  
 
       <div className="w-full mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row gap-8 border-2 border-yellow-500">
+        <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar - Responsive and Professional */}
           <aside className="hidden md:block md:w-64 lg:w-72 xl:w-80 flex-shrink-0">
             <Sidebar className="h-full" />
           </aside>
 
           {/* Main Content */}
-          <main className="flex-1 border-2 border-red-500 min-w-0">
+          <main className="flex-1  min-w-0">
             {/* Mobile-only category navigation */}
             <div className="md:hidden overflow-x-auto pb-4 mb-6 -mx-4 px-4 ">
               <div className="flex space-x-3">
