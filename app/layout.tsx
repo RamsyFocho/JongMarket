@@ -82,11 +82,7 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body>
@@ -95,18 +91,9 @@ export default function RootLayout({
             <CartProvider>
               <TooltipProvider>
                 <OrganizationSchema />
-                {/* Temporarily disabled for testing */}
-                {/* <div className="fixed inset-0 z-[200]">
-                  <LoadingScreen />
-                </div> */}
-                {/* TODO: FIx the problem */}
-                {/* <div className="fixed inset-0 z-[150]">
-                  <AgeVerification />
-                </div> */}
-               
                 <div className="flex flex-col min-h-screen">
                   <Header />
-                  <main className="flex-1  border-2 border-green-400">{children}</main>
+                  <main className="flex-1">{children}</main>
                   <Footer />
                 </div>
                 <Toaster />

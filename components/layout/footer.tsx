@@ -29,9 +29,9 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-xl font-bold mb-4 text-amber-500">Jong Market</h3>
+            <h3 className="text-xl font-bold mb-4 text-amber-500">Jong Market (CMR) - Fast & Reliable Delivery</h3>
             <p className="text-gray-300 mb-4">
-              Premium drinks and accessories for the discerning connoisseur. Quality and taste in every bottle.
+              Jong Market is your trusted source for online alcohol delivery in Cameroon. Whether you're craving fine wines, premium spirits, or craft beers, we bring your favorite drinks right to your doorstep - quickly and reliably
             </p>
             <div className="flex space-x-4">
               <Link href="#" className="text-gray-300 hover:text-amber-500 transition-colors">

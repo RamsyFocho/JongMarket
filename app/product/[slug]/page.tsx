@@ -2,9 +2,11 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import ProductDisplay from "@/components/product/product-display"
 import { products } from "@/data/products"
+import ProductClientPage from "./ProductClientPage"
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const product = products.find((p) => p.slug === params.slug)
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const product = products.find((p) => p.slug === resolvedParams.slug)
 
   if (!product) {
     return {
@@ -29,7 +31,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
           alt: product.name,
         },
       ],
-      type: "website", // Fix: OpenGraph type must be a valid value like 'website', not 'product'
+      type: "website",
       locale: "en_US",
       siteName: "Jong Market",
     },
@@ -40,21 +42,20 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       images: [product.image],
     },
     alternates: {
-      canonical: `https://jongmarket.com/product/${params.slug}`,
+      canonical: `https://jongmarket.com/product/${resolvedParams.slug}`,
       languages: {
-        "en-US": `https://jongmarket.com/product/${params.slug}`,
-        "fr-FR": `https://jongmarket.com/fr/product/${params.slug}`,
+        "en-US": `https://jongmarket.com/product/${resolvedParams.slug}`,
+        "fr-FR": `https://jongmarket.com/fr/product/${resolvedParams.slug}`,
       },
     },
   }
 }
 
-export default function ProductPage({ params }: { params: { slug: string } }) {
-  const product = products.find((p) => p.slug === params.slug)
-
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params;
+  const product = products.find((p) => p.slug === resolvedParams.slug)
   if (!product) {
     notFound()
   }
-
-  return <ProductDisplay product={product} />
+  return <ProductClientPage params={resolvedParams} />
 }

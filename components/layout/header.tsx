@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { Search, ShoppingCart, Menu, Phone, Star } from "lucide-react"
+import { Search, ShoppingCart, Menu, Phone, Star, Globe } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -317,6 +317,15 @@ export default function Header() {
                 >
                   <Menu className="h-6 w-6" />
                 </Button>
+                <button
+                  type="button"
+                  aria-label={language === "en" ? "Switch to French" : "Passer en anglais"}
+                  onClick={() => setLanguage(language === "en" ? "fr" : "en")}
+                  className="flex items-center px-2 py-1 rounded hover:bg-amber-100 transition text-sm font-medium border border-gray-200 bg-white ml-2"
+                >
+                  <Globe className="w-4 h-4 mr-1 text-amber-600" />
+                  {language === "en" ? "FR" : "EN"}
+                </button>
               </div>
             </div>
           </div>

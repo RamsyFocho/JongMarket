@@ -362,6 +362,19 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
                   {t("signIn")}
                 </Link>
               </div>
+
+              {/* Language Switcher Button (place near bottom of menu) */}
+              <div className="flex justify-center mt-6 mb-2">
+                <button
+                  type="button"
+                  aria-label={language === "en" ? "Switch to French" : "Passer en anglais"}
+                  onClick={() => setLanguage(language === "en" ? "fr" : "en")}
+                  className="flex items-center px-3 py-1 rounded hover:bg-amber-100 transition text-base font-medium border border-gray-200 bg-white"
+                >
+                  <Globe className="w-5 h-5 mr-2 text-amber-600" />
+                  {language === "en" ? "FR" : "EN"}
+                </button>
+              </div>
             </div>
           </motion.div>
         </>
