@@ -62,10 +62,11 @@ export default function TrendingDrinks() {
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8  place-items-center"
+          // className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8  place-items-center border-2 border-red-500"
+          className="flex flex-wrap gap-4 justify-center"
         >
           {trendingProducts.map((product, index) => (
-            <motion.div key={product.id} variants={itemVariants} className="relative group w-80">
+            <motion.div key={product.id} variants={itemVariants} className="relative group w-80 ">
               <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-300"></div>
               <div className="relative bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="absolute top-3 left-3 bg-amber-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">

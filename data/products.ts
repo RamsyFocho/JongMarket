@@ -503,19 +503,19 @@ export const products = [
 // Categories data
 export const categories = {
   whiskey: {
-    title: "Whiskey Collection",
+    title: "Whiskey",
     description:
       "Explore our premium selection of whiskeys from around the world, including Scotch, Bourbon, Irish, and Japanese varieties.",
     products: products.filter((p) => p.category === "Whiskey"),
   },
   wine: {
-    title: "Wine Selection",
+    title: "Wine",
     description:
       "Discover our curated collection of fine wines from renowned vineyards around the world, including reds, whites, and rosés.",
     products: products.filter((p) => p.category === "Wine"),
   },
   beer: {
-    title: "Craft Beer Collection",
+    title: "Canned Beer",
     description:
       "Explore our selection of craft beers from local and international breweries, featuring IPAs, stouts, lagers, and more.",
     products: products.filter((p) => p.category === "Beer"),
@@ -527,7 +527,7 @@ export const categories = {
     products: products.filter((p) => p.category === "Champagne"),
   },
   spirits: {
-    title: "Premium Spirits",
+    title: "Spirits",
     description:
       "Discover our collection of premium spirits, including vodka, gin, rum, tequila, and more from artisanal and established distilleries.",
     products: products.filter((p) => p.category === "Spirits"),

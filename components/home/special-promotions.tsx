@@ -74,7 +74,7 @@ export default function SpecialPromotions() {
 
   return (
     <section className="py-16 bg-white">
-      <div className="w-70% ml4 m4-4 px-4 border border-red-500">
+      <div className="w-70% ml4 m4-4 px-4 ">
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center mb-2">
             <Tag className="h-5 w-5 text-amber-600 mr-2" />

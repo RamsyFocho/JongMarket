@@ -1,838 +1,437 @@
-"use client";
+"use client"
 
-import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Search,
-  ShoppingCart,
-  User,
-  Menu,
-  X,
-  ChevronDown,
-  Heart,
-  LogIn,
-  LogOut,
-  Settings,
-  Globe,
-  Phone,
-  Mail,
-  MapPin,
-  Clock,
-  Truck,
-  ChevronRight,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useCart } from "@/context/cart-context";
-import { useWishlist } from "@/context/wishlist-context";
-import { useLanguage } from "@/context/language-context";
-import { cn } from "@/lib/utils";
-import SearchBar from "@/components/search/search-bar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { categories } from "@/data/products";
+import type React from "react"
+import type { products as ProductsArrayType } from "@/data/products"
+
+import { useState, useEffect, useRef } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { usePathname } from "next/navigation"
+import { Search, ShoppingCart, Menu, Phone, Star } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { useCart } from "@/context/cart-context"
+import { useWishlist } from "@/context/wishlist-context"
+import { useLanguage } from "@/context/language-context"
+import { cn } from "@/lib/utils"
+import { useScrollDirection } from "@/hooks/use-scroll-direction"
+import MobileMenu from "@/components/layout/mobile-menu"
+import { categories } from "@/data/products"
+import { products } from "@/data/products"
+import { formatCurrency } from "@/lib/format-currency"
+import { ChevronDown } from 'lucide-react';
+import AnimatedShopByBrand from "@/components/layout/AnimatedShopByBrand"
 
 const categoryItems = Object.entries(categories).map(([slug, data]) => ({
   slug,
   title: data.title,
-  description: data.description,
-  image: `/images/categories/${slug}.jpg`,
-}));
+}))
+
+// Use the type of a product from products array
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type Product = (typeof ProductsArrayType)[0]
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isShopDropdownOpen, setIsShopDropdownOpen] = useState(false);
-  const pathname = usePathname();
-  const { cartItems, totalItems: cartTotalItems } = useCart();
-  const { totalItems: wishlistTotalItems } = useWishlist();
-  const { language, setLanguage, t } = useLanguage();
-  const headerRef = useRef(null);
-  const lastScrollY = useRef(0);
-
-  // Handle scroll events for header visibility
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [suggestions, setSuggestions] = useState<Product[]>([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const pathname = usePathname()
+  const { cartItems, totalItems: cartTotalItems } = useCart()
+  const { totalItems: wishlistTotalItems } = useWishlist()
+  const { language, setLanguage, t } = useLanguage()
+  const headerRef = useRef(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
+  const { scrollDirection, scrolledToTop } = useScrollDirection(10)
+  const [isHovered, setIsHovered] = useState(false);
+  
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
+      setIsScrolled(window.scrollY > 10)
+    }
 
-      // Always show header at top of page
-      if (currentScrollY < 50) {
-        setIsHidden(false);
-        setIsScrolled(false);
-        lastScrollY.current = currentScrollY;
-        return;
-      }
-
-      // Apply scrolled styles once we scroll past threshold
-      if (currentScrollY > 50) {
-        setIsScrolled(true);
-      }
-
-      // Hide when scrolling down, show when scrolling up
-      if (
-        currentScrollY > lastScrollY.current &&
-        !isHidden &&
-        currentScrollY > 200
-      ) {
-        setIsHidden(true);
-      } else if (currentScrollY < lastScrollY.current && isHidden) {
-        setIsHidden(false);
-      }
-
-      lastScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isHidden]);
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   // Close mobile menu when route changes
   useEffect(() => {
-    setIsMobileMenuOpen(false);
-    setIsShopDropdownOpen(false);
-  }, [pathname]);
+    setIsMobileMenuOpen(false)
+  }, [pathname])
+
+  // Focus search input when expanded
+  useEffect(() => {
+    if (isSearchExpanded && searchInputRef.current) {
+      searchInputRef.current.focus()
+    }
+  }, [isSearchExpanded])
+
+  // Filter products for search suggestions
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      const filtered = products.filter((product) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      ).slice(0, 6)
+      setSuggestions(filtered)
+      setShowSuggestions(filtered.length > 0)
+    } else {
+      setSuggestions([])
+      setShowSuggestions(false)
+    }
+  }, [searchQuery])
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      // Redirect to search results page
+      window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`
+    }
+  }
 
   const toggleLanguage = () => {
-    setLanguage(language === "en" ? "fr" : "en");
-  };
+    setLanguage(language === "en" ? "fr" : "en")
+  }
 
+  // Determine header visibility class based on scroll direction
+  const headerVisibilityClass = scrolledToTop || scrollDirection === "up" ? "header-visible" : "header-hidden"
+
+  // Responsive Header
   return (
-    <TooltipProvider>
+    <>
+      {/* Mobile Header */}
       <header
         ref={headerRef}
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300 ",
-          isScrolled ? "bg-white/95 backdrop-blur-sm shadow-md" : "bg-white",
-          isHidden ? "-translate-y-full" : "translate-y-0"
+          "md:hidden fixed top-0 left-0 right-0 z-50 bg-white shadow-md border-b border-amber-200 flex items-center justify-between px-4 h-14",
+          headerVisibilityClass
         )}
-        style={{
-          fontFamily: "'Playfair Display', 'Poppins', system-ui, sans-serif",
-        }}
+        role="banner"
+      >
+        {/* Logo */}
+        <Link href="/" className="flex items-center h-full">
+          <span className="text-xl font-bold text-amber-600 font-serif">Jong<span className="text-amber-800">Market</span></span>
+        </Link>
+        <div className="flex items-center space-x-3">
+          {/* Search Icon (expands to input) */}
+          <button
+            className="p-2 rounded-full hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-400"
+            aria-label="Search"
+            onClick={() => setIsSearchExpanded((v) => !v)}
+          >
+            <Search className="h-5 w-5 text-amber-700" />
+          </button>
+          {/* Search Input (overlay) */}
+          {isSearchExpanded && (
+            <div className="fixed inset-0 z-[100] bg-black/40 flex items-start justify-center pt-8" onClick={() => setIsSearchExpanded(false)}>
+              <form
+                onSubmit={handleSearchSubmit}
+                className="bg-white rounded-lg shadow-lg w-11/12 max-w-md flex items-center px-3 py-2 relative"
+                onClick={e => e.stopPropagation()}
+              >
+                <Input
+                  type="text"
+                  placeholder="Find Your Drink..."
+                  className="flex-1 border-amber-200 focus-visible:ring-amber-500"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  ref={searchInputRef}
+                  autoFocus
+                />
+                <Button type="submit" size="icon" className="ml-2 bg-amber-600 hover:bg-amber-700" aria-label="Search">
+                  <Search className="h-4 w-4" />
+                </Button>
+              </form>
+            </div>
+          )}
+          {/* Cart Icon */}
+          <Link href="/cart" className="relative p-2 rounded-full hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-400" aria-label="Cart">
+            <ShoppingCart className="h-5 w-5 text-amber-700" />
+            {cartTotalItems > 0 && (
+              <span className="absolute -top-1 -right-1 bg-amber-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[18px] text-center">
+                {cartTotalItems}
+              </span>
+            )}
+          </Link>
+          {/* Mobile Menu Button */}
+          <button
+            className="p-2 rounded-full hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-400"
+            onClick={() => setIsMobileMenuOpen(true)}
+            aria-label="Open menu"
+          >
+            <Menu className="h-6 w-6 text-amber-700" />
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} categories={categoryItems} />
+
+      {/* Desktop Header (unchanged) */}
+      <header
+        ref={headerRef}
+        className={cn(
+          "hidden md:block fixed top-0 left-0 right-0 z-50 header-scroll-transition w-full h-[fit] ",
+          isScrolled ? "bg-white shadow-md" : "bg-white",
+          headerVisibilityClass,
+        )}
+        role="banner"
       >
         {/* Top Bar */}
-        <div className="bg-amber-900 text-white py-2 hidden md:block">
-          <div className="container mx-auto px-2">
+        <div className="bg-amber-950 text-white py-2 text-xs">
+          <div className="container mx-auto px-4">
             <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-6 text-sm">
-                <div className="flex items-center ">
-                  <Phone className="h-3 w-3 mr-2" />
-                  <span className="font-light truncate text-ellipsis">
-                    +237 677 889 900
-                  </span>
-                </div>
+              <div className="flex items-center space-x-6">
                 <div className="flex items-center">
-                  <Mail className="h-3 w-3 mr-2" />
-                  <span className="font-light w-36 truncate text-ellipsis">
-                    info@jongmarket.com
-                  </span>
+                  <Phone className="h-3 w-3 mr-1" />
+                  <span>+237 677 889 900</span>
                 </div>
-                <div className="flex items-center">
-                  <MapPin className="h-3 w-3 mr-2" />
-                  <span className="font-light w-36 truncate text-ellipsis">
-                    123 Drink Avenue, Yaoundé
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <Clock className="h-3 w-3 mr-2" />
-                  <span className="font-light w-36 truncate text-ellipsis">
-                    Mon-Fri: 9AM-8PM
+                <div className="hidden md:flex items-center">
+                  <span>
+                    Order in the next <span className="font-bold">01:53:22</span> for delivery on{" "}
+                    <span className="font-bold">Tuesday</span>
                   </span>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <div className="flex items-center text-amber-300">
-                  <Truck className="h-3 w-3 mr-4" />
-                  <span className="text-sm w-36 font-medium truncate text-ellipsis mr-4">
-                    {t("freeShipping")}
-                  </span>
-                </div>
-                <button
-                  onClick={toggleLanguage}
-                  className="flex items-center text-sm hover:text-amber-300 transition-colors"
-                >
-                  <Globe className="h-3 w-3 mr-1" />
-                  {language === "en" ? "FR" : "EN"}
-                </button>
+                <Link href="/help" className="hover:text-amber-300 transition-colors">
+                  Help
+                </Link>
+                <Link href="/blog" className="hover:text-amber-300 transition-colors">
+                  Blog
+                </Link>
+                <Link href="/delivery-info" className="hover:text-amber-300 transition-colors">
+                  Delivery Info
+                </Link>
+                <Link href="/contact" className="hover:text-amber-300 transition-colors">
+                  Contact Us
+                </Link>
+                <Link href="/about" className="hover:text-amber-300 transition-colors">
+                  About Us
+                </Link>
               </div>
             </div>
           </div>
         </div>
 
         {/* Main Header */}
-        <div
-          className={cn(
-            "py-2 transition-all duration-300 ",
-            isScrolled && "py-2"
-          )}
-        >
-          <div className="container ml-4 px-4">
+        <div className="border-b border-gray-200 py-2">
+          <div className="container mx-auto px-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center ">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant={isScrolled ? "ghost" : "outline"}
-                      size="icon"
-                      className={cn(
-                        "mr-2 md:hidden",
-                        !isScrolled &&
-                          "text-amber-800 border-amber-200 hover:bg-amber-50"
-                      )}
-                      onClick={() => setIsMobileMenuOpen(true)}
-                    >
-                      <Menu className="h-6 w-6" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Menu</p>
-                  </TooltipContent>
-                </Tooltip>
+              {/* Logo */}
+              <Link href="/" className="flex items-center">
+                <div className="relative h-10 w-32">
+                  <span className="text-2xl font-bold text-amber-600 font-serif">
+                    Jong<span className="text-amber-800">Market</span>
+                  </span>
+                </div>
+              </Link>
 
-                <Link href="/" className="flex items-center">
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5 }}
-                    className="flex items-center"
+              {/* Search Bar */}
+              <div className="hidden md:flex flex-1 max-w-md mx-4 relative">
+                <form onSubmit={handleSearchSubmit} className="relative w-full">
+                  <Input
+                    type="text"
+                    placeholder="Find Your Drink..."
+                    className="pr-10 border-amber-200 focus-visible:ring-amber-500"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setShowSuggestions(suggestions.length > 0)}
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+                    ref={searchInputRef}
+                  />
+                  <Button
+                    type="submit"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full bg-amber-600 hover:bg-amber-700 rounded-l-none"
+                    aria-label="Search"
                   >
-                    <div className="mr-2 relative h-12 w-12 rounded-full overflow-hidden bg-gradient-to-br from-amber-600 to-amber-800 flex items-center justify-center shadow-lg">
-                      <span
-                        className="text-white font-bold text-2xl"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
-                      >
-                        J
-                      </span>
+                    <Search className="h-4 w-4" />
+                  </Button>
+                  {/* Suggestions Dropdown */}
+                  {showSuggestions && (
+                    <div className="absolute left-0 right-0 mt-1 bg-white border border-amber-200 rounded-md shadow-lg z-50 animate-fade-in-down transition-all duration-200">
+                      {suggestions.map((product) => (
+                        <Link
+                          key={product.id}
+                          href={`/product/${product.slug}`}
+                          className="flex items-center px-3 py-2 hover:bg-amber-50 transition-colors"
+                          onClick={() => setShowSuggestions(false)}
+                        >
+                          <div className="relative h-8 w-8 rounded overflow-hidden flex-shrink-0">
+                            <Image
+                              src={product.image || "/placeholder.svg"}
+                              alt={product.name}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                          <span className="ml-2 text-sm text-gray-800 truncate">{product.name}</span>
+                        </Link>
+                      ))}
+                      {suggestions.length === 0 && (
+                        <div className="px-3 py-2 text-sm text-gray-500">No results found.</div>
+                      )}
                     </div>
-                    <div>
-                      <h1
-                        className="text-2xl font-bold text-amber-800"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
-                      >
-                        Jong<span className="text-amber-500">Market</span>
-                      </h1>
-                      <span
-                        className="text-xs tracking-wider text-amber-700 uppercase hidden sm:block"
-                        style={{ fontFamily: "'Poppins', sans-serif" }}
-                      >
-                        Premium Liquor Store
-                      </span>
-                    </div>
-                  </motion.div>
-                </Link>
+                  )}
+                </form>
               </div>
 
-              <nav className="hidden md:flex items-center space-x-1 ml-16">
-                <Link
-                  href="/"
-                  className={cn(
-                    "px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-amber-600/10 hover:text-amber-700",
-                    pathname === "/"
-                      ? "text-amber-700 font-semibold"
-                      : "text-gray-700"
-                  )}
-                  style={{ fontFamily: "'Poppins', sans-serif" }}
-                >
-                  {t("home")}
-                </Link>
-
-                <div
-                  className="relative"
-                  onMouseEnter={() => setIsShopDropdownOpen(true)}
-                  onMouseLeave={() => setIsShopDropdownOpen(false)}
-                >
-                  <button
-                    className={cn(
-                      "flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-amber-600/10 hover:text-amber-700",
-                      pathname.includes("/category") ||
-                        pathname.includes("/product")
-                        ? "text-amber-700 font-semibold"
-                        : "text-gray-700"
-                    )}
-                    style={{ fontFamily: "'Poppins', sans-serif" }}
-                  >
-                    {t("shop")}
-                    <ChevronDown className="ml-1 h-4 w-4" />
-                  </button>
-
-                  <AnimatePresence>
-                    {isShopDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute left-0 top-full z-50 mt-1 w-[800px] rounded-md bg-white py-6 px-4 shadow-xl -translate-x-1/3 border border-amber-100"
-                      >
-                        <div className="grid grid-cols-3 gap-6">
-                          {categoryItems.map((category) => (
-                            <Link
-                              key={category.slug}
-                              href={`/category/${category.slug}`}
-                              className="group flex flex-col rounded-md transition-colors hover:bg-amber-50"
-                            >
-                              <div className="relative h-40 w-full overflow-hidden rounded-md">
-                                <Image
-                                  src={category.image || "/placeholder.svg"}
-                                  alt={category.title}
-                                  fill
-                                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                                <div className="absolute bottom-0 left-0 p-3">
-                                  <h3
-                                    className="text-white font-semibold"
-                                    style={{
-                                      fontFamily: "'Playfair Display', serif",
-                                    }}
-                                  >
-                                    {category.title}
-                                  </h3>
-                                </div>
-                              </div>
-                              <div className="p-3">
-                                <p
-                                  className="text-xs text-gray-600 line-clamp-2"
-                                  style={{
-                                    fontFamily: "'Poppins', sans-serif",
-                                  }}
-                                >
-                                  {category.description}
-                                </p>
-                              </div>
-                            </Link>
-                          ))}
-                        </div>
-                        <div className="mt-4 pt-4 border-t border-amber-100 text-center">
-                          <Link
-                            href="/products"
-                            className="inline-flex items-center text-amber-700 font-medium hover:text-amber-800"
-                            style={{ fontFamily: "'Poppins', sans-serif" }}
-                          >
-                            {t("viewAll")}
-                            <ChevronRight className="ml-1 h-4 w-4" />
-                          </Link>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+              {/* Account Links */}
+              <div className="flex items-center space-x-4">
+                <div className="hidden md:block">
+                  <div className="flex items-center space-x-4">
+                    <Link href="/account" className="text-sm hover:text-amber-600">
+                      Login / Register
+                    </Link>
+                    <Link href="/wishlist" className="text-sm hover:text-amber-600 relative">
+                      Wishlist
+                      {wishlistTotalItems > 0 && (
+                        <Badge
+                          variant="destructive"
+                          className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center text-xs"
+                        >
+                          {wishlistTotalItems}
+                        </Badge>
+                      )}
+                    </Link>
+                    <Link href="/cart" className="text-sm hover:text-amber-600 relative flex items-center">
+                      <ShoppingCart className="h-5 w-5 mr-1" />
+                      Cart
+                      {cartTotalItems > 0 && (
+                        <Badge className="ml-1 bg-amber-600 hover:bg-amber-700">{cartTotalItems}</Badge>
+                      )}
+                    </Link>
+                  </div>
                 </div>
 
-                <Link
-                  href="/blog"
-                  className={cn(
-                    "px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-amber-600/10 hover:text-amber-700",
-                    pathname === "/blog"
-                      ? "text-amber-700 font-semibold"
-                      : "text-gray-700"
-                  )}
-                  style={{ fontFamily: "'Poppins', sans-serif" }}
+                {/* Mobile Menu Button */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden flex items-center justify-center"
+                  onClick={() => setIsMobileMenuOpen(true)}
+                  aria-label="Open menu"
                 >
-                  {t("blog")}
-                </Link>
-
-                <Link
-                  href="/about"
-                  className={cn(
-                    "px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-amber-600/10 hover:text-amber-700",
-                    pathname === "/about"
-                      ? "text-amber-700 font-semibold"
-                      : "text-gray-700"
-                  )}
-                  style={{ fontFamily: "'Poppins', sans-serif" }}
-                >
-                  {t("about")}
-                </Link>
-
-                <Link
-                  href="/contact"
-                  className={cn(
-                    "px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-amber-600/10 hover:text-amber-700",
-                    pathname === "/contact"
-                      ? "text-amber-700 font-semibold"
-                      : "text-gray-700"
-                  )}
-                  style={{ fontFamily: "'Poppins', sans-serif" }}
-                >
-                  {t("contact")}
-                </Link>
-              </nav>
-
-              <div className="flex items-center space-x-2 ml-8 ">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full hover:bg-amber-100 hover:text-amber-700"
-                      onClick={() => setIsSearchOpen(true)}
-                    >
-                      <Search className="h-5 w-5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{t("search")}</p>
-                  </TooltipContent>
-                </Tooltip>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="rounded-full hover:bg-amber-100 hover:text-amber-700"
-                        >
-                          <User className="h-5 w-5" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        align="end"
-                        className="w-56 border-amber-100"
-                      >
-                        <DropdownMenuLabel
-                          style={{ fontFamily: "'Playfair Display', serif" }}
-                        >
-                          {t("account")}
-                        </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="hover:bg-amber-50"
-                          style={{ fontFamily: "'Poppins', sans-serif" }}
-                        >
-                          <LogIn className="mr-2 h-4 w-4" />
-                          <span>{t("signIn")}</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="hover:bg-amber-50"
-                          style={{ fontFamily: "'Poppins', sans-serif" }}
-                        >
-                          <User className="mr-2 h-4 w-4" />
-                          <span>{t("profile")}</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="hover:bg-amber-50"
-                          style={{ fontFamily: "'Poppins', sans-serif" }}
-                        >
-                          <Settings className="mr-2 h-4 w-4" />
-                          <span>{t("settings")}</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="hover:bg-amber-50"
-                          style={{ fontFamily: "'Poppins', sans-serif" }}
-                        >
-                          <LogOut className="mr-2 h-4 w-4" />
-                          <span>{t("signOut")}</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{t("account")}</p>
-                  </TooltipContent>
-                </Tooltip>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Link href="/wishlist">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="rounded-full relative hover:bg-amber-100 hover:text-amber-700"
-                      >
-                        <Heart className="h-5 w-5" />
-                        {wishlistTotalItems > 0 && (
-                          <motion.span
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium"
-                          >
-                            {wishlistTotalItems}
-                          </motion.span>
-                        )}
-                      </Button>
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{t("wishlist")}</p>
-                  </TooltipContent>
-                </Tooltip>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Link href="/cart">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="rounded-full relative border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 hover:border-amber-400 hidden sm:flex"
-                      >
-                        <ShoppingCart className="h-4 w-4 mr-2" />
-                        <span style={{ fontFamily: "'Poppins', sans-serif" }}>
-                          {t("cart")}
-                        </span>
-                        {cartTotalItems > 0 && (
-                          <motion.span
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="absolute -top-1 -right-1 bg-amber-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium shadow-sm"
-                          >
-                            {cartTotalItems}
-                          </motion.span>
-                        )}
-                      </Button>
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{t("cart")}</p>
-                  </TooltipContent>
-                </Tooltip>
-
-                {/* Mobile cart icon */}
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Link href="/cart" className="sm:hidden">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="rounded-full relative hover:bg-amber-100 hover:text-amber-700"
-                      >
-                        <ShoppingCart className="h-5 w-5" />
-                        {cartTotalItems > 0 && (
-                          <motion.span
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="absolute -top-1 -right-1 bg-amber-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium"
-                          >
-                            {cartTotalItems}
-                          </motion.span>
-                        )}
-                      </Button>
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{t("cart")}</p>
-                  </TooltipContent>
-                </Tooltip>
+                  <Menu className="h-6 w-6" />
+                </Button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Search Bar */}
-        <SearchBar
-          isOpen={isSearchOpen}
-          onClose={() => setIsSearchOpen(false)}
-        />
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="fixed inset-0 bg-white z-50 md:hidden overflow-y-auto h-screen"
-            >
-              <div className="flex justify-between items-center p-4 border-b border-amber-100">
-                <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <div className="flex items-center">
-                    <div className="mr-2 relative h-10 w-10 rounded-full overflow-hidden bg-gradient-to-br from-amber-600 to-amber-800 flex items-center justify-center">
-                      <span
-                        className="text-white font-bold text-xl"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
-                      >
-                        J
-                      </span>
-                    </div>
-                    <div>
-                      <h2
-                        className="text-xl font-bold text-amber-800"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
-                      >
-                        Jong<span className="text-amber-500">Market</span>
-                      </h2>
-                      <span
-                        className="text-xs tracking-wider text-amber-700 uppercase"
-                        style={{ fontFamily: "'Poppins', sans-serif" }}
-                      >
-                        Premium Liquor
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <X className="h-6 w-6" />
-                </Button>
+        {/* Category Navigation */}
+        <div className="bg-amber-600 text-white hidden md:block ">
+          <div className="w-full h-[10vh]">
+            <div className="flex items-center">
+              <div className="relative group flex items-center cursor-pointer">              
+                <AnimatedShopByBrand />
               </div>
 
-              <div className="p-4">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex space-x-2">
-                    <Link
-                      href="/cart"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="relative border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100"
-                      >
-                        <ShoppingCart className="h-4 w-4 mr-1" />
-                        {t("cart")}
-                        {cartTotalItems > 0 && (
-                          <span className="absolute -top-1 -right-1 bg-amber-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                            {cartTotalItems}
-                          </span>
-                        )}
-                      </Button>
-                    </Link>
-
-                    <Link
-                      href="/wishlist"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="relative border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100"
-                      >
-                        <Heart className="h-4 w-4 mr-1" />
-                        {t("wishlist")}
-                        {wishlistTotalItems > 0 && (
-                          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                            {wishlistTotalItems}
-                          </span>
-                        )}
-                      </Button>
-                    </Link>
-                  </div>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-amber-700 border-amber-300 hover:bg-amber-50"
-                    onClick={() => {
-                      setIsSearchOpen(true);
-                      setIsMobileMenuOpen(false);
-                    }}
+              {/* Category Collections */}
+              <div className="flex  h-[10vh] items-center" >
+              {categoryItems.slice(0, 7).map((category) => (
+                <div key={category.slug} className="relative group">
+                  <Link
+                    href={`/category/${category.slug}`}
+                    className="px-4 py-2  transition-colors inline-block md:text-ellipsis"
                   >
-                    <Search className="h-4 w-4 mr-1" />
-                    {t("search")}
-                  </Button>
-                </div>
+                    {category.title}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3 w-3 ml-1 inline-block transition-transform duration-300 group-hover:rotate-180"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </Link>
 
-                <nav>
-                  <ul className="space-y-1">
-                    <li>
-                      <Link
-                        href="/"
-                        className={cn(
-                          "flex items-center px-3 py-3 rounded-md text-base font-medium transition-colors hover:bg-amber-50 hover:text-amber-800",
-                          pathname === "/"
-                            ? "bg-amber-50 text-amber-800"
-                            : "text-gray-700"
-                        )}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        style={{ fontFamily: "'Poppins', sans-serif" }}
-                      >
-                        {t("home")}
-                      </Link>
-                    </li>
-
-                    <li className="py-1">
-                      <div
-                        className="flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-700"
-                        style={{ fontFamily: "'Poppins', sans-serif" }}
-                      >
-                        <span>{t("shop")}</span>
-                      </div>
-                      <ul className="mt-1 ml-3 space-y-1">
-                        {categoryItems.map((category) => (
-                          <li key={category.slug}>
+                  {/* Products Dropdown */}
+                  
+                  <div className="absolute left-0 top-full z-50 w-[400px] bg-white shadow-lg rounded-b-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top scale-y-0 group-hover:scale-y-100">
+                    <div className="p-4">
+                      <h3 className="font-medium text-gray-800 mb-3 border-b pb-2">{category.title}</h3>
+                      <div className="grid grid-cols-2 gap-3">
+                        {products
+                          .filter((product) => product.category.toLowerCase() === category.slug.toLowerCase())
+                          .slice(0, 4)
+                          .map((product) => (
                             <Link
-                              href={`/category/${category.slug}`}
-                              className={cn(
-                                "flex items-center px-3 py-2 rounded-md text-sm transition-colors hover:bg-amber-50 hover:text-amber-800",
-                                pathname === `/category/${category.slug}`
-                                  ? "bg-amber-50 text-amber-800"
-                                  : "text-gray-700"
-                              )}
-                              onClick={() => setIsMobileMenuOpen(false)}
-                              style={{ fontFamily: "'Poppins', sans-serif" }}
+                              key={product.id}
+                              href={`/product/${product.slug}`}
+                              className="flex items-start hover:bg-amber-50 p-2 rounded-md transition-colors"
                             >
-                              {category.title}
+                              <div className="relative h-14 w-14 rounded overflow-hidden flex-shrink-0">
+                                <Image
+                                  src={product.image || "/placeholder.svg"}
+                                  alt={product.name}
+                                  fill
+                                  className="object-cover"
+                                />
+                              </div>
+                              <div className="ml-2 flex-1 min-w-0">
+                                <h4 className="text-xs font-medium text-gray-800 line-clamp-2">{product.name}</h4>
+                                <div className="flex items-center mt-1">
+                                  <div className="flex text-amber-500">
+                                    {[...Array(5)].map((_, i) => (
+                                      <Star
+                                        key={i}
+                                        className="h-2 w-2"
+                                        fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
+                                      />
+                                    ))}
+                                  </div>
+                                  <span className="text-xs text-gray-500 ml-1">({product.rating})</span>
+                                </div>
+                                <div className="text-xs font-medium text-amber-600 mt-1">
+                                  {formatCurrency(product.price)}
+                                </div>
+                              </div>
                             </Link>
-                          </li>
-                        ))}
-                        <li>
-                          <Link
-                            href="/products"
-                            className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-amber-700 transition-colors hover:bg-amber-50"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            style={{ fontFamily: "'Poppins', sans-serif" }}
-                          >
-                            {t("viewAll")}
-                          </Link>
-                        </li>
-                      </ul>
-                    </li>
-
-                    <li>
-                      <Link
-                        href="/blog"
-                        className={cn(
-                          "flex items-center px-3 py-3 rounded-md text-base font-medium transition-colors hover:bg-amber-50 hover:text-amber-800",
-                          pathname === "/blog"
-                            ? "bg-amber-50 text-amber-800"
-                            : "text-gray-700"
-                        )}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        style={{ fontFamily: "'Poppins', sans-serif" }}
-                      >
-                        {t("blog")}
-                      </Link>
-                    </li>
-
-                    <li>
-                      <Link
-                        href="/about"
-                        className={cn(
-                          "flex items-center px-3 py-3 rounded-md text-base font-medium transition-colors hover:bg-amber-50 hover:text-amber-800",
-                          pathname === "/about"
-                            ? "bg-amber-50 text-amber-800"
-                            : "text-gray-700"
-                        )}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        style={{ fontFamily: "'Poppins', sans-serif" }}
-                      >
-                        {t("about")}
-                      </Link>
-                    </li>
-
-                    <li>
-                      <Link
-                        href="/contact"
-                        className={cn(
-                          "flex items-center px-3 py-3 rounded-md text-base font-medium transition-colors hover:bg-amber-50 hover:text-amber-800",
-                          pathname === "/contact"
-                            ? "bg-amber-50 text-amber-800"
-                            : "text-gray-700"
-                        )}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        style={{ fontFamily: "'Poppins', sans-serif" }}
-                      >
-                        {t("contact")}
-                      </Link>
-                    </li>
-                  </ul>
-                </nav>
-
-                <div className="mt-8 pt-6 border-t border-amber-100">
-                  <div className="space-y-1">
-                    <h3
-                      className="px-3 text-sm font-medium text-amber-800 uppercase tracking-wider"
-                      style={{ fontFamily: "'Playfair Display', serif" }}
-                    >
-                      {t("account")}
-                    </h3>
-                    <Link
-                      href="/account/login"
-                      className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 transition-colors hover:bg-amber-50 hover:text-amber-800"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      style={{ fontFamily: "'Poppins', sans-serif" }}
-                    >
-                      <LogIn className="h-5 w-5 mr-3 text-amber-600" />
-                      {t("signIn")}
-                    </Link>
-                    <Link
-                      href="/account/register"
-                      className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 transition-colors hover:bg-amber-50 hover:text-amber-800"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      style={{ fontFamily: "'Poppins', sans-serif" }}
-                    >
-                      <User className="h-5 w-5 mr-3 text-amber-600" />
-                      Register
-                    </Link>
+                          ))}
+                      </div>
+                      <div className="mt-3 pt-2 border-t text-right">
+                        <Link
+                          href={`/category/${category.slug}`}
+                          className="text-sm font-medium text-amber-600 hover:text-amber-800"
+                        >
+                          View All {category.title} →
+                        </Link>
+                      </div>
+                    </div>
                   </div>
                 </div>
+              ))}
+              </div>              
+            </div>
+          </div>
+        </div>
 
-                <div className="mt-4 pt-4 border-t border-amber-100">
-                  <button
-                    onClick={toggleLanguage}
-                    className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 transition-colors hover:bg-amber-50 hover:text-amber-800 w-full"
-                    style={{ fontFamily: "'Poppins', sans-serif" }}
-                  >
-                    <Globe className="h-5 w-5 mr-3 text-amber-600" />
-                    {language === "en"
-                      ? "Switch to French"
-                      : "Passer à l'anglais"}
-                  </button>
-                </div>
-
-                {/* Contact buttons - Mobile */}
-                <div className="mt-8 bg-amber-50 rounded-lg p-4">
-                  <h3
-                    className="text-sm font-semibold text-amber-800 mb-3"
-                    style={{ fontFamily: "'Playfair Display', serif" }}
-                  >
-                    Get in Touch
-                  </h3>
-                  <div className="space-y-2">
-                    <a
-                      href="tel:+237677889900"
-                      className="flex items-center text-sm text-gray-700 hover:text-amber-800"
-                    >
-                      <Phone className="h-4 w-4 mr-2 text-amber-600" />
-                      <span style={{ fontFamily: "'Poppins', sans-serif" }}>
-                        +237 677 889 900
-                      </span>
-                    </a>
-                    <a
-                      href="mailto:info@jongmarket.com"
-                      className="flex items-center text-sm text-gray-700 hover:text-amber-800"
-                    >
-                      <Mail className="h-4 w-4 mr-2 text-amber-600" />
-                      <span style={{ fontFamily: "'Poppins', sans-serif" }}>
-                        info@jongmarket.com
-                      </span>
-                    </a>
-                  </div>
-                </div>
+        {/* Delivery Banner */}
+        {/* <div className="bg-amber-50 border-b border-amber-100 py-2 hidden md:block h-5">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between">
+              <div className="font-medium text-amber-800">
+                Next Working Day Mainland Delivery* (Order placed before 2pm)
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <div className="flex items-center">
+                <span className="text-gray-600 mr-2">We also deliver on Saturday & Sunday</span>
+                <Image
+                  src="/images/delivery-van.png"
+                  alt="Delivery van"
+                  width={60}
+                  height={24}
+                  className="object-contain"
+                />
+              </div>
+            </div>
+          </div>
+        </div> */}
       </header>
-
-      {/* Spacer for header height */}
-      <div
-        className={cn(
-          "w-full transition-all duration-300",
-          isScrolled ? "h-16" : "h-16 md:h-16"
-        )}
-      ></div>
-    </TooltipProvider>
-  );
+    </>
+  )
 }

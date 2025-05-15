@@ -1,18 +1,19 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { motion } from "framer-motion"
-import { ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useLanguage } from "@/context/language-context"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/context/language-context";
 
 const slides = [
   {
     id: 1,
     title: "Premium Whiskey Collection",
-    subtitle: "Discover our exclusive selection of fine whiskeys from around the world",
+    subtitle:
+      "Discover our exclusive selection of fine whiskeys from around the world",
     image: "/images/hero/whiskey-collection.jpg",
     cta: "Explore Collection",
     link: "/category/whiskey",
@@ -33,26 +34,28 @@ const slides = [
     cta: "Discover Beers",
     link: "/category/beer",
   },
-]
+];
 
 export default function Hero() {
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const { t } = useLanguage()
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const { t } = useLanguage();
 
   // Auto-rotate slides
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length)
-    }, 6000)
-    return () => clearInterval(interval)
-  }, [])
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="h-[60vh] md:h-[90vh] relative overflow-hidden ">
       {slides.map((slide, index) => (
         <motion.div
           key={slide.id}
-          className={`w-full h-screen ${currentSlide === index ? "block" : "hidden"}`}
+          className={`w-full h-screen ${
+            currentSlide === index ? "block" : "hidden"
+          }`}
           initial={{ opacity: 0 }}
           animate={{
             opacity: currentSlide === index ? 1 : 0,
@@ -75,14 +78,14 @@ export default function Hero() {
               />
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/70" />
-            
+
             <div className="relative z-10 flex items-center justify-center h-full">
               <div className="px-6 py-12 md:px-10 md:py-16 text-center max-w-xl mx-auto">
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
-                  animate={{ 
-                    opacity: currentSlide === index ? 1 : 0, 
-                    y: currentSlide === index ? 0 : 30 
+                  animate={{
+                    opacity: currentSlide === index ? 1 : 0,
+                    y: currentSlide === index ? 0 : 30,
                   }}
                   transition={{ duration: 0.8, delay: 0.3 }}
                 >
@@ -109,9 +112,9 @@ export default function Hero() {
             <div className="relative z-10 flex items-center bg-gradient-to-r from-gray-900 to-gray-800 p-6 md:p-12 lg:p-16">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
-                animate={{ 
-                  opacity: currentSlide === index ? 1 : 0, 
-                  y: currentSlide === index ? 0 : 30 
+                animate={{
+                  opacity: currentSlide === index ? 1 : 0,
+                  y: currentSlide === index ? 0 : 30,
                 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
                 className="w-full max-w-xl mx-auto lg:mx-0"
@@ -135,12 +138,14 @@ export default function Hero() {
             <div className="relative overflow-hidden min-h-[70vh]">
               {/* Background color overlay that will blend with the image */}
               <div className="absolute inset-0 bg-gradient-to-l from-gray-800/80 via-gray-800/60 to-gray-800/90 z-10" />
-              
+
               {/* The image container with fixed dimensions */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="relative w-full h-full">
                   <Image
-                    src={slide.image || "/placeholder.svg?height=600&width=1200"}
+                    src={
+                      slide.image || "/placeholder.svg?height=600&width=1200"
+                    }
                     alt={slide.title}
                     fill
                     className="object-cover"
@@ -163,24 +168,30 @@ export default function Hero() {
               key={index}
               onClick={() => setCurrentSlide(index)}
               className={`h-3 rounded-full transition-all ${
-                currentSlide === index ? "w-10 bg-amber-500" : "w-3 bg-white/60 hover:bg-white/80"
+                currentSlide === index
+                  ? "w-10 bg-amber-500"
+                  : "w-3 bg-white/60 hover:bg-white/80"
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}
         </div>
       </div>
-      
+
       {/* Navigation arrows (always visible but positioned differently based on screen size) */}
       <div>
-        <button 
-          onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
+        <button
+          onClick={() =>
+            setCurrentSlide(
+              (prev) => (prev - 1 + slides.length) % slides.length
+            )
+          }
           className="absolute left-4 lg:left-6 top-1/2 transform -translate-y-1/2 z-20 bg-black/30 hover:bg-black/50 text-white w-10 h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center transition-all"
           aria-label="Previous slide"
         >
           <ArrowRight className="h-5 w-5 lg:h-6 lg:w-6 transform rotate-180" />
         </button>
-        <button 
+        <button
           onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
           className="absolute right-4 lg:right-6 top-1/2 transform -translate-y-1/2 z-20 bg-black/30 hover:bg-black/50 text-white w-10 h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center transition-all"
           aria-label="Next slide"
@@ -189,5 +200,5 @@ export default function Hero() {
         </button>
       </div>
     </section>
-  )
+  );
 }

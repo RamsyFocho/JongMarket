@@ -2,11 +2,10 @@ import type { Metadata } from "next"
 import { categories } from "@/data/products"
 import { notFound } from "next/navigation"
 import CategoryClientPage from "./CategoryClientPage"
+import CategorySchema from "@/components/seo/category-schema"
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  // Ensure params is resolved before accessing
-  const slug = params.slug
-  const category = categories[slug]
+  const category = categories[params.slug]
 
   if (!category) {
     return {
@@ -18,31 +17,56 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   return {
     title: `${category.title} | Premium Drinks Collection | Jong Market`,
     description: category.description.substring(0, 160),
-    keywords: `${category.title}, premium drinks, buy online, Cameroon, Jong Market`,
+    keywords: `${category.title}, premium drinks, buy online, Cameroon, Jong Market, ${category.products
+      .slice(0, 5)
+      .map((p) => p.name)
+      .join(", ")}`,
     openGraph: {
       title: `${category.title} | Jong Market`,
       description: category.description.substring(0, 160),
       images: [
         {
-          url: `/images/categories/${slug}.jpg`,
+          url: `/images/categories/${params.slug}.jpg`,
           width: 800,
           height: 600,
           alt: category.title,
         },
       ],
+      type: "website",
+      locale: "en_US",
+      siteName: "Jong Market",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${category.title} | Jong Market`,
+      description: category.description.substring(0, 160),
+      images: [`/images/categories/${params.slug}.jpg`],
+    },
+    alternates: {
+      canonical: `https://jongmarket.com/category/${params.slug}`,
+      languages: {
+        "en-US": `https://jongmarket.com/category/${params.slug}`,
+        "fr-FR": `https://jongmarket.com/fr/category/${params.slug}`,
+      },
     },
   }
 }
 
-export default async function CategoryPage({ params }: { params: { slug: string } }) {
-  // Make the component async and ensure params is resolved
-  const slug = params.slug
-  const category = categories[slug]
+export default function CategoryPage({ params }: { params: { slug: string } }) {
+  const category = categories[params.slug]
 
   if (!category) {
     notFound()
   }
 
-  // Remove the alert as it won't work server-side
-  return <CategoryClientPage params={{ slug }} />
+  // Base URL for schema
+  const baseUrl = "https://jongmarket.com"
+  const fullUrl = `${baseUrl}/category/${params.slug}`
+
+  return (
+    <>
+      <CategorySchema slug={params.slug} url={fullUrl} />
+      <CategoryClientPage params={params} />
+    </>
+  )
 }

@@ -11,7 +11,7 @@ export default function ProductSchema({ product, url }: ProductSchemaProps) {
     "@context": "https://schema.org/",
     "@type": "Product",
     name: product.name,
-    image: product.image,
+    image: [product.image],
     description: product.description,
     sku: `JM-${product.id}`,
     mpn: `JM-${product.id}`,
@@ -19,6 +19,7 @@ export default function ProductSchema({ product, url }: ProductSchemaProps) {
       "@type": "Brand",
       name: "Jong Market",
     },
+    category: `Alcoholic Beverages > ${product.category}`,
     offers: {
       "@type": "Offer",
       url: url,
@@ -27,14 +28,20 @@ export default function ProductSchema({ product, url }: ProductSchemaProps) {
       priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split("T")[0],
       itemCondition: "https://schema.org/NewCondition",
       availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      seller: {
+        "@type": "Organization",
+        name: "Jong Market",
+      },
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: product.rating,
-      reviewCount: product.reviews?.length || 1,
-      bestRating: "5",
-      worstRating: "1",
-    },
+    aggregateRating: product.rating
+      ? {
+          "@type": "AggregateRating",
+          ratingValue: product.rating,
+          reviewCount: product.reviews?.length || 1,
+          bestRating: "5",
+          worstRating: "1",
+        }
+      : undefined,
   }
 
   // Add reviews if available

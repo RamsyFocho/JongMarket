@@ -1,5 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
+import { Inter, Playfair_Display } from "next/font/google"
 import { CartProvider } from "@/context/cart-context"
 import { WishlistProvider } from "@/context/wishlist-context"
 import { LanguageProvider } from "@/context/language-context"
@@ -7,38 +8,34 @@ import Header from "@/components/layout/header"
 import Footer from "@/components/layout/footer"
 import { Toaster } from "@/components/ui/toaster"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import OrganizationSchema from "@/components/seo/organization-schema"
+import "./globals.css"
 import LoadingScreen from "@/components/loading-screen"
 import AgeVerification from "@/components/age-verification"
-import "./globals.css"
-// dd this to your layout.js or layout.tsx file
 
-import { Inter, Playfair_Display, Poppins } from 'next/font/google'
-
+// Load fonts properly using next/font
 const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+  weight: ["300", "400", "500", "600", "700"],
 })
 
 const playfair = Playfair_Display({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-playfair',
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-playfair",
+  weight: ["400", "500", "600", "700"],
 })
-
-const poppins = Poppins({
-  weight: ['300', '400', '500', '600', '700'],
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-poppins',
-})
-
 
 export const metadata: Metadata = {
-  title: "Jong Market | Premium Drinks & Accessories",
+  title: {
+    default: "Jong Market | Premium Drinks & Accessories",
+    template: "%s | Jong Market",
+  },
   description:
     "Discover our curated selection of premium whiskey, wine, beer, champagne and accessories. Fast delivery and exceptional quality guaranteed.",
-  keywords: "drinks, whiskey, wine, beer, champagne, accessories, online store, premium drinks",
+  keywords: "drinks, whiskey, wine, beer, champagne, accessories, online store, premium drinks, Cameroon",
   openGraph: {
     title: "Jong Market | Premium Drinks & Accessories",
     description: "Discover our curated selection of premium whiskey, wine, beer, champagne and accessories.",
@@ -55,7 +52,34 @@ export const metadata: Metadata = {
     locale: "en_US",
     type: "website",
   },
-  generator: 'v0.dev'
+  twitter: {
+    card: "summary_large_image",
+    title: "Jong Market | Premium Drinks & Accessories",
+    description: "Discover our curated selection of premium whiskey, wine, beer, champagne and accessories.",
+    images: ["/images/og-image.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: "https://jongmarket.com",
+    languages: {
+      "en-US": "https://jongmarket.com",
+      "fr-FR": "https://jongmarket.com/fr",
+    },
+  },
+  verification: {
+    google: "google-site-verification-code",
+    yandex: "yandex-verification-code",
+  },
 }
 
 export default function RootLayout({
@@ -64,22 +88,32 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} ${poppins.variable}`}>
-      <body >
-        <CartProvider>
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+      <body>
+        <LanguageProvider>
           <WishlistProvider>
-            <LanguageProvider>
+            <CartProvider>
               <TooltipProvider>
-                <AgeVerification />
-                <LoadingScreen />
-                <Header />
-                <main>{children}</main>
-                <Footer />
+                <OrganizationSchema />
+                {/* Temporarily disabled for testing */}
+                {/* <div className="fixed inset-0 z-[200]">
+                  <LoadingScreen />
+                </div> */}
+                {/* TODO: FIx the problem */}
+                {/* <div className="fixed inset-0 z-[150]">
+                  <AgeVerification />
+                </div> */}
+               
+                <div className="flex flex-col min-h-screen">
+                  <Header />
+                  <main className="flex-1  border-2 border-green-400">{children}</main>
+                  <Footer />
+                </div>
                 <Toaster />
               </TooltipProvider>
-            </LanguageProvider>
+            </CartProvider>
           </WishlistProvider>
-        </CartProvider>
+        </LanguageProvider>
       </body>
     </html>
   )
