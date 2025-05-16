@@ -161,7 +161,7 @@ export default function Header() {
               src="/images/logo/jongmarket.jpg"
               alt="JongMarket Logo"
               fill
-              className="object-cover object-center"
+              className="object-cover object-center"              
               priority
               sizes="160px"
             />
@@ -307,7 +307,8 @@ export default function Header() {
             <div className="flex items-center justify-between">
               {/* Logo - redesigned for desktop */}
               <Link href="/" className="flex items-center">
-                <div className="relative h-20 w-60 flex items-center justify-center bg-white rounded-xl shadow-lg border-2 border-amber-600 overflow-hidden p-2">
+              {/* some logo div styles: rounded-xl shadow-lg border-2 border-amber-600 overflow-hidden */}
+                <div className="relative h-20 w-60 flex items-center justify-center bg-white  p-2">
                   <Image
                     src="/images/logo/jongmarket.jpg"
                     alt="JongMarket Logo"
