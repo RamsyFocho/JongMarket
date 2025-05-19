@@ -1,32 +1,48 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { usePathname } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
-import { X, ChevronRight, ChevronDown, Home, Tag, Info, Phone, User, Heart, ShoppingCart, Globe } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { Badge } from "@/components/ui/badge"
-import { useCart } from "@/context/cart-context"
-import { useWishlist } from "@/context/wishlist-context"
-import { useLanguage } from "@/context/language-context"
-import { cn } from "@/lib/utils"
-import { products } from "@/data/products"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  X,
+  ChevronRight,
+  ChevronDown,
+  Home,
+  Tag,
+  Info,
+  Phone,
+  User,
+  Heart,
+  ShoppingCart,
+  Globe,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { useCart } from "@/context/cart-context";
+import { useWishlist } from "@/context/wishlist-context";
+import { useLanguage } from "@/context/language-context";
+import { cn } from "@/lib/utils";
+import { products } from "@/data/products";
 
 interface MobileMenuProps {
-  isOpen: boolean
-  onClose: () => void
-  categories: { slug: string; title: string }[]
+  isOpen: boolean;
+  onClose: () => void;
+  categories: { slug: string; title: string }[];
 }
 
-export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuProps) {
-  const pathname = usePathname()
-  const { totalItems: cartTotalItems } = useCart()
-  const { totalItems: wishlistTotalItems } = useWishlist()
-  const { t, language, setLanguage } = useLanguage()
-  const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
+export default function MobileMenu({
+  isOpen,
+  onClose,
+  categories,
+}: MobileMenuProps) {
+  const pathname = usePathname();
+  const { totalItems: cartTotalItems } = useCart();
+  const { totalItems: wishlistTotalItems } = useWishlist();
+  const { t, language, setLanguage } = useLanguage();
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<typeof products>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -34,34 +50,41 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
   // Prevent body scroll when menu is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden"
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = ""
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = ""
-    }
-  }, [isOpen])
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   const toggleLanguage = () => {
-    setLanguage(language === "en" ? "fr" : "en")
-  }
+    setLanguage(language === "en" ? "fr" : "en");
+  };
 
   const toggleCategory = (slug: string) => {
-    setExpandedCategory(expandedCategory === slug ? null : slug)
-  }
+    setExpandedCategory(expandedCategory === slug ? null : slug);
+  };
 
   // Get popular products for a category
   const getCategoryProducts = (categorySlug: string) => {
-    return products.filter((product) => product.category.toLowerCase() === categorySlug.toLowerCase()).slice(0, 3)
-  }
+    return products
+      .filter(
+        (product) =>
+          product.category.toLowerCase() === categorySlug.toLowerCase()
+      )
+      .slice(0, 3);
+  };
 
   // Filter products for search suggestions
   useEffect(() => {
     if (searchQuery.trim()) {
-      const filtered = products.filter((product) =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 6);
+      const filtered = products
+        .filter((product) =>
+          product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        .slice(0, 6);
       setSuggestions(filtered);
       setShowSuggestions(filtered.length > 0);
     } else {
@@ -96,17 +119,23 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
             <div className="flex flex-col gap-2 p-4 border-b">
               <div className="flex items-center justify-between">
                 <Link href="/" className="flex items-center">
-                  <div className="relative h-10 w-32 flex items-center justify-center bg-white rounded-lg shadow border-2 border-amber-600 overflow-hidden">
+                  <div className="relative h-12 w-40 flex items-center justify-center overflow-hidden p-1">
                     <Image
                       src="/images/logo/jongmarket.jpg"
                       alt="JongMarket Logo"
                       fill
-                      className="object-contain"
+                      className="object-cover object-center"
                       priority
+                      sizes="160px"
                     />
                   </div>
                 </Link>
-                <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close menu">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onClose}
+                  aria-label="Close menu"
+                >
                   <X className="h-5 w-5" />
                 </Button>
               </div>
@@ -117,9 +146,11 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
                   className="w-full rounded-md border border-amber-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
                   placeholder={t("search") || "Search products..."}
                   value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setShowSuggestions(true)}
-                  onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+                  onBlur={() =>
+                    setTimeout(() => setShowSuggestions(false), 150)
+                  }
                 />
                 {/* Suggestions Dropdown */}
                 <AnimatePresence>
@@ -132,7 +163,7 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
                       className="absolute left-0 right-0 mt-1 bg-white border border-amber-200 rounded-md shadow-lg z-50 max-h-72 overflow-y-auto"
                     >
                       {suggestions.length > 0 ? (
-                        suggestions.map(product => (
+                        suggestions.map((product) => (
                           <Link
                             key={product.id}
                             href={`/product/${product.slug}`}
@@ -147,11 +178,15 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
                                 className="object-cover"
                               />
                             </div>
-                            <span className="ml-2 text-sm text-gray-800 truncate">{product.name}</span>
+                            <span className="ml-2 text-sm text-gray-800 truncate">
+                              {product.name}
+                            </span>
                           </Link>
                         ))
                       ) : (
-                        <div className="px-3 py-2 text-sm text-gray-500">No results found.</div>
+                        <div className="px-3 py-2 text-sm text-gray-500">
+                          No results found.
+                        </div>
                       )}
                     </motion.div>
                   )}
@@ -166,7 +201,9 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
                   href="/"
                   className={cn(
                     "flex items-center py-2.5 px-3 rounded-md",
-                    pathname === "/" ? "bg-amber-50 text-amber-600" : "text-gray-700",
+                    pathname === "/"
+                      ? "bg-amber-50 text-amber-600"
+                      : "text-gray-700"
                   )}
                   onClick={onClose}
                 >
@@ -186,7 +223,9 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
                           href={`/category/${category.slug}`}
                           className={cn(
                             "flex-1 flex items-center py-2 px-3 rounded-md",
-                            pathname === `/category/${category.slug}` ? "text-amber-600" : "text-gray-700",
+                            pathname === `/category/${category.slug}`
+                              ? "text-amber-600"
+                              : "text-gray-700"
                           )}
                           onClick={onClose}
                         >
@@ -197,12 +236,18 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
                           size="sm"
                           className="h-8 w-8 p-0 mr-1"
                           onClick={() => toggleCategory(category.slug)}
-                          aria-label={expandedCategory === category.slug ? "Collapse category" : "Expand category"}
+                          aria-label={
+                            expandedCategory === category.slug
+                              ? "Collapse category"
+                              : "Expand category"
+                          }
                         >
                           <ChevronDown
                             className={cn(
                               "h-4 w-4 transition-transform",
-                              expandedCategory === category.slug ? "rotate-180" : "",
+                              expandedCategory === category.slug
+                                ? "rotate-180"
+                                : ""
                             )}
                           />
                         </Button>
@@ -219,28 +264,36 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
                             className="overflow-hidden"
                           >
                             <div className="pl-4 pr-2 py-2 bg-gray-50 rounded-md mx-2 mb-2">
-                              {getCategoryProducts(category.slug).map((product) => (
-                                <Link
-                                  key={product.id}
-                                  href={`/product/${product.slug}`}
-                                  className="flex items-center py-2 hover:bg-gray-100 rounded-md px-2"
-                                  onClick={onClose}
-                                >
-                                  <div className="relative h-10 w-10 rounded overflow-hidden bg-white">
-                                    <Image
-                                      src={product.image || "/placeholder.svg"}
-                                      alt={product.name}
-                                      fill
-                                      className="object-cover"
-                                    />
-                                  </div>
-                                  <div className="ml-3 flex-1">
-                                    <p className="text-sm font-medium text-gray-800 line-clamp-1">{product.name}</p>
-                                    <p className="text-xs text-amber-600">{t("viewProduct")}</p>
-                                  </div>
-                                  <ChevronRight className="h-4 w-4 text-gray-400" />
-                                </Link>
-                              ))}
+                              {getCategoryProducts(category.slug).map(
+                                (product) => (
+                                  <Link
+                                    key={product.id}
+                                    href={`/product/${product.slug}`}
+                                    className="flex items-center py-2 hover:bg-gray-100 rounded-md px-2"
+                                    onClick={onClose}
+                                  >
+                                    <div className="relative h-10 w-10 rounded overflow-hidden bg-white">
+                                      <Image
+                                        src={
+                                          product.image || "/placeholder.svg"
+                                        }
+                                        alt={product.name}
+                                        fill
+                                        className="object-cover"
+                                      />
+                                    </div>
+                                    <div className="ml-3 flex-1">
+                                      <p className="text-sm font-medium text-gray-800 line-clamp-1">
+                                        {product.name}
+                                      </p>
+                                      <p className="text-xs text-amber-600">
+                                        {t("viewProduct")}
+                                      </p>
+                                    </div>
+                                    <ChevronRight className="h-4 w-4 text-gray-400" />
+                                  </Link>
+                                )
+                              )}
                               <Link
                                 href={`/category/${category.slug}`}
                                 className="flex items-center justify-center py-2 mt-1 text-sm font-medium text-amber-600 hover:bg-amber-50 rounded-md"
@@ -262,7 +315,9 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
                   href="/promotions"
                   className={cn(
                     "flex items-center py-2.5 px-3 rounded-md",
-                    pathname === "/promotions" ? "bg-amber-50 text-amber-600" : "text-gray-700",
+                    pathname === "/promotions"
+                      ? "bg-amber-50 text-amber-600"
+                      : "text-gray-700"
                   )}
                   onClick={onClose}
                 >
@@ -274,7 +329,9 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
                   href="/blog"
                   className={cn(
                     "flex items-center py-2.5 px-3 rounded-md",
-                    pathname === "/blog " ? "bg-amber-50 text-amber-600" : "text-gray-700",
+                    pathname === "/blog "
+                      ? "bg-amber-50 text-amber-600"
+                      : "text-gray-700"
                   )}
                   onClick={onClose}
                 >
@@ -285,7 +342,9 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
                   href="/about"
                   className={cn(
                     "flex items-center py-2.5 px-3 rounded-md",
-                    pathname === "/about" ? "bg-amber-50 text-amber-600" : "text-gray-700",
+                    pathname === "/about"
+                      ? "bg-amber-50 text-amber-600"
+                      : "text-gray-700"
                   )}
                   onClick={onClose}
                 >
@@ -297,7 +356,9 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
                   href="/contact"
                   className={cn(
                     "flex items-center py-2.5 px-3 rounded-md",
-                    pathname === "/contact" ? "bg-amber-50 text-amber-600" : "text-gray-700",
+                    pathname === "/contact"
+                      ? "bg-amber-50 text-amber-600"
+                      : "text-gray-700"
                   )}
                   onClick={onClose}
                 >
@@ -359,7 +420,9 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
                   className="flex items-center text-sm text-gray-700 hover:text-amber-600"
                 >
                   <Globe className="h-4 w-4 mr-1.5" />
-                  {language === "en" ? "Switch to French" : "Passer à l'anglais"}
+                  {language === "en"
+                    ? "Switch to French"
+                    : "Passer à l'anglais"}
                 </button>
 
                 <Link
@@ -375,7 +438,9 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
               <div className="flex justify-center mt-6 mb-2">
                 <button
                   type="button"
-                  aria-label={language === "en" ? "Switch to French" : "Passer en anglais"}
+                  aria-label={
+                    language === "en" ? "Switch to French" : "Passer en anglais"
+                  }
                   onClick={() => setLanguage(language === "en" ? "fr" : "en")}
                   className="flex items-center px-3 py-1 rounded hover:bg-amber-100 transition text-base font-medium border border-gray-200 bg-white"
                 >
@@ -388,5 +453,5 @@ export default function MobileMenu({ isOpen, onClose, categories }: MobileMenuPr
         </>
       )}
     </AnimatePresence>
-  )
+  );
 }

@@ -49,14 +49,69 @@ export default function Header() {
   const [isHovered, setIsHovered] = useState(false);
   const [orderTimer, setOrderTimer] = useState(0);
   const [deliveryDay, setDeliveryDay] = useState('');
+  const [headerHidden, setHeaderHidden] = useState(false);
+  const [compactHeader, setCompactHeader] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const desktopHeaderRef = useRef<HTMLDivElement>(null);
+  const mobileHeaderRef = useRef<HTMLDivElement>(null);
 
+  // Calculate and set header height for proper content spacing
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+    const updateHeaderHeight = () => {
+      if (window.innerWidth >= 768 && desktopHeaderRef.current) {
+        setHeaderHeight(desktopHeaderRef.current.offsetHeight);
+      } else if (mobileHeaderRef.current) {
+        setHeaderHeight(mobileHeaderRef.current.offsetHeight);
+      }
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    // Initial calculation
+    updateHeaderHeight();
+    
+    // Update on resize
+    window.addEventListener('resize', updateHeaderHeight);
+    
+    // Add the CSS variable to the document for spacing
+    document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+    
+    return () => window.removeEventListener('resize', updateHeaderHeight);
+  }, [compactHeader]);
+
+  useEffect(() => {
+    let lastScroll = window.scrollY;
+    let scrollTimer: NodeJS.Timeout;
+    
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+      const scrollDelta = currentScroll - lastScroll;
+      
+      // Set isScrolled state for styling changes
+      setIsScrolled(currentScroll > 10);
+      
+      // Show compact header when scrolled down
+      setCompactHeader(currentScroll > 150);
+      
+      // Hide header on scroll down (after threshold), show on scroll up
+      if (scrollDelta > 15 && currentScroll > 300) {
+        setHeaderHidden(true);
+      } else if (scrollDelta < -10) {
+        setHeaderHidden(false);
+      }
+      
+      // Show header when user stops scrolling
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        setHeaderHidden(false);
+      }, 1000);
+      
+      lastScroll = currentScroll;
+    };
+    
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(scrollTimer);
+    };
   }, []);
 
   // Close mobile menu when route changes
@@ -126,12 +181,6 @@ export default function Header() {
     setLanguage(language === "en" ? "fr" : "en");
   };
 
-  // Determine header visibility class based on scroll direction
-  const headerVisibilityClass =
-    scrolledToTop || scrollDirection === "up"
-      ? "header-visible"
-      : "header-hidden";
-
   // Format timer as HH:MM:SS
   const formatTimer = (ms: number) => {
     if (ms <= 0) return '00:00:00';
@@ -142,21 +191,46 @@ export default function Header() {
     return `${hours}:${minutes}:${seconds}`;
   };
 
+  // Add spacer div for proper content spacing
+  useEffect(() => {
+    // Create spacer element if it doesn't exist
+    let spacer = document.getElementById('header-spacer');
+    if (!spacer) {
+      spacer = document.createElement('div');
+      spacer.id = 'header-spacer';
+      
+      // Insert after the header
+      if (headerRef.current && headerRef.current.parentNode) {
+        headerRef.current.parentNode.insertBefore(spacer, headerRef.current.nextSibling);
+      }
+    }
+    
+    // Update height
+    spacer.style.height = `${headerHeight}px`;
+    
+    return () => {
+      // Clean up on unmount
+      if (spacer && spacer.parentNode) {
+        spacer.parentNode.removeChild(spacer);
+      }
+    };
+  }, [headerHeight]);
+
   // Responsive Header
   return (
     <>
       {/* Mobile Header */}
       <header
-        ref={headerRef}
+        ref={mobileHeaderRef}
         className={cn(
           "md:hidden fixed top-0 left-0 right-0 z-50 bg-white shadow-md border-b border-amber-200 flex items-center justify-between px-4 h-14",
-          headerVisibilityClass
+          headerHidden ? "header-hidden" : "header-visible"
         )}
         role="banner"
       >
         {/* Logo - redesigned for mobile */}
         <Link href="/" className="flex items-center h-full">
-          <div className="relative h-12 w-40 flex items-center justify-center bg-white rounded-lg shadow border-2 border-amber-600 overflow-hidden p-1">
+          <div className="relative h-12 w-40 flex items-center justify-center overflow-hidden p-1">
             <Image
               src="/images/logo/jongmarket.jpg"
               alt="JongMarket Logo"
@@ -238,68 +312,70 @@ export default function Header() {
         categories={categoryItems}
       />
 
-      {/* Desktop Header (unchanged) */}
+      {/* Desktop Header */}
       <header
-        ref={headerRef}
+        ref={desktopHeaderRef}
         className={cn(
-          "hidden md:block fixed top-0 left-0 right-0 z-50 header-scroll-transition w-full h-[fit] ",
+          "hidden md:block fixed top-0 left-0 right-0 z-50 header-scroll-transition w-full",
           isScrolled ? "bg-white shadow-md" : "bg-white",
-          headerVisibilityClass
+          headerHidden ? "header-hidden" : "header-visible"
         )}
         role="banner"
       >
-        {/* Top Bar */}
-        <div className="bg-amber-950 text-white py-2 text-xs">
-          <div className="container mx-auto px-4">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-6">
-                <div className="flex items-center">
-                  <Phone className="h-3 w-3 mr-1" />
-                  <span>+237 677 889 900</span>
+        {/* Top Bar - Only shows when not compact */}
+        {!compactHeader && (
+          <div className="bg-amber-950 text-white py-2 text-xs transition-all duration-300">
+            <div className="container mx-auto px-4">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-6">
+                  <div className="flex items-center">
+                    <Phone className="h-3 w-3 mr-1" />
+                    <span>(+237) 683 181 515</span>
+                  </div>
+                  <div className="hidden md:flex items-center">
+                    <span>
+                      Order in the next{' '}
+                      <span className="font-bold">{formatTimer(orderTimer)}</span> for delivery on{' '}
+                      <span className="font-bold">{deliveryDay}</span>
+                    </span>
+                  </div>
                 </div>
-                <div className="hidden md:flex items-center">
-                  <span>
-                    Order in the next{' '}
-                    <span className="font-bold">{formatTimer(orderTimer)}</span> for delivery on{' '}
-                    <span className="font-bold">{deliveryDay}</span>
-                  </span>
+                <div className="flex items-center space-x-4">
+                  <Link
+                    href="/help"
+                    className="hover:text-amber-300 transition-colors"
+                  >
+                    Help
+                  </Link>
+                  <Link
+                    href="/blog"
+                    className="hover:text-amber-300 transition-colors"
+                  >
+                    Blog
+                  </Link>
+                  <Link
+                    href="/delivery-info"
+                    className="hover:text-amber-300 transition-colors"
+                  >
+                    Delivery Info
+                  </Link>
+                  <Link
+                    href="/contact"
+                    className="hover:text-amber-300 transition-colors"
+                  >
+                    Contact Us
+                  </Link>
+                  <Link
+                    href="/about"
+                    className="hover:text-amber-300 transition-colors"
+                  >
+                    About Us
+                  </Link>
                 </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <Link
-                  href="/help"
-                  className="hover:text-amber-300 transition-colors"
-                >
-                  Help
-                </Link>
-                <Link
-                  href="/blog"
-                  className="hover:text-amber-300 transition-colors"
-                >
-                  Blog
-                </Link>
-                <Link
-                  href="/delivery-info"
-                  className="hover:text-amber-300 transition-colors"
-                >
-                  Delivery Info
-                </Link>
-                <Link
-                  href="/contact"
-                  className="hover:text-amber-300 transition-colors"
-                >
-                  Contact Us
-                </Link>
-                <Link
-                  href="/about"
-                  className="hover:text-amber-300 transition-colors"
-                >
-                  About Us
-                </Link>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Main Header */}
         <div className="border-b border-gray-200 py-2">
@@ -307,8 +383,10 @@ export default function Header() {
             <div className="flex items-center justify-between">
               {/* Logo - redesigned for desktop */}
               <Link href="/" className="flex items-center">
-              {/* some logo div styles: rounded-xl shadow-lg border-2 border-amber-600 overflow-hidden */}
-                <div className="relative h-20 w-60 flex items-center justify-center bg-white  p-2">
+                <div className={cn(
+                  "relative flex items-center justify-center bg-white p-2 transition-all duration-300",
+                  compactHeader ? "h-16 w-48" : "h-20 w-60"
+                )}>
                   <Image
                     src="/images/logo/jongmarket.jpg"
                     alt="JongMarket Logo"
@@ -442,20 +520,23 @@ export default function Header() {
         </div>
 
         {/* Category Navigation */}
-        <div className="bg-amber-600 text-white hidden md:block ">
-          <div className="w-full h-[10vh]">
-            <div className="flex items-center">
+        <div className="bg-amber-600 text-white hidden md:block">
+          <div className={cn(
+            "w-full transition-all duration-300",
+            compactHeader ? "h-[8vh]" : "h-[10vh]"
+          )}>
+            <div className="flex items-center h-full">
               <div className="relative group flex items-center cursor-pointer">
                 <AnimatedShopByBrand />
               </div>
 
               {/* Category Collections */}
-              <div className="flex  h-[10vh] items-center">
-                {categoryItems.slice(0, 7).map((category) => (
+              <div className="flex h-full items-center">
+                {categoryItems.slice(0, compactHeader ? 5 : 7).map((category) => (
                   <div key={category.slug} className="relative group">
                     <Link
                       href={`/category/${category.slug}`}
-                      className="px-4 py-2  transition-colors inline-block md:text-ellipsis"
+                      className="px-4 py-2 transition-colors inline-block md:text-ellipsis"
                     >
                       {category.title}
                       <svg
@@ -475,7 +556,6 @@ export default function Header() {
                     </Link>
 
                     {/* Products Dropdown */}
-
                     <div className="absolute left-0 top-full z-50 w-[400px] bg-white shadow-lg rounded-b-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top scale-y-0 group-hover:scale-y-100">
                       <div className="p-4">
                         <h3 className="font-medium text-gray-800 mb-3 border-b pb-2">
@@ -548,27 +628,6 @@ export default function Header() {
             </div>
           </div>
         </div>
-
-        {/* Delivery Banner */}
-        {/* <div className="bg-amber-50 border-b border-amber-100 py-2 hidden md:block h-5">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between">
-              <div className="font-medium text-amber-800">
-                Next Working Day Mainland Delivery* (Order placed before 2pm)
-              </div>
-              <div className="flex items-center">
-                <span className="text-gray-600 mr-2">We also deliver on Saturday & Sunday</span>
-                <Image
-                  src="/images/delivery-van.png"
-                  alt="Delivery van"
-                  width={60}
-                  height={24}
-                  className="object-contain"
-                />
-              </div>
-            </div>
-          </div>
-        </div> */}
       </header>
     </>
   );

@@ -92,9 +92,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <CartProvider>
               <TooltipProvider>
                 <OrganizationSchema />
-                <div className="flex flex-col min-h-screen">
+                {/* <LoadingScreen/> */}
+                <div className="block min-h-screen">
                   <Header />
-                  <main className="flex-1">{children}</main>
+                  <main className="flex-1 border-2 border-green-500 mt-[3.4rem] md:mt-48">{children}</main>
                   <Footer />
                 </div>
               </TooltipProvider>

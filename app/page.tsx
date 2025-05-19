@@ -91,10 +91,10 @@ const menuCategories = [
 
 export default function HomePage() {
   return (
-    <div className="pt-16 md:pt-24">
-      <Hero />  
+    <div>
+       {/* <Hero />  */}
 
-      <div className="w-full mx-auto px-4 py-8">
+      <div className="w-full mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar - Responsive and Professional */}
           <aside className="hidden md:block md:w-64 lg:w-72 xl:w-80 flex-shrink-0">
@@ -117,6 +117,7 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
+            <Hero /> 
             <TrendingDrinks />
             <FeaturedCategories />
             <SpecialPromotions />

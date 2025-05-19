@@ -1,0 +1,21 @@
+/* Header scroll animation */
+.header-scroll-transition {
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s cubic-bezier(0.4,0,0.2,1);
+  will-change: transform, box-shadow;
+}
+.header-hidden {
+  transform: translateY(-100%);
+}
+.header-visible {
+  transform: translateY(0);
+}
+
+/* Ensure main content is pushed below header (add this class to main wrapper) */
+.header-content-spacing {
+  padding-top: 170px; /* Adjust to match total header height (topbar + main + nav) */
+}
+@media (max-width: 767px) {
+  .header-content-spacing {
+    padding-top: 56px; /* Mobile header height */
+  }
+}
