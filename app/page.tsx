@@ -7,6 +7,7 @@ import SpecialPromotions from "@/components/home/special-promotions"
 import Newsletter from "@/components/home/newsletter"
 import CategoryGallery from "@/components/home/category-gallery"
 import AnimatedVideo from "@/components/home/animated-video"
+import MoreInfo from "@/components/home/moreInfo"
 import { categories } from "@/data/products"
 
 // Define menu categories for the header
@@ -128,7 +129,7 @@ export default function HomePage() {
 
       {/* Animated Video Section */}
       <AnimatedVideo />
-
+      <MoreInfo/>
       <Newsletter />
     </div>
   )

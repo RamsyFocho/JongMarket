@@ -27,8 +27,7 @@ export default function AboutPage() {
                 About Us
               </h1>
               <p className="text-xl text-white/80">
-                Premium drinks and accessories for the discerning connoisseur
-                since 2010.
+                Get Finest Wines, Beers, Spirits and Mixers - About Jong Market
               </p>
             </div>
           </div>

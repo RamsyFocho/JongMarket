@@ -342,10 +342,10 @@ export default function Header() {
                 </div>
                 <div className="flex items-center space-x-4">
                   <Link
-                    href="/help"
+                    href="/"
                     className="hover:text-amber-300 transition-colors"
                   >
-                    Help
+                    Home
                   </Link>
                   <Link
                     href="/blog"
