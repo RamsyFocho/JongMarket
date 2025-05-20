@@ -311,6 +311,71 @@ export default function MobileMenu({
 
                 <Separator className="my-3" />
 
+                <div className="mb-3">
+                  <div className="flex items-center justify-between">
+                    <button
+                      className={cn(
+                        "flex-1 flex items-center py-2.5 px-3 rounded-md text-gray-700"
+                      )}
+                      onClick={() => toggleCategory('sales-offers')}
+                    >
+                      <Tag className="h-5 w-5 mr-3" />
+                      <span>Sales & Offers</span>
+                    </button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0 mr-1"
+                      onClick={() => toggleCategory('sales-offers')}
+                      aria-label={
+                        expandedCategory === 'sales-offers'
+                          ? "Collapse sales and offers"
+                          : "Expand sales and offers"
+                      }
+                    >
+                      <ChevronDown
+                        className={cn(
+                          "h-4 w-4 transition-transform",
+                          expandedCategory === 'sales-offers'
+                            ? "rotate-180"
+                            : ""
+                        )}
+                      />
+                    </Button>
+                  </div>
+
+                  <AnimatePresence>
+                    {expandedCategory === 'sales-offers' && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pl-4 pr-2 py-2 bg-gray-50 rounded-md mx-2 mb-2">
+                          <Link
+                            href="/offers"
+                            className="flex items-center py-2 hover:bg-gray-100 rounded-md px-2"
+                            onClick={onClose}
+                          >
+                            <Tag className="h-4 w-4 text-amber-600 mr-2" />
+                            <span className="text-sm text-gray-700">Special Offers</span>
+                          </Link>
+                          <Link
+                            href="/clearance"
+                            className="flex items-center py-2 hover:bg-gray-100 rounded-md px-2"
+                            onClick={onClose}
+                          >
+                            <Tag className="h-4 w-4 text-amber-600 mr-2" />
+                            <span className="text-sm text-gray-700">Clearance</span>
+                          </Link>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
                 <Link
                   href="/promotions"
                   className={cn(
