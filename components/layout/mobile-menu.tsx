@@ -355,7 +355,7 @@ export default function MobileMenu({
                       >
                         <div className="pl-4 pr-2 py-2 bg-gray-50 rounded-md mx-2 mb-2">
                           <Link
-                            href="/offers"
+                            href="/promotions?type=offers"
                             className="flex items-center py-2 hover:bg-gray-100 rounded-md px-2"
                             onClick={onClose}
                           >
@@ -363,7 +363,7 @@ export default function MobileMenu({
                             <span className="text-sm text-gray-700">Special Offers</span>
                           </Link>
                           <Link
-                            href="/clearance"
+                            href="/promotions?type=clearance"
                             className="flex items-center py-2 hover:bg-gray-100 rounded-md px-2"
                             onClick={onClose}
                           >
