@@ -5,6 +5,7 @@ import type { products as ProductsArrayType } from "@/data/products";
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Search, ShoppingCart, Menu, Phone, Star, Globe } from "lucide-react";
@@ -40,6 +41,7 @@ export default function Header() {
   const [suggestions, setSuggestions] = useState<Product[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const { cartItems, totalItems: cartTotalItems } = useCart();
   const { totalItems: wishlistTotalItems } = useWishlist();
   const { language, setLanguage, t } = useLanguage();
@@ -175,8 +177,11 @@ export default function Header() {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // Redirect to search results page
-      window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
+      // Use Next.js router to navigate to search results
+      router.push(`/products?search=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery('');
+      setShowSuggestions(false);
+      setIsSearchExpanded(false);
     }
   };
 
@@ -265,29 +270,75 @@ export default function Header() {
               className="fixed inset-0 z-[100] bg-black/40 flex items-start justify-center pt-8"
               onClick={() => setIsSearchExpanded(false)}
             >
-              <form
-                onSubmit={handleSearchSubmit}
-                className="bg-white rounded-lg shadow-lg w-11/12 max-w-md flex items-center px-3 py-2 relative"
+              <div
+                className="w-11/12 max-w-md"
                 onClick={(e) => e.stopPropagation()}
               >
-                <Input
-                  type="text"
-                  placeholder="Find Your Drink..."
-                  className="flex-1 border-amber-200 focus-visible:ring-amber-500"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  ref={searchInputRef}
-                  autoFocus
-                />
-                <Button
-                  type="submit"
-                  size="icon"
-                  className="ml-2 bg-amber-600 hover:bg-amber-700"
-                  aria-label="Search"
+                <form
+                  onSubmit={handleSearchSubmit}
+                  className="bg-white rounded-t-lg shadow-lg flex items-center px-3 py-2 relative"
                 >
-                  <Search className="h-4 w-4" />
-                </Button>
-              </form>
+                  <Input
+                    type="text"
+                    placeholder="Find Your Drink..."
+                    className="flex-1 border-amber-200 focus-visible:ring-amber-500"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setShowSuggestions(true)}
+                    ref={searchInputRef}
+                    autoFocus
+                  />
+                  <Button
+                    type="submit"
+                    size="icon"
+                    className="ml-2 bg-amber-600 hover:bg-amber-700"
+                    aria-label="Search"
+                  >
+                    <Search className="h-4 w-4" />
+                  </Button>
+                </form>
+                
+                {/* Search Suggestions */}
+                {showSuggestions && searchQuery.trim() && (
+                  <div className="bg-white rounded-b-lg border-t border-amber-100 max-h-[60vh] overflow-y-auto">
+                    {suggestions.length > 0 ? (
+                      suggestions.map((product) => (
+                        <Link
+                          key={product.id}
+                          href={`/product/${product.slug}`}
+                          className="flex items-center p-3 hover:bg-amber-50 transition-colors"
+                          onClick={() => {
+                            setIsSearchExpanded(false);
+                            setSearchQuery('');
+                            setShowSuggestions(false);
+                          }}
+                        >
+                          <div className="relative h-12 w-12 rounded overflow-hidden flex-shrink-0">
+                            <Image
+                              src={product.image || "/placeholder.svg"}
+                              alt={product.name}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                          <div className="ml-3 flex-1">
+                            <p className="text-sm font-medium text-gray-800 line-clamp-1">
+                              {product.name}
+                            </p>
+                            <p className="text-xs text-amber-600">
+                              {formatCurrency(product.price)}
+                            </p>
+                          </div>
+                        </Link>
+                      ))
+                    ) : (
+                      <div className="p-4 text-sm text-gray-500 text-center">
+                        No results found
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           )}
           {/* Cart Icon */}
