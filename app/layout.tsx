@@ -84,7 +84,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+    <html lang="fr" className={`${inter.variable} ${playfair.variable}`}>
       <body>
         <Toaster />
         <LanguageProvider>
@@ -95,7 +95,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* <LoadingScreen/> */}
                 <div className="block min-h-screen">
                   <Header />
-                  <main className="flex-1 border-2 border-green-500 mt-[3.4rem] md:mt-48">{children}</main>
+                  <main className="flex-1 border-2 border-green-500 xl:mt-[11.3rem] lg:mt-[14.1rem] md:mt-48">{children}</main>
                   <Footer />
                 </div>
               </TooltipProvider>

@@ -465,7 +465,7 @@ export const products = [
     price: 32.5,
     rating: 4.7,
     image: "/images/products/whiskey/Glenrothes Select Reserve (£32).jpg",
-    slug: "Black Label",
+    slug: "Glenrothes",
     inStock: true,
     stockCount: 35,
     description:
@@ -515,7 +515,7 @@ export const categories = {
     products: products.filter((p) => p.category === "Wine"),
   },
   beer: {
-    title: "Canned Beer",
+    title: "Beer",
     description:
       "Explore our selection of craft beers from local and international breweries, featuring IPAs, stouts, lagers, and more.",
     products: products.filter((p) => p.category === "Beer"),

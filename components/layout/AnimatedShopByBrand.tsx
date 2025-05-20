@@ -13,7 +13,7 @@ export default function AnimatedShopByBrand() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="flex items-center cursor-pointer h-[10vh]">
+      <div className="flex items-center cursor-pointer h-[53px]">
         {/* Main button with arrow shape */}
         <div className="bg-amber-800 text-white px-5 py-3 font-medium flex items-center transition-all duration-300 hover:bg-amber-900 relative overflow-hidden h-full"
              style={{

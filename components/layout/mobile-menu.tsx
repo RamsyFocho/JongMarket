@@ -336,7 +336,7 @@ export default function MobileMenu({
                   onClick={onClose}
                 >
                   <Info className="h-5 w-5 mr-3" />
-                  <span>{t("about")}</span>
+                  <span>{t("Blog")}</span>
                 </Link>
                 <Link
                   href="/about"

@@ -49,7 +49,8 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="h-[60vh] md:h-[90vh] relative overflow-hidden border-2 border-red-500">
+    // TODO: redesign it at height md:70vh
+    <section className="h-[60vh] md:h-[90vh] relative overflow-hidden rounded">
       {slides.map((slide, index) => (
         <motion.div
           key={slide.id}
@@ -107,7 +108,7 @@ export default function Hero() {
           </div>
 
           {/* Desktop split layout (only visible on lg screens and up) */}
-          <div className="hidden h-screen  md:grid md:grid-cols-2 min-h-[70vh] xl:min-h-[75vh] 2xl:min-h-[80vh]">
+          <div className="hidden h-screen md:grid md:grid-cols-2 min-h-[70vh] xl:min-h-[75vh] 2xl:min-h-[80vh]">
             {/* Text Section */}
             <div className="relative z-10 flex items-center bg-gradient-to-r from-gray-900 to-gray-800 p-6 md:p-12 lg:p-16">
               <motion.div

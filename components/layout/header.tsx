@@ -48,7 +48,7 @@ export default function Header() {
   const { scrollDirection, scrolledToTop } = useScrollDirection(10);
   const [isHovered, setIsHovered] = useState(false);
   const [orderTimer, setOrderTimer] = useState(0);
-  const [deliveryDay, setDeliveryDay] = useState('');
+  const [deliveryDay, setDeliveryDay] = useState("");
   const [headerHidden, setHeaderHidden] = useState(false);
   const [compactHeader, setCompactHeader] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -67,46 +67,49 @@ export default function Header() {
 
     // Initial calculation
     updateHeaderHeight();
-    
+
     // Update on resize
-    window.addEventListener('resize', updateHeaderHeight);
-    
+    window.addEventListener("resize", updateHeaderHeight);
+
     // Add the CSS variable to the document for spacing
-    document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
-    
-    return () => window.removeEventListener('resize', updateHeaderHeight);
+    document.documentElement.style.setProperty(
+      "--header-height",
+      `${headerHeight}px`
+    );
+
+    return () => window.removeEventListener("resize", updateHeaderHeight);
   }, [compactHeader]);
 
   useEffect(() => {
     let lastScroll = window.scrollY;
     let scrollTimer: NodeJS.Timeout;
-    
+
     const handleScroll = () => {
       const currentScroll = window.scrollY;
       const scrollDelta = currentScroll - lastScroll;
-      
+
       // Set isScrolled state for styling changes
       setIsScrolled(currentScroll > 10);
-      
+
       // Show compact header when scrolled down
       setCompactHeader(currentScroll > 150);
-      
+
       // Hide header on scroll down (after threshold), show on scroll up
       if (scrollDelta > 15 && currentScroll > 300) {
         setHeaderHidden(true);
       } else if (scrollDelta < -10) {
         setHeaderHidden(false);
       }
-      
+
       // Show header when user stops scrolling
       clearTimeout(scrollTimer);
       scrollTimer = setTimeout(() => {
         setHeaderHidden(false);
       }, 1000);
-      
+
       lastScroll = currentScroll;
     };
-    
+
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -152,7 +155,7 @@ export default function Header() {
       // If after cutoff, set to 2pm tomorrow
       cutoff.setDate(cutoff.getDate() + 1);
     }
-    setDeliveryDay(cutoff.toLocaleDateString(undefined, { weekday: 'long' }));
+    setDeliveryDay(cutoff.toLocaleDateString(undefined, { weekday: "long" }));
 
     const updateTimer = () => {
       const now = new Date();
@@ -183,31 +186,37 @@ export default function Header() {
 
   // Format timer as HH:MM:SS
   const formatTimer = (ms: number) => {
-    if (ms <= 0) return '00:00:00';
+    if (ms <= 0) return "00:00:00";
     const totalSeconds = Math.floor(ms / 1000);
-    const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-    const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-    const seconds = String(totalSeconds % 60).padStart(2, '0');
+    const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+    const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(
+      2,
+      "0"
+    );
+    const seconds = String(totalSeconds % 60).padStart(2, "0");
     return `${hours}:${minutes}:${seconds}`;
   };
 
   // Add spacer div for proper content spacing
   useEffect(() => {
     // Create spacer element if it doesn't exist
-    let spacer = document.getElementById('header-spacer');
+    let spacer = document.getElementById("header-spacer");
     if (!spacer) {
-      spacer = document.createElement('div');
-      spacer.id = 'header-spacer';
-      
+      spacer = document.createElement("div");
+      spacer.id = "header-spacer";
+
       // Insert after the header
       if (headerRef.current && headerRef.current.parentNode) {
-        headerRef.current.parentNode.insertBefore(spacer, headerRef.current.nextSibling);
+        headerRef.current.parentNode.insertBefore(
+          spacer,
+          headerRef.current.nextSibling
+        );
       }
     }
-    
+
     // Update height
     spacer.style.height = `${headerHeight}px`;
-    
+
     return () => {
       // Clean up on unmount
       if (spacer && spacer.parentNode) {
@@ -235,7 +244,7 @@ export default function Header() {
               src="/images/logo/jongmarket.jpg"
               alt="JongMarket Logo"
               fill
-              className="object-cover object-center"              
+              className="object-cover object-center"
               priority
               sizes="160px"
             />
@@ -334,8 +343,11 @@ export default function Header() {
                   </div>
                   <div className="hidden md:flex items-center">
                     <span>
-                      Order in the next{' '}
-                      <span className="font-bold">{formatTimer(orderTimer)}</span> for delivery on{' '}
+                      Order in the next{" "}
+                      <span className="font-bold">
+                        {formatTimer(orderTimer)}
+                      </span>{" "}
+                      for delivery on{" "}
                       <span className="font-bold">{deliveryDay}</span>
                     </span>
                   </div>
@@ -383,10 +395,12 @@ export default function Header() {
             <div className="flex items-center justify-between">
               {/* Logo - redesigned for desktop */}
               <Link href="/" className="flex items-center">
-                <div className={cn(
-                  "relative flex items-center justify-center bg-white p-2 transition-all duration-300",
-                  compactHeader ? "h-16 w-48" : "h-20 w-60"
-                )}>
+                <div
+                  className={cn(
+                    "relative flex items-center justify-center bg-white p-2 transition-all duration-300",
+                    compactHeader ? "h-16 w-48" : "h-20 w-60"
+                  )}
+                >
                   <Image
                     src="/images/logo/jongmarket.jpg"
                     alt="JongMarket Logo"
@@ -521,109 +535,152 @@ export default function Header() {
 
         {/* Category Navigation */}
         <div className="bg-amber-600 text-white hidden md:block">
-          <div className={cn(
-            "w-full transition-all duration-300",
-            compactHeader ? "h-[8vh]" : "h-[10vh]"
-          )}>
-            <div className="flex items-center h-full">
+          <div
+            className={cn(
+              "w-full transition-all duration-300 ",
+              compactHeader ? "h-[fi]" : "h-[fit]"
+            )}
+          >
+            <div className="flex items-center h-[fit] flex-wrap">
               <div className="relative group flex items-center cursor-pointer">
                 <AnimatedShopByBrand />
               </div>
 
               {/* Category Collections */}
               <div className="flex h-full items-center">
-                {categoryItems.slice(0, compactHeader ? 5 : 7).map((category) => (
-                  <div key={category.slug} className="relative group">
-                    <Link
-                      href={`/category/${category.slug}`}
-                      className="px-4 py-2 transition-colors inline-block md:text-ellipsis"
-                    >
-                      {category.title}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-3 w-3 ml-1 inline-block transition-transform duration-300 group-hover:rotate-180"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                {categoryItems
+                  .slice(0, compactHeader ? 7 : 7)
+                  .map((category) => (
+                    <div key={category.slug} className="relative group">
+                      <Link
+                        href={`/category/${category.slug}`}
+                        className="px-4 py-2 transition-colors inline-block md:text-ellipsis"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </Link>
+                        {category.title}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-3 w-3 ml-1 inline-block transition-transform duration-300 group-hover:rotate-180"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </Link>
 
-                    {/* Products Dropdown */}
-                    <div className="absolute left-0 top-full z-50 w-[400px] bg-white shadow-lg rounded-b-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top scale-y-0 group-hover:scale-y-100">
-                      <div className="p-4">
-                        <h3 className="font-medium text-gray-800 mb-3 border-b pb-2">
-                          {category.title}
-                        </h3>
-                        <div className="grid grid-cols-2 gap-3">
-                          {products
-                            .filter(
-                              (product) =>
-                                product.category.toLowerCase() ===
-                                category.slug.toLowerCase()
-                            )
-                            .slice(0, 4)
-                            .map((product) => (
-                              <Link
-                                key={product.id}
-                                href={`/product/${product.slug}`}
-                                className="flex items-start hover:bg-amber-50 p-2 rounded-md transition-colors"
-                              >
-                                <div className="relative h-14 w-14 rounded overflow-hidden flex-shrink-0">
-                                  <Image
-                                    src={product.image || "/placeholder.svg"}
-                                    alt={product.name}
-                                    fill
-                                    className="object-cover"
-                                  />
-                                </div>
-                                <div className="ml-2 flex-1 min-w-0">
-                                  <h4 className="text-xs font-medium text-gray-800 line-clamp-2">
-                                    {product.name}
-                                  </h4>
-                                  <div className="flex items-center mt-1">
-                                    <div className="flex text-amber-500">
-                                      {[...Array(5)].map((_, i) => (
-                                        <Star
-                                          key={i}
-                                          className="h-2 w-2"
-                                          fill={
-                                            i < Math.floor(product.rating)
-                                              ? "currentColor"
-                                              : "none"
-                                          }
-                                        />
-                                      ))}
+                      {/* Products Dropdown */}
+                      <div className="absolute left-0 top-full z-50 w-[400px] bg-white shadow-lg rounded-b-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top scale-y-0 group-hover:scale-y-100">
+                        <div className="p-4 border-2 ">
+                          <h3 className="font-medium text-gray-800 mb-3 border-b pb-2 border-green-600">
+                            {category.title}
+                          </h3>
+                          <div className="grid grid-cols-2 gap-3">
+                            {products
+                              .filter(
+                                (product) =>
+                                  product.category.toLowerCase() ===
+                                  category.slug.toLowerCase()
+                              )
+                              .slice(0, 4)
+                              .map((product) => (
+                                <Link
+                                  key={product.id}
+                                  href={`/product/${product.slug}`}
+                                  className="flex items-start hover:bg-amber-50 p-2 rounded-md transition-colors"
+                                >
+                                  <div className="relative h-14 w-14 rounded overflow-hidden flex-shrink-0">
+                                    <Image
+                                      src={product.image || "/placeholder.svg"}
+                                      alt={product.name}
+                                      fill
+                                      className="object-cover"
+                                    />
+                                  </div>
+                                  <div className="ml-2 flex-1 min-w-0">
+                                    <h4 className="text-xs font-medium text-gray-800 line-clamp-2">
+                                      {product.name}
+                                    </h4>
+                                    <div className="flex items-center mt-1">
+                                      <div className="flex text-amber-500">
+                                        {[...Array(5)].map((_, i) => (
+                                          <Star
+                                            key={i}
+                                            className="h-2 w-2"
+                                            fill={
+                                              i < Math.floor(product.rating)
+                                                ? "currentColor"
+                                                : "none"
+                                            }
+                                          />
+                                        ))}
+                                      </div>
+                                      <span className="text-xs text-gray-500 ml-1">
+                                        ({product.rating})
+                                      </span>
                                     </div>
-                                    <span className="text-xs text-gray-500 ml-1">
-                                      ({product.rating})
-                                    </span>
+                                    <div className="text-xs font-medium text-amber-600 mt-1">
+                                      {formatCurrency(product.price)}
+                                    </div>
                                   </div>
-                                  <div className="text-xs font-medium text-amber-600 mt-1">
-                                    {formatCurrency(product.price)}
-                                  </div>
-                                </div>
-                              </Link>
-                            ))}
-                        </div>
-                        <div className="mt-3 pt-2 border-t text-right">
-                          <Link
-                            href={`/category/${category.slug}`}
-                            className="text-sm font-medium text-amber-600 hover:text-amber-800"
-                          >
-                            View All {category.title} →
-                          </Link>
+                                </Link>
+                              ))}
+                          </div>
+                          <div className="mt-3 pt-2 border-t text-right">
+                            <Link
+                              href={`/category/${category.slug}`}
+                              className="text-sm font-medium text-amber-600 hover:text-amber-800"
+                            >
+                              View All {category.title} →
+                            </Link>
+                          </div>
                         </div>
                       </div>
                     </div>
+                  ))}
+              </div>
+              
+              {/* Sales and Offers button with dropdown */}
+              <div className="relative group xl:ml-auto pt-1">
+                <button className="flex items-center space-x-1 px-4 py-2 text-white hover:text-amber-100 transition-colors">
+                  <span>Sales and Offers</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-3 w-3 ml-1 inline-block transition-transform duration-300 group-hover:rotate-180"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+
+                {/* Sales Dropdown */}
+                <div className="absolute right-0 left-3 xl:left-0 top-full z-50 w-48 bg-white shadow-lg rounded-b-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top scale-y-0 group-hover:scale-y-100">
+                  <div className="py-2">
+                    <Link
+                      href="/promotions?type=offers"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
+                    >
+                      Special Offers
+                    </Link>
+                    <Link
+                      href="/promotions?type=clearance"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
+                    >
+                      Clearance
+                    </Link>
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           </div>
