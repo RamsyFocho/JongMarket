@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/language-context";
 
 // Preload strategy to improve performance - browser-only
-const preloadImages = (slides) => {
+const preloadImages = (slides: any[]) => {
   if (typeof window !== 'undefined') {
-    slides.forEach((slide) => {
+    slides.forEach((slide: { image: string; }) => {
       if (slide.image) {
         const img = new window.Image();
         img.src = slide.image;
@@ -33,7 +33,7 @@ const slides = [
   {
     id: 2,
     title: "Luxury Wine Selection",
-    subtitle: "Indulge in the finest wines from renowned vineyards worldwide",
+    subtitle: "Online Liquor Store in Cameroon - Buy Drinks, Spirits, Gin and bear",
     image: "/images/hero/wine-selection.jpg",
     cta: "Browse Wines",
     link: "/category/wine",
@@ -70,7 +70,7 @@ export default function Hero() {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   }, []);
 
-  const goToSlide = useCallback((index) => {
+  const goToSlide = useCallback((index: SetStateAction<number>) => {
     setCurrentSlide(index);
     setAutoplay(false); // Pause autoplay when user interacts
     // Restart autoplay after 10 seconds of inactivity

@@ -20,7 +20,7 @@ export default function AnimatedShopByBrand() {
                clipPath: "polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%)"
              }}>
           <span className="relative z-10 flex items-center">
-           <Link href="/products"> SHOP PRODUCTS</Link>
+           <Link href="/products"> SHOP BY PRODUCTS</Link>
             {/* <ChevronDown 
               className={`ml-2 h-5 w-5 transition-transform duration-500 ${isHovered ? 'rotate-180' : ''}`}
             /> */}

@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Search, ShoppingCart, Menu, Phone, Star, Globe } from "lucide-react";
+import { Search, ShoppingCart, Menu, Phone, Star, Globe, Router, Route } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -524,11 +524,13 @@ export default function Header() {
                 <div className="hidden md:block">
                   <div className="flex items-center space-x-4">
                     <Link
-                      href="/account"
+                      href="/login"
                       className="text-sm hover:text-amber-600"
                     >
-                      Login / Register
+                      Login
                     </Link>
+
+
                     <Link
                       href="/wishlist"
                       className="text-sm hover:text-amber-600 relative"
