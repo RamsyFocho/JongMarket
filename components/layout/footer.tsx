@@ -199,10 +199,7 @@ export default function Footer() {
               </h4>
               <div className="flex flex-wrap gap-4">
                 {paymentMethods.map((method) => (
-                  <div
-                    key={method.name}
-                    className=" h-10 w-16 relative"
-                  >
+                  <div key={method.name} className=" h-10 w-16 relative">
                     <Image
                       src={method.image || "/placeholder.svg"}
                       alt={method.name}
@@ -218,8 +215,19 @@ export default function Footer() {
               <h4 className="text-lg font-semibold mb-4 text-white">
                 {t("deliveryServices")}
               </h4>
-              <div className="flex flex-wrap gap-4">
+              <div className="relative">
                 {/* input the srvice images */}
+                <div
+                  className=" h-10 w-[382px] relative"
+                >
+                  <Image
+                    src="/images/payment/shipping-services.png"
+                    alt={"Shipping Services"}
+                    fill
+                    className="object-cover p-1 relative"
+                  />
+                </div>
+
                 {/* {deliveryServices.map((service) => (
                   <div
                     key={service.name}

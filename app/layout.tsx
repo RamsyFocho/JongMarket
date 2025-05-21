@@ -12,6 +12,7 @@ import OrganizationSchema from "@/components/seo/organization-schema"
 import "./globals.css"
 import LoadingScreen from "@/components/loading-screen"
 import AgeVerification from "@/components/age-verification"
+import ScrollToTop from "@/components/ui/scroll-to-top"
 
 // Load fonts properly using next/font
 const inter = Inter({
@@ -97,6 +98,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <Header />
                   <main className="flex-1 border-2 border-green-500 mt-[3.56rem] xl:mt-[11.3rem] lg:mt-[11.35rem] md:mt-48">{children}</main>
                   <Footer />
+                  <ScrollToTop />
                 </div>
               </TooltipProvider>
             </CartProvider>

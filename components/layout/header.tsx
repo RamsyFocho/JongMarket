@@ -602,7 +602,7 @@ export default function Header() {
                 {categoryItems
                   .slice(0, compactHeader ? 9 : 9)
                   .map((category) => (
-                    <div key={category.slug} className="relative group border-2 border-green-500 w-[fit]">
+                    <div key={category.slug} className="relative group w-[fit]">
                       <Link
                         href={`/category/${category.slug}`}
                         className="px-2 py-2 transition-colors inline-block md:text-ellipsis"

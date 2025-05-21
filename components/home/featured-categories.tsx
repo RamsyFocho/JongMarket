@@ -69,7 +69,7 @@ export default function FeaturedCategories() {
           animate={isInView ? "visible" : "hidden"}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {categoryItems.slice(0, 6).map((category) => (
+          {categoryItems.map((category) => (
             <motion.div key={category.slug} variants={itemVariants}>
               <Link href={`/category/${category.slug}`} className="group block">
                 <div className="relative h-64 rounded-lg overflow-hidden shadow-md">
