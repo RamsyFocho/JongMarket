@@ -2,22 +2,21 @@
 
 import { useState, useRef, useEffect } from "react"
 import { motion, useInView, useAnimation } from "framer-motion"
-import { Play, Pause, Volume2, VolumeX } from "lucide-react"
+import { Maximize } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Slider } from "@/components/ui/slider"
 import { cn } from "@/lib/utils"
 
 export default function AnimatedVideo() {
   const [isPlaying, setIsPlaying] = useState(false)
-  const [isMuted, setIsMuted] = useState(true)
-  const [progress, setProgress] = useState(0)
+  const [isFullscreen, setIsFullscreen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const videoContainerRef = useRef<HTMLDivElement>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const isInView = useInView(containerRef, { once: false, amount: 0.3 })
   const controls = useAnimation()
 
-  // YouTube embed URL
-  const youtubeEmbedUrl = "https://www.youtube-nocookie.com/embed/MH5dXk3Kjb0?enablejsapi=1&playlist=MH5dXk3Kjb0&loop=1&rel=0&origin=http://localhost:3000"
+  // YouTube embed URL with controls=1 to show native controls
+  const youtubeEmbedUrl = "https://www.youtube-nocookie.com/embed/MH5dXk3Kjb0?enablejsapi=1&playlist=MH5dXk3Kjb0&loop=1&rel=0&origin=http://localhost:3000&controls=1"
   const posterSrc = "/images/video-poster.png"
 
   // YouTube Player API reference
@@ -56,12 +55,6 @@ export default function AnimatedVideo() {
   // Handle player ready
   const onPlayerReady = (event: any) => {
     // Player is ready
-    if (isMuted) {
-      event.target.mute()
-    } else {
-      event.target.unMute()
-    }
-    
     // If in view, maybe start playing
     if (isInView && !isPlaying) {
       event.target.playVideo()
@@ -77,42 +70,9 @@ export default function AnimatedVideo() {
     // YT.PlayerState.ENDED = 0
     if (event.data === 1) {
       setIsPlaying(true)
-    } else if (event.data === 2) {
-      setIsPlaying(false)
-    } else if (event.data === 0) {
+    } else if (event.data === 2 || event.data === 0) {
       setIsPlaying(false)
     }
-    
-    // Update progress if playing
-    if (event.data === 1) {
-      updateProgressInterval()
-    }
-  }
-
-  // Update progress bar
-  const updateProgressInterval = () => {
-    if (!player) return
-
-    const progressInterval = setInterval(() => {
-      if (player && player.getCurrentTime && player.getDuration) {
-        try {
-          const currentTime = player.getCurrentTime()
-          const duration = player.getDuration()
-          const currentProgress = (currentTime / duration) * 100
-          setProgress(currentProgress)
-          
-          // Clear interval when video ends or is paused
-          if (player.getPlayerState() !== 1) {
-            clearInterval(progressInterval)
-          }
-        } catch (error) {
-          console.error("Error updating progress:", error)
-          clearInterval(progressInterval)
-        }
-      }
-    }, 1000)
-
-    return () => clearInterval(progressInterval)
   }
 
   useEffect(() => {
@@ -130,40 +90,42 @@ export default function AnimatedVideo() {
     }
   }, [isInView, controls, isPlaying, player])
 
-  const togglePlay = () => {
-    if (!player) return
-
-    if (isPlaying) {
-      player.pauseVideo()
-    } else {
-      player.playVideo()
+  // Handle fullscreen functionality
+  const toggleFullscreen = () => {
+    if (!videoContainerRef.current) return
+    
+    if (!isFullscreen) {
+      if (videoContainerRef.current.requestFullscreen) {
+        videoContainerRef.current.requestFullscreen()
+        setIsFullscreen(true)
+      } else if ((videoContainerRef.current as any).webkitRequestFullscreen) {
+        (videoContainerRef.current as any).webkitRequestFullscreen()
+        setIsFullscreen(true)
+      } else if ((videoContainerRef.current as any).msRequestFullscreen) {
+        (videoContainerRef.current as any).msRequestFullscreen()
+        setIsFullscreen(true)
+      }
     }
   }
 
-  const toggleMute = () => {
-    if (!player) return
-
-    if (isMuted) {
-      player.unMute()
-      setIsMuted(false)
-    } else {
-      player.mute()
-      setIsMuted(true)
+  // Listen for fullscreen change
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement)
     }
-  }
-
-  const handleProgressChange = (value: number[]) => {
-    if (!player || !player.getDuration) return
-
-    try {
-      const duration = player.getDuration()
-      const newTime = (value[0] / 100) * duration
-      player.seekTo(newTime, true)
-      setProgress(value[0])
-    } catch (error) {
-      console.error("Error seeking video:", error)
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange)
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange)
+    
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange)
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange)
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange)
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange)
     }
-  }
+  }, [])
 
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -210,6 +172,7 @@ export default function AnimatedVideo() {
           initial="hidden"
           animate={controls}
           className="relative max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl"
+          ref={videoContainerRef}
         >
           {/* YouTube Video */}
           <div className="aspect-video bg-black relative">
@@ -220,63 +183,25 @@ export default function AnimatedVideo() {
                 src={youtubeEmbedUrl}
                 title="The Art of Crafting Premium Spirits"
                 frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                 allowFullScreen
               ></iframe>
             </div>
 
-            {/* Play/Pause Overlay */}
+            {/* Fullscreen button overlay */}
             <div
               className={cn(
-                "absolute inset-0 flex items-center justify-center bg-black/30 transition-opacity",
+                "absolute top-4 right-4 transition-opacity",
                 isPlaying ? "opacity-0 hover:opacity-100" : "opacity-100",
               )}
-              onClick={togglePlay}
             >
               <Button
                 size="icon"
-                className="h-16 w-16 rounded-full bg-amber-600/90 hover:bg-amber-600 text-white"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  togglePlay()
-                }}
+                className="h-10 w-10 rounded-full bg-amber-600/90 hover:bg-amber-600 text-white"
+                onClick={toggleFullscreen}
               >
-                {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8 ml-1" />}
+                <Maximize className="h-5 w-5" />
               </Button>
-            </div>
-
-            {/* Video Controls */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-              <div className="flex items-center space-x-4">
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-8 w-8 text-white hover:bg-white/20"
-                  onClick={togglePlay}
-                >
-                  {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-                </Button>
-
-                <div className="flex-1">
-                  <Slider
-                    value={[progress]}
-                    min={0}
-                    max={100}
-                    step={0.1}
-                    onValueChange={handleProgressChange}
-                    className="cursor-pointer"
-                  />
-                </div>
-
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-8 w-8 text-white hover:bg-white/20"
-                  onClick={toggleMute}
-                >
-                  {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
-                </Button>
-              </div>
             </div>
           </div>
 
