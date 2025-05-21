@@ -94,9 +94,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <TooltipProvider>
                 <OrganizationSchema />
                 {/* <LoadingScreen/> */}
-                <div className="block min-h-screen">
+                <div className="block min-h-screen w-full overflow-x-hidden">
                   <Header />
-                  <main className="flex-1 border-2 border-green-500 mt-[3.56rem] xl:mt-[11.3rem] lg:mt-[11.35rem] md:mt-48">{children}</main>
+                  <main className="flex-1 w-full max-w-full px-2 md:mt-48 mt-[3.56rem] lg:mt-[16.75rem] xl:mt-[11.3rem] border-2 border-green-500">{children}</main>
                   <Footer />
                   <ScrollToTop />
                 </div>

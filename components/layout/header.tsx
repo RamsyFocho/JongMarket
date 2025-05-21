@@ -237,7 +237,7 @@ export default function Header() {
       <header
         ref={mobileHeaderRef}
         className={cn(
-          "md:hidden fixed top-0 left-0 right-0 z-50 bg-white shadow-md border-b border-amber-200 flex items-center justify-between px-4 h-14",
+          "lg:hidden fixed top-0 left-0 right-0 z-50 bg-white shadow-md border-b border-amber-200 flex items-center justify-between px-4 h-14",
           headerHidden ? "header-hidden" : "header-visible"
         )}
         role="banner"
@@ -376,7 +376,7 @@ export default function Header() {
       <header
         ref={desktopHeaderRef}
         className={cn(
-          "hidden md:block fixed top-0 left-0 right-0 z-50 header-scroll-transition w-full",
+          "hidden lg:block fixed top-0 left-0 right-0 z-50 header-scroll-transition w-full",
           isScrolled ? "bg-white shadow-md" : "bg-white",
           headerHidden ? "header-hidden" : "header-visible"
         )}

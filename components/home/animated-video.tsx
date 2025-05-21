@@ -11,110 +11,158 @@ export default function AnimatedVideo() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isMuted, setIsMuted] = useState(true)
   const [progress, setProgress] = useState(0)
-  const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
   const isInView = useInView(containerRef, { once: false, amount: 0.3 })
   const controls = useAnimation()
 
-  // Video sources - replace with your actual video URLs
-  const videoSrc = "/videos/premium-drinks-showcase.mp4"
+  // YouTube embed URL
+  const youtubeEmbedUrl = "https://www.youtube-nocookie.com/embed/MH5dXk3Kjb0?enablejsapi=1&playlist=MH5dXk3Kjb0&loop=1&rel=0&origin=http://localhost:3000"
   const posterSrc = "/images/video-poster.png"
+
+  // YouTube Player API reference
+  const [player, setPlayer] = useState<any>(null)
+
+  useEffect(() => {
+    // Load YouTube API
+    const tag = document.createElement('script')
+    tag.src = "https://www.youtube.com/iframe_api"
+    const firstScriptTag = document.getElementsByTagName('script')[0]
+    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
+
+    // Create YouTube player when API is ready
+    window.onYouTubeIframeAPIReady = () => {
+      if (!iframeRef.current) return
+      
+      const newPlayer = new window.YT.Player(iframeRef.current, {
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+      })
+      
+      setPlayer(newPlayer)
+    }
+
+    return () => {
+      // Clean up
+      window.onYouTubeIframeAPIReady = null
+      if (player && player.destroy) {
+        player.destroy()
+      }
+    }
+  }, [])
+
+  // Handle player ready
+  const onPlayerReady = (event: any) => {
+    // Player is ready
+    if (isMuted) {
+      event.target.mute()
+    } else {
+      event.target.unMute()
+    }
+    
+    // If in view, maybe start playing
+    if (isInView && !isPlaying) {
+      event.target.playVideo()
+      setIsPlaying(true)
+    }
+  }
+
+  // Handle player state changes
+  const onPlayerStateChange = (event: any) => {
+    // Update playing state based on YouTube state
+    // YT.PlayerState.PLAYING = 1
+    // YT.PlayerState.PAUSED = 2
+    // YT.PlayerState.ENDED = 0
+    if (event.data === 1) {
+      setIsPlaying(true)
+    } else if (event.data === 2) {
+      setIsPlaying(false)
+    } else if (event.data === 0) {
+      setIsPlaying(false)
+    }
+    
+    // Update progress if playing
+    if (event.data === 1) {
+      updateProgressInterval()
+    }
+  }
+
+  // Update progress bar
+  const updateProgressInterval = () => {
+    if (!player) return
+
+    const progressInterval = setInterval(() => {
+      if (player && player.getCurrentTime && player.getDuration) {
+        try {
+          const currentTime = player.getCurrentTime()
+          const duration = player.getDuration()
+          const currentProgress = (currentTime / duration) * 100
+          setProgress(currentProgress)
+          
+          // Clear interval when video ends or is paused
+          if (player.getPlayerState() !== 1) {
+            clearInterval(progressInterval)
+          }
+        } catch (error) {
+          console.error("Error updating progress:", error)
+          clearInterval(progressInterval)
+        }
+      }
+    }, 1000)
+
+    return () => clearInterval(progressInterval)
+  }
 
   useEffect(() => {
     if (isInView) {
       controls.start("visible")
 
-      // If video should auto-play when in view
-      const video = videoRef.current
-      if (video && !isPlaying) {
-        const playPromise = video.play()
-
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              setIsPlaying(true)
-            })
-            .catch((error) => {
-              // Auto-play was prevented or play was interrupted
-              console.log("Auto-play was prevented:", error)
-              setIsPlaying(false)
-            })
+      // Auto-play when in view if we have a player
+      if (player && player.playVideo && !isPlaying) {
+        try {
+          player.playVideo()
+        } catch (error) {
+          console.log("Auto-play was prevented:", error)
         }
       }
     }
-
-    return () => {
-      // Cleanup: ensure we don't try to play a removed video
-      const video = videoRef.current
-      if (video && isPlaying) {
-        video.pause()
-        setIsPlaying(false)
-      }
-    }
-  }, [isInView, controls, isPlaying])
-
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
-
-    const handleTimeUpdate = () => {
-      const currentProgress = (video.currentTime / video.duration) * 100
-      setProgress(currentProgress)
-    }
-
-    const handleEnded = () => {
-      setIsPlaying(false)
-    }
-
-    video.addEventListener("timeupdate", handleTimeUpdate)
-    video.addEventListener("ended", handleEnded)
-
-    return () => {
-      video.removeEventListener("timeupdate", handleTimeUpdate)
-      video.removeEventListener("ended", handleEnded)
-    }
-  }, [])
+  }, [isInView, controls, isPlaying, player])
 
   const togglePlay = () => {
-    const video = videoRef.current
-    if (!video) return
+    if (!player) return
 
     if (isPlaying) {
-      video.pause()
-      setIsPlaying(false)
+      player.pauseVideo()
     } else {
-      // Safely handle the play promise
-      const playPromise = video.play()
-
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            setIsPlaying(true)
-          })
-          .catch((error) => {
-            // Auto-play was prevented or play was interrupted
-            console.log("Play was interrupted:", error)
-            setIsPlaying(false)
-          })
-      }
+      player.playVideo()
     }
   }
 
   const toggleMute = () => {
-    const video = videoRef.current
-    if (!video) return
+    if (!player) return
 
-    video.muted = !isMuted
-    setIsMuted(!isMuted)
+    if (isMuted) {
+      player.unMute()
+      setIsMuted(false)
+    } else {
+      player.mute()
+      setIsMuted(true)
+    }
   }
 
   const handleProgressChange = (value: number[]) => {
-    const video = videoRef.current
-    if (!video) return
+    if (!player || !player.getDuration) return
 
-    const newTime = (value[0] / 100) * video.duration
-    video.currentTime = newTime
-    setProgress(value[0])
+    try {
+      const duration = player.getDuration()
+      const newTime = (value[0] / 100) * duration
+      player.seekTo(newTime, true)
+      setProgress(value[0])
+    } catch (error) {
+      console.error("Error seeking video:", error)
+    }
   }
 
   const containerVariants = {
@@ -137,18 +185,6 @@ export default function AnimatedVideo() {
       transition: { duration: 0.5 },
     },
   }
-
-  useEffect(() => {
-    return () => {
-      // Component cleanup
-      const video = videoRef.current
-      if (video) {
-        video.pause()
-        video.src = ""
-        video.load()
-      }
-    }
-  }, [])
 
   return (
     <section className="py-16 bg-gray-900 text-white">
@@ -175,12 +211,19 @@ export default function AnimatedVideo() {
           animate={controls}
           className="relative max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl"
         >
-          {/* Video */}
+          {/* YouTube Video */}
           <div className="aspect-video bg-black relative">
-            <video ref={videoRef} poster={posterSrc} className="w-full h-full object-cover" playsInline muted={isMuted}>
-              <source src={videoSrc} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+            <div className="w-full h-full">
+              <iframe
+                ref={iframeRef}
+                className="w-full h-full"
+                src={youtubeEmbedUrl}
+                title="The Art of Crafting Premium Spirits"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
 
             {/* Play/Pause Overlay */}
             <div

@@ -122,27 +122,28 @@ export default function Hero() {
                       quality={85}
                     />
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/40" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50" />
 
-                  <div className="relative z-10 flex items-center justify-center h-full">
-                    <div className="px-6 py-12 md:px-10 md:py-16 text-center max-w-xl mx-auto">
+                  <div className="relative z-10 flex items-center justify-center h-full backdrop-blur-[2px]">
+                    <div className="w-full px-4 py-8 sm:px-6 md:px-8 md:py-12 text-center max-w-[360px] sm:max-w-md md:max-w-2xl mx-auto">
                       <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.3 }}
-                        className="space-y-4"
+                        className="space-y-4 sm:space-y-6"
                       >
                         <motion.span 
-                          className="inline-block px-3 py-1 rounded-full bg-amber-600/80 text-white text-sm font-medium tracking-wider uppercase"
+                          className="inline-block px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-amber-600/90 text-white text-xs sm:text-sm font-semibold tracking-widest uppercase font-serif"
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.4, delay: 0.1 }}
                         >
-                          Featured
+                          Premium Selection
                         </motion.span>
                         
                         <motion.h1 
-                          className="text-4xl sm:text-5xl font-extrabold mb-4 text-white drop-shadow-md tracking-tight"
+                          className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 text-white drop-shadow-lg tracking-tight font-serif leading-[1.1]"
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.6, delay: 0.3 }}
@@ -151,7 +152,7 @@ export default function Hero() {
                         </motion.h1>
                         
                         <motion.p 
-                          className="text-lg sm:text-xl mb-8 text-gray-100 drop-shadow-sm font-light leading-relaxed"
+                          className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 md:mb-10 text-gray-100 drop-shadow font-normal leading-relaxed max-w-sm sm:max-w-md md:max-w-2xl mx-auto"
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.6, delay: 0.5 }}
@@ -165,9 +166,9 @@ export default function Hero() {
                           transition={{ duration: 0.6, delay: 0.7 }}
                         >
                           <Link href={slide.link}>
-                            <Button className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-6 h-auto rounded-lg text-base sm:text-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-md">
+                            <Button className="bg-amber-600 hover:bg-amber-700 text-white px-6 sm:px-8 py-5 sm:py-7 h-auto rounded-xl text-base sm:text-lg md:text-xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-xl shadow-lg backdrop-blur-sm">
                               {slide.cta}
-                              <ArrowRight className="ml-2 h-5 w-5" />
+                              <ArrowRight className="ml-2 sm:ml-3 h-5 sm:h-6 w-5 sm:w-6" strokeWidth={2.5} />
                             </Button>
                           </Link>
                         </motion.div>
@@ -185,18 +186,17 @@ export default function Hero() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.8, delay: 0.3 }}
                       className="w-full max-w-xl ml-auto mr-4"
-                    >
-                      <motion.span 
-                        className="inline-block px-3 py-1 rounded-full bg-amber-600/90 text-white text-sm font-medium tracking-wider uppercase mb-6"
+                    >                          <motion.span 
+                        className="inline-block px-4 py-1.5 rounded-full bg-amber-600/90 text-white text-sm font-semibold tracking-widest uppercase mb-8 font-serif backdrop-blur-sm"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: 0.1 }}
                       >
-                        Featured
+                        Premium Selection
                       </motion.span>
                       
                       <motion.h1 
-                        className="text-4xl xl:text-5xl 2xl:text-6xl font-extrabold mb-6 text-white drop-shadow-md tracking-tight leading-tight"
+                        className="text-5xl xl:text-6xl 2xl:text-7xl font-bold mb-8 text-white drop-shadow-lg tracking-tight leading-[1.1] font-serif"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.3 }}
@@ -205,7 +205,7 @@ export default function Hero() {
                       </motion.h1>
                       
                       <motion.p 
-                        className="text-xl xl:text-2xl mb-8 text-gray-100 drop-shadow-sm font-light leading-relaxed"
+                        className="text-xl xl:text-2xl mb-10 text-gray-100 drop-shadow font-normal leading-relaxed max-w-2xl"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.5 }}
@@ -240,7 +240,7 @@ export default function Hero() {
                       transition={{ duration: 7, ease: "easeOut" }}
                     >
                       <Image
-                        src={slide.image || "/placeholder.svg?height=600&width=1200"}
+                        src={slide.image}
                         alt={slide.title}
                         fill
                         className="object-cover"
