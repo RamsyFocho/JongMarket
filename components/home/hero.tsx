@@ -219,7 +219,7 @@ export default function Hero() {
                         transition={{ duration: 0.6, delay: 0.7 }}
                       >
                         <Link href={slide.link}>
-                          <Button className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-7 h-auto rounded-lg text-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-xl shadow-lg">
+                          <Button className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-4 h-auto rounded-lg text-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-xl shadow-lg">
                             {slide.cta}
                             <ArrowRight className="ml-2 h-6 w-6" />
                           </Button>

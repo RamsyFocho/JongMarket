@@ -498,6 +498,158 @@ export const products = [
         type: "Bourbon",
       },
   },
+  {
+    id: 64,
+    name: "Gordon's Dry Gin",
+    category: "Gin",
+    price: 16.99, // ~10,200 FCFA
+    rating: 4.6,
+    image: "/images/products/gin/gordons.jpg",
+    slug: "gordons-dry-gin",
+    inStock: true,
+    stockCount: 100,
+    description: "The world's best-selling London Dry gin. A distinctively refreshing taste from the finest juniper berries. Very popular in Cameroon for its quality and accessibility.",
+    details: {
+      origin: "United Kingdom",
+      style: "London Dry Gin",
+      abv: "37.5%",
+      size: "750ml",
+      availability: "Widely available in Cameroon"
+    }
+  },
+  {
+    id: 65,
+    name: "Beefeater London Dry Gin",
+    category: "Gin",
+    price: 19.99, // ~12,000 FCFA
+    rating: 4.7,
+    image: "/images/products/gin/beefeater.jpg",
+    slug: "beefeater-gin",
+    inStock: true,
+    stockCount: 75,
+    description: "A classic London Dry Gin with a bold juniper character, making it perfect for gin and tonic or cocktails. Well-established in the Cameroonian market.",
+    details: {
+      origin: "England",
+      style: "London Dry Gin",
+      abv: "40%",
+      size: "750ml",
+      availability: "Common in Cameroon bars and stores"
+    }
+  },
+  {
+    id: 66,
+    name: "Tanqueray London Dry Gin",
+    category: "Gin",
+    price: 22.99, // ~13,800 FCFA
+    rating: 4.8,
+    image: "/images/products/gin/tanqueray.jpg",
+    slug: "tanqueray-gin",
+    inStock: true,
+    stockCount: 60,
+    description: "A perfectly balanced gin with a distinctive flavor of piney juniper and subtle citrus notes. Popular in premium bars across Cameroon.",
+    details: {
+      origin: "England",
+      style: "London Dry Gin",
+      abv: "43.1%",
+      size: "750ml",
+      availability: "Available in major cities"
+    }
+  },
+  {
+    id: 67,
+    name: "Gin Royal",
+    category: "Gin",
+    price: 12.99, // ~7,800 FCFA
+    rating: 4.3,
+    image: "/images/products/gin/gin-royal.jpg",
+    slug: "gin-royal",
+    inStock: true,
+    stockCount: 150,
+    description: "A popular gin choice in Cameroon, known for its accessible price point and reliable quality. Perfect for mixed drinks and parties.",
+    details: {
+      origin: "Cameroon",
+      style: "Dry Gin",
+      abv: "40%",
+      size: "750ml",
+      availability: "Widely available throughout Cameroon"
+    }
+  },
+  {
+    id: 68,
+    name: "Smirnoff Red",
+    category: "Vodka",
+    price: 15.99, // ~9,600 FCFA
+    rating: 4.5,
+    image: "/images/products/vodka/smirnoff-red.jpg",
+    slug: "smirnoff-red",
+    inStock: true,
+    stockCount: 120,
+    description: "The world's most popular vodka brand, widely available throughout Cameroon. Triple distilled for exceptional smoothness.",
+    details: {
+      origin: "Various",
+      style: "Classic Vodka",
+      abv: "37.5%",
+      size: "750ml",
+      availability: "Widely available across Cameroon"
+    }
+  },
+  {
+    id: 69,
+    name: "Absolut Vodka",
+    category: "Vodka",
+    price: 19.99, // ~12,000 FCFA
+    rating: 4.6,
+    image: "/images/products/vodka/absolut.jpg",
+    slug: "absolut",
+    inStock: true,
+    stockCount: 85,
+    description: "Swedish vodka with a clean, distinctive taste. Popular in Cameroon's bars and clubs for cocktails.",
+    details: {
+      origin: "Sweden",
+      style: "Wheat Vodka",
+      abv: "40%",
+      size: "750ml",
+      availability: "Common in urban areas"
+    }
+  },
+  {
+    id: 70,
+    name: "Grey Goose",
+    category: "Vodka",
+    price: 45.99, // ~27,600 FCFA
+    rating: 4.8,
+    image: "/images/products/vodka/grey-goose.jpg",
+    slug: "grey-goose",
+    inStock: true,
+    stockCount: 30,
+    description: "Premium French vodka, found in Cameroon's high-end establishments and luxury retail stores. Known for its exceptionally smooth taste.",
+    details: {
+      origin: "France",
+      style: "Wheat Vodka",
+      abv: "40%",
+      size: "750ml",
+      availability: "Available in premium stores"
+    }
+  },
+  {
+    id: 71,
+    name: "SuperMount Vodka",
+    category: "Vodka",
+    price: 11.99, // ~7,200 FCFA
+    rating: 4.2,
+    image: "/images/products/vodka/supermount.jpg",
+    slug: "supermount",
+    inStock: true,
+    stockCount: 200,
+    description: "A popular local choice in Cameroon, known for its affordability and consistent quality. Perfect for parties and events.",
+    details: {
+      origin: "Cameroon",
+      style: "Classic Vodka",
+      abv: "40%",
+      size: "750ml",
+      availability: "Available everywhere in Cameroon"
+    }
+  }
 ]
 
 // Categories data
@@ -543,6 +695,18 @@ export const categories = {
     description:
       "Enhance your drinking experience with our premium accessories, including glassware, decanters, bar tools, and more.",
     products: products.filter((p) => p.category === "Accessories"),
+  },
+  gin: {
+    title: "Gin",
+    description:
+      "Discover our selection of premium gins, from classic London Dry to contemporary craft varieties, featuring unique botanical blends.",
+    products: products.filter((p) => p.category === "Gin"),
+  },
+  vodka: {
+    title: "Vodka",
+    description:
+      "Explore our collection of premium vodkas from around the world, including classic and flavored varieties from renowned distilleries.",
+    products: products.filter((p) => p.category === "Vodka"),
   },
 }
 

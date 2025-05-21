@@ -600,12 +600,12 @@ export default function Header() {
               {/* Category Collections */}
               <div className="flex h-full items-center">
                 {categoryItems
-                  .slice(0, compactHeader ? 7 : 7)
+                  .slice(0, compactHeader ? 9 : 9)
                   .map((category) => (
-                    <div key={category.slug} className="relative group">
+                    <div key={category.slug} className="relative group border-2 border-green-500 w-[fit]">
                       <Link
                         href={`/category/${category.slug}`}
-                        className="px-4 py-2 transition-colors inline-block md:text-ellipsis"
+                        className="px-2 py-2 transition-colors inline-block md:text-ellipsis"
                       >
                         {category.title}
                         <svg

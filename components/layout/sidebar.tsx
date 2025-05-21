@@ -21,19 +21,17 @@ export default function Sidebar({ className }: SidebarProps) {
   const toggleCategory = (slug: string) => {
     setExpandedCategories((prev) => (prev.includes(slug) ? prev.filter((item) => item !== slug) : [...prev, slug]))
   }
-
-  // Group categories by type
-  const categoryGroups = {
-    spirits: ["whiskey", "vodka", "gin", "rum", "tequila"],
-    wines: ["wine", "champagne"],
-    beers: ["beer"],
-    others: ["hot-drinks", "accessories"],
-  }
-
   // Get products for a specific category
   const getCategoryProducts = (categorySlug: string) => {
-    return products.filter((product) => product.category.toLowerCase() === categorySlug).slice(0, 3) // Limit to 3 products for the dropdown
+    const category = categories[categorySlug]
+    return category ? category.products.slice(0, 3) : [] // Limit to 3 products for the dropdown
   }
+
+  // Convert categories object to array for easier mapping
+  const categoryList = Object.entries(categories).map(([slug, data]) => ({
+    slug,
+    ...data
+  }))
 
   return (
     <aside
@@ -60,288 +58,75 @@ export default function Sidebar({ className }: SidebarProps) {
               <span>All Products</span>
               <ChevronRight className="h-4 w-4 text-gray-500" />
             </Link>
-          </li>
-
-          {/* Whiskey Collection */}
-          <li>
-            <button
-              onClick={() => toggleCategory("whiskey")}
-              className="w-full flex items-center justify-between py-2 px-3 rounded-md hover:bg-amber-50 text-gray-800 font-medium"
-            >
-              <span>Whiskey Collection</span>
-              {expandedCategories.includes("whiskey") ? (
-                <ChevronDown className="h-4 w-4 text-gray-500" />
-              ) : (
-                <ChevronRight className="h-4 w-4 text-gray-500" />
-              )}
-            </button>
-
-            <AnimatePresence>
-              {expandedCategories.includes("whiskey") && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0, overflow: "hidden" }}
-                  animate={{ height: "auto", opacity: 1, overflow: "visible" }}
-                  exit={{ height: 0, opacity: 0, overflow: "hidden" }}
-                  transition={{ duration: 0.3 }}
-                  className="mt-1 bg-gray-50 rounded-md overflow-hidden"
-                >
-                  {getCategoryProducts("whiskey").map((product) => (
-                    <Link
-                      key={product.id}
-                      href={`/product/${product.slug}`}
-                      className="flex items-start p-2 hover:bg-amber-50 transition-colors border-b border-gray-100 last:border-0"
-                    >
-                      <div className="relative h-12 w-12 rounded overflow-hidden flex-shrink-0">
-                        <Image
-                          src={product.image || "/placeholder.svg"}
-                          alt={product.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="ml-2 flex-1 min-w-0">
-                        <h4 className="text-xs font-medium text-gray-800 truncate">{product.name}</h4>
-                        <div className="flex items-center mt-1">
-                          <div className="flex text-amber-500">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className="h-2 w-2"
-                                fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
-                              />
-                            ))}
-                          </div>
-                          <span className="text-xs text-gray-500 ml-1">({product.rating})</span>
-                        </div>
-                        <div className="text-xs font-medium text-amber-600 mt-1">{formatCurrency(product.price)}</div>
-                      </div>
-                    </Link>
-                  ))}
-                  <div className="p-2 bg-amber-50 text-center">
-                    <Link href="/category/whiskey" className="text-xs font-medium text-amber-800 hover:text-amber-600">
-                      View All Whiskeys →
-                    </Link>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </li>
-
-          {/* Wine Selection */}
-          <li>
-            <button
-              onClick={() => toggleCategory("wine")}
-              className="w-full flex items-center justify-between py-2 px-3 rounded-md hover:bg-amber-50 text-gray-800 font-medium"
-            >
-              <span>Wine Selection</span>
-              {expandedCategories.includes("wine") ? (
-                <ChevronDown className="h-4 w-4 text-gray-500" />
-              ) : (
-                <ChevronRight className="h-4 w-4 text-gray-500" />
-              )}
-            </button>
-
-            <AnimatePresence>
-              {expandedCategories.includes("wine") && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0, overflow: "hidden" }}
-                  animate={{ height: "auto", opacity: 1, overflow: "visible" }}
-                  exit={{ height: 0, opacity: 0, overflow: "hidden" }}
-                  transition={{ duration: 0.3 }}
-                  className="mt-1 bg-gray-50 rounded-md overflow-hidden"
-                >
-                  {getCategoryProducts("wine").map((product) => (
-                    <Link
-                      key={product.id}
-                      href={`/product/${product.slug}`}
-                      className="flex items-start p-2 hover:bg-amber-50 transition-colors border-b border-gray-100 last:border-0"
-                    >
-                      <div className="relative h-12 w-12 rounded overflow-hidden flex-shrink-0">
-                        <Image
-                          src={product.image || "/placeholder.svg"}
-                          alt={product.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="ml-2 flex-1 min-w-0">
-                        <h4 className="text-xs font-medium text-gray-800 truncate">{product.name}</h4>
-                        <div className="flex items-center mt-1">
-                          <div className="flex text-amber-500">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className="h-2 w-2"
-                                fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
-                              />
-                            ))}
-                          </div>
-                          <span className="text-xs text-gray-500 ml-1">({product.rating})</span>
-                        </div>
-                        <div className="text-xs font-medium text-amber-600 mt-1">{formatCurrency(product.price)}</div>
-                      </div>
-                    </Link>
-                  ))}
-                  <div className="p-2 bg-amber-50 text-center">
-                    <Link href="/category/wine" className="text-xs font-medium text-amber-800 hover:text-amber-600">
-                      View All Wines →
-                    </Link>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </li>
-
-          {/* Beer Collection */}
-          <li>
-            <button
-              onClick={() => toggleCategory("beer")}
-              className="w-full flex items-center justify-between py-2 px-3 rounded-md hover:bg-amber-50 text-gray-800 font-medium"
-            >
-              <span>Beer Collection</span>
-              {expandedCategories.includes("beer") ? (
-                <ChevronDown className="h-4 w-4 text-gray-500" />
-              ) : (
-                <ChevronRight className="h-4 w-4 text-gray-500" />
-              )}
-            </button>
-
-            <AnimatePresence>
-              {expandedCategories.includes("beer") && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0, overflow: "hidden" }}
-                  animate={{ height: "auto", opacity: 1, overflow: "visible" }}
-                  exit={{ height: 0, opacity: 0, overflow: "hidden" }}
-                  transition={{ duration: 0.3 }}
-                  className="mt-1 bg-gray-50 rounded-md overflow-hidden"
-                >
-                  {getCategoryProducts("beer").map((product) => (
-                    <Link
-                      key={product.id}
-                      href={`/product/${product.slug}`}
-                      className="flex items-start p-2 hover:bg-amber-50 transition-colors border-b border-gray-100 last:border-0"
-                    >
-                      <div className="relative h-12 w-12 rounded overflow-hidden flex-shrink-0">
-                        <Image
-                          src={product.image || "/placeholder.svg"}
-                          alt={product.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="ml-2 flex-1 min-w-0">
-                        <h4 className="text-xs font-medium text-gray-800 truncate">{product.name}</h4>
-                        <div className="flex items-center mt-1">
-                          <div className="flex text-amber-500">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className="h-2 w-2"
-                                fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
-                              />
-                            ))}
-                          </div>
-                          <span className="text-xs text-gray-500 ml-1">({product.rating})</span>
-                        </div>
-                        <div className="text-xs font-medium text-amber-600 mt-1">{formatCurrency(product.price)}</div>
-                      </div>
-                    </Link>
-                  ))}
-                  <div className="p-2 bg-amber-50 text-center">
-                    <Link href="/category/beer" className="text-xs font-medium text-amber-800 hover:text-amber-600">
-                      View All Beers →
-                    </Link>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </li>
-
-          {/* Champagne Collection */}
-          <li>
-            <button
-              onClick={() => toggleCategory("champagne")}
-              className="w-full flex items-center justify-between py-2 px-3 rounded-md hover:bg-amber-50 text-gray-800 font-medium"
-            >
-              <span>Champagne Collection</span>
-              {expandedCategories.includes("champagne") ? (
-                <ChevronDown className="h-4 w-4 text-gray-500" />
-              ) : (
-                <ChevronRight className="h-4 w-4 text-gray-500" />
-              )}
-            </button>
-
-            <AnimatePresence>
-              {expandedCategories.includes("champagne") && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0, overflow: "hidden" }}
-                  animate={{ height: "auto", opacity: 1, overflow: "visible" }}
-                  exit={{ height: 0, opacity: 0, overflow: "hidden" }}
-                  transition={{ duration: 0.3 }}
-                  className="mt-1 bg-gray-50 rounded-md overflow-hidden"
-                >
-                  {getCategoryProducts("champagne").map((product) => (
-                    <Link
-                      key={product.id}
-                      href={`/product/${product.slug}`}
-                      className="flex items-start p-2 hover:bg-amber-50 transition-colors border-b border-gray-100 last:border-0"
-                    >
-                      <div className="relative h-12 w-12 rounded overflow-hidden flex-shrink-0">
-                        <Image
-                          src={product.image || "/placeholder.svg"}
-                          alt={product.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="ml-2 flex-1 min-w-0">
-                        <h4 className="text-xs font-medium text-gray-800 truncate">{product.name}</h4>
-                        <div className="flex items-center mt-1">
-                          <div className="flex text-amber-500">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className="h-2 w-2"
-                                fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
-                              />
-                            ))}
-                          </div>
-                          <span className="text-xs text-gray-500 ml-1">({product.rating})</span>
-                        </div>
-                        <div className="text-xs font-medium text-amber-600 mt-1">{formatCurrency(product.price)}</div>
-                      </div>
-                    </Link>
-                  ))}
-                  <div className="p-2 bg-amber-50 text-center">
-                    <Link
-                      href="/category/champagne"
-                      className="text-xs font-medium text-amber-800 hover:text-amber-600"
-                    >
-                      View All Champagnes →
-                    </Link>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </li>
-
-          {/* Other Categories */}
-          {["spirits", "hot-drinks", "accessories"].map((slug) => {
-            const category = categories[slug as keyof typeof categories]
-            if (!category) return null
-
-            return (
-              <li key={slug}>
-                <Link
-                  href={`/category/${slug}`}
-                  className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-amber-50 text-gray-800 font-medium"
-                >
-                  <span>{category.title}</span>
+          </li>          {/* Dynamic Categories */}
+          {categoryList.map(({ slug, title, products }) => (
+            <li key={slug}>
+              <button
+                onClick={() => toggleCategory(slug)}
+                className="w-full flex items-center justify-between py-2 px-3 rounded-md hover:bg-amber-50 text-gray-800 font-medium"
+              >
+                <span>{title} Collection</span>
+                {expandedCategories.includes(slug) ? (
+                  <ChevronDown className="h-4 w-4 text-gray-500" />
+                ) : (
                   <ChevronRight className="h-4 w-4 text-gray-500" />
-                </Link>
-              </li>
-            )
-          })}
+                )}
+              </button>
+
+              <AnimatePresence>
+                {expandedCategories.includes(slug) && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0, overflow: "hidden" }}
+                    animate={{ height: "auto", opacity: 1, overflow: "visible" }}
+                    exit={{ height: 0, opacity: 0, overflow: "hidden" }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-1 bg-gray-50 rounded-md overflow-hidden"
+                  >
+                    {getCategoryProducts(slug).map((product) => (
+                      <Link
+                        key={product.id}
+                        href={`/product/${product.slug}`}
+                        className="flex items-start p-2 hover:bg-amber-50 transition-colors border-b border-gray-100 last:border-0"
+                      >
+                        <div className="relative h-12 w-12 rounded overflow-hidden flex-shrink-0">
+                          <Image
+                            src={product.image || "/placeholder.svg"}
+                            alt={product.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="ml-2 flex-1 min-w-0">
+                          <h4 className="text-xs font-medium text-gray-800 truncate">{product.name}</h4>
+                          <div className="flex items-center mt-1">
+                            <div className="flex text-amber-500">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className="h-2 w-2"
+                                  fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
+                                />
+                              ))}
+                            </div>
+                            <span className="text-xs text-gray-500 ml-1">({product.rating})</span>
+                          </div>
+                          <div className="text-xs font-medium text-amber-600 mt-1">{formatCurrency(product.price)}</div>
+                        </div>
+                      </Link>
+                    ))}
+                    <div className="p-2 bg-amber-50 text-center">
+                      <Link
+                        href={`/category/${slug}`}
+                        className="text-xs font-medium text-amber-800 hover:text-amber-600"
+                      >
+                        View All {title} →
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </li>
+          ))}
         </ul>
       </nav>
 
