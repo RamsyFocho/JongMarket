@@ -15,11 +15,9 @@ export default function CartPage() {
   const { toast } = useToast()
   const { t } = useLanguage()
 
-  // Mock shipping cost and tax
-  const shippingCost = totalPrice > 0 ? 10 : 0
-  const taxRate = 0.05
-  const taxAmount = totalPrice * taxRate
-  const orderTotal = totalPrice + shippingCost + taxAmount
+  // Shipping cost
+  const shippingCost = totalPrice > 0 ? 3.334 : 0
+  const orderTotal = totalPrice + shippingCost
 
   const handleQuantityChange = (itemId: number, newQuantity: number) => {
     if (newQuantity < 1) return
@@ -141,10 +139,6 @@ export default function CartPage() {
                 <span className="text-gray-600">{t("shipping")}</span>
                 <span>{formatCurrency(shippingCost)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">{t("tax")} (5%)</span>
-                <span>{formatCurrency(taxAmount)}</span>
-              </div>
             </div>
 
             <Separator className="my-4" />
@@ -156,7 +150,7 @@ export default function CartPage() {
 
             <div className="mt-6 space-y-4">
               <Link href="/checkout">
-                <Button className="w-full bg-amber-600 hover:bg-amber-700">
+                <Button className="w-full bg-amber-600 hover:bg-amber-700 mb-2">
                   {t("checkout")}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>

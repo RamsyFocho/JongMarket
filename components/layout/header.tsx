@@ -699,7 +699,7 @@ export default function Header() {
               
               {/* Sales and Offers button with dropdown */}
               <div className="relative group xl:ml-auto pt-1">
-                <button className="flex items-center space-x-1 px-4 py-2 text-white hover:text-amber-100 transition-colors">
+                <button className="flex items-center space-x-1 px-4 py-2 bg-amber-600 text-white hover:text-amber-100 transition-colors">
                   <span>Sales and Offers</span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

@@ -2,7 +2,7 @@ import { Mail, Lock, User } from "lucide-react";
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen mt-4 flex items-center justify-center bg-[#f5f5ff] px-4 pt-[120px]">
+    <div className="min-h-screen mt-4 flex items-center justify-center bg-[#f5f5ff] px-4 pt-[120px] border-2 border-red-600">
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
         <h2 className="text-xl font-semibold text-center mb-6">Sign in to your Account</h2>
 
