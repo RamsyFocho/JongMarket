@@ -1,10 +1,10 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { motion, useInView } from "framer-motion"
-import { Tag, Clock, ArrowRight } from "lucide-react"
+import { motion } from "framer-motion"
+import { Tag, Clock, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/data/products"
 import { useLanguage } from "@/context/language-context"
@@ -47,87 +47,129 @@ const promotions = [
 ]
 
 export default function SpecialPromotions() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, amount: 0.2 })
   const { t } = useLanguage()
+  const [currentTab, setCurrentTab] = useState(0)
+  const [itemsPerTab, setItemsPerTab] = useState(3)
+  const autoScrollRef = useRef<NodeJS.Timeout | null>(null)
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
+  // Responsive items per tab
+  useEffect(() => {
+    const updateItemsPerTab = () => {
+      if (window.innerWidth < 640) {
+        setItemsPerTab(1)
+      } else if (window.innerWidth < 1024) {
+        setItemsPerTab(2)
+      } else {
+        setItemsPerTab(3)
+      }
+    }
+    updateItemsPerTab()
+    window.addEventListener("resize", updateItemsPerTab)
+    return () => window.removeEventListener("resize", updateItemsPerTab)
+  }, [])
+
+  const totalTabs = Math.ceil(promotions.length / itemsPerTab)
+  const currentPromos = promotions.slice(
+    currentTab * itemsPerTab,
+    (currentTab + 1) * itemsPerTab
+  )
+
+  // Auto-scroll
+  useEffect(() => {
+    autoScrollRef.current = setInterval(() => {
+      setCurrentTab((prev) => (prev < totalTabs - 1 ? prev + 1 : 0))
+    }, 7000)
+    return () => {
+      if (autoScrollRef.current) clearInterval(autoScrollRef.current)
+    }
+  }, [totalTabs])
+
+  const goToPreviousTab = () => {
+    setCurrentTab((prev) => (prev > 0 ? prev - 1 : totalTabs - 1))
   }
-
-  const itemVariants = {
-    hidden: { y: 50, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-      },
-    },
+  const goToNextTab = () => {
+    setCurrentTab((prev) => (prev < totalTabs - 1 ? prev + 1 : 0))
   }
 
   return (
     <section className="py-16 bg-white">
-      <div className="w-70% ml4 m4-4 px-4 ">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center mb-2">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Header with tab nav */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="inline-flex items-center">
             <Tag className="h-5 w-5 text-amber-600 mr-2" />
-            <h2 className="text-3xl font-bold">{t("specialPromotions")}</h2>
+            <h2 className="text-2xl font-bold uppercase tracking-wide">
+              {t("specialPromotions") || "Special Promotions"}
+            </h2>
           </div>
-          <p className="text-gray-600 max-w-2xl mx-auto">{t("specialPromotionsDesc")}</p>
-          <div className="mt-4">
-            <Link href="/promotions">
-              <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
-                {t("viewAllDeals")}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
+          {totalTabs > 1 && (
+            <div className="flex gap-2">
+              <button
+                onClick={goToPreviousTab}
+                className="p-2 rounded-full border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-100 text-gray-600 transition-all duration-200"
+                aria-label="Previous tab"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                onClick={goToNextTab}
+                className="p-2 rounded-full border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-100 text-gray-600 transition-all duration-200"
+                aria-label="Next tab"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
+          )}
         </div>
-
-        <motion.div
-          ref={ref}
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
-        >
-          {promotions.map((promo) => (
-            <motion.div key={promo.id} variants={itemVariants} className="group">
-              <div className="bg-white rounded-lg shadow-md overflow-hidden transition-shadow hover:shadow-lg">
-                <div className="relative">
+        <div className="text-gray-600 max-w-2xl mb-8">
+          {t("specialPromotionsDesc") || "Don't miss these limited-time deals on our best products!"}
+        </div>
+        {/* Promotions Grid/Carousel */}
+        <div className="relative">
+          <motion.div
+            key={currentTab}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+            className="grid gap-8"
+            style={{ gridTemplateColumns: `repeat(${currentPromos.length}, 1fr)` }}
+          >
+            {currentPromos.map((promo) => (
+              <motion.div
+                key={promo.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 group border border-gray-100 flex flex-col"
+              >
+                {/* Promo Image */}
+                <div className="relative overflow-hidden rounded-t-lg h-56 bg-gray-100 flex items-center justify-center">
                   <Link href={promo.link}>
-                    <div className="relative aspect-[4/3] overflow-hidden">
-                      <Image
-                        src={promo.image || "/placeholder.svg?height=300&width=400"}
-                        alt={promo.title}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    </div>
+                    <Image
+                      src={promo.image || "/placeholder.svg?height=300&width=400"}
+                      alt={promo.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
                   </Link>
-                  <div className="absolute top-3 left-3 bg-amber-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
-                    {t("limitedTimeOffer")}
-                  </div>
+                  {/* Discount Badge */}
                   <div className="absolute top-3 right-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
                     -{promo.discount}
                   </div>
+                  {/* Limited Time Badge */}
+                  <div className="absolute top-3 left-3 bg-amber-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
+                    {t("limitedTimeOffer") || "Limited Time Offer"}
+                  </div>
                 </div>
-
-                <div className="p-4">
+                {/* Promo Info */}
+                <div className="p-4 flex-1 flex flex-col justify-between">
                   <Link href={promo.link}>
-                    <h3 className="font-semibold text-lg group-hover:text-amber-600 transition-colors">
+                    <h3 className="font-semibold text-lg group-hover:text-amber-600 transition-colors min-h-[2.5rem]">
                       {promo.title}
                     </h3>
                   </Link>
-                  <p className="text-gray-600 text-sm mt-2 line-clamp-2">{promo.description}</p>
-
+                  <p className="text-gray-600 text-sm mt-2 line-clamp-2 flex-1">{promo.description}</p>
                   <div className="flex items-center justify-between mt-4">
                     <div>
                       <span className="text-gray-500 line-through text-sm">{formatCurrency(promo.originalPrice)}</span>
@@ -138,21 +180,37 @@ export default function SpecialPromotions() {
                     <div className="flex items-center text-gray-500 text-sm">
                       <Clock className="h-4 w-4 mr-1" />
                       <span>
-                        {t("endsIn")} {promo.endsIn}
+                        {t("endsIn") || "Ends in"} {promo.endsIn}
                       </span>
                     </div>
                   </div>
-
                   <div className="mt-4">
                     <Link href={promo.link}>
-                      <Button className="w-full bg-amber-600 hover:bg-amber-700">{t("viewDeal")}</Button>
+                      <Button className="w-full bg-amber-600 hover:bg-amber-700">{t("viewDeal") || "View Deal"}</Button>
                     </Link>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+        {/* Tab Indicators */}
+        {totalTabs > 1 && (
+          <div className="flex justify-center mt-8 gap-2">
+            {Array.from({ length: totalTabs }).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentTab(index)}
+                className={`h-2 w-8 rounded-full transition-all duration-300 ${
+                  index === currentTab
+                    ? 'bg-gray-800 w-12'
+                    : 'bg-gray-300 hover:bg-gray-400'
+                }`}
+                aria-label={`Go to tab ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

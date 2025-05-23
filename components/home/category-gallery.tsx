@@ -199,7 +199,7 @@ export default function CategoryGallery() {
         </div>
 
         {/* Category Thumbnails */}
-        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 border-2 border-red-500">
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
           {categoryItems.map((category, index) => (
             <motion.div
               key={category.slug}
