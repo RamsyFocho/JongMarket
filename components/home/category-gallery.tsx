@@ -205,7 +205,7 @@ export default function CategoryGallery() {
               key={category.slug}
               whileHover={{ y: -5, scale: 1.05 }}
               className={cn(
-                "relative rounded-lg overflow-hidden cursor-pointer transition-all",
+                "relative rounded-lg w-[2] overflow-hidden cursor-pointer transition-all",
                 currentIndex === index ? "ring-4 ring-amber-500" : "",
               )}
               onClick={() => {

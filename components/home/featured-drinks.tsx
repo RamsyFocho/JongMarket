@@ -1,8 +1,10 @@
-"use client"
+"use client";
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
+import { formatCurrency } from "@/data/products";
 
 const featuredProducts = [
+  // ... (same featuredProducts array as before) ...
   {
     id: 1,
     brand: "PHILIPS",
@@ -113,16 +115,34 @@ const featuredProducts = [
   },
 ];
 
-const PRODUCTS_PER_TAB = 3;
-
 export default function FeaturedDrinks() {
   const [currentTab, setCurrentTab] = useState(0);
-  const totalTabs = Math.ceil(featuredProducts.length / PRODUCTS_PER_TAB);
-  const productsTabs = Array.from({ length: totalTabs }, (_, i) =>
-    featuredProducts.slice(i * PRODUCTS_PER_TAB, (i + 1) * PRODUCTS_PER_TAB)
-  );
+  const [productsPerTab, setProductsPerTab] = useState(3);
   const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Responsive products per tab
+  useEffect(() => {
+    const updateProductsPerTab = () => {
+      if (window.innerWidth < 640) {
+        setProductsPerTab(1);
+      } else if (window.innerWidth < 1024) {
+        setProductsPerTab(2);
+      } else {
+        setProductsPerTab(3);
+      }
+    };
+    updateProductsPerTab();
+    window.addEventListener("resize", updateProductsPerTab);
+    return () => window.removeEventListener("resize", updateProductsPerTab);
+  }, []);
+
+  // Tab logic
+  const totalTabs = Math.ceil(featuredProducts.length / productsPerTab);
+  const productsTabs = Array.from({ length: totalTabs }, (_, i) =>
+    featuredProducts.slice(i * productsPerTab, (i + 1) * productsPerTab)
+  );
+
+  // Auto-scroll
   useEffect(() => {
     autoScrollRef.current = setInterval(() => {
       setCurrentTab((prev) => (prev < totalTabs - 1 ? prev + 1 : 0));
@@ -170,69 +190,82 @@ export default function FeaturedDrinks() {
               key={tabIdx}
               className="flex min-w-full gap-8 px-2"
             >
-              {tab.map((product) => (
-                <div
-                  key={product.id}
-                  className="bg-white rounded-lg shadow group border border-gray-100 flex-1 min-w-0 transition-transform hover:-translate-y-1 hover:shadow-lg relative"
-                >
-                  {/* Badges */}
-                  {product.badges?.map((badge, i) => (
-                    <span
-                      key={badge}
-                      className={`badge absolute top-[${10 + i * 25}px] left-3 px-3 py-1 text-xs font-bold uppercase rounded text-white z-10 ${
+              {tab.map((product, i) => {
+                const badgeColor =
+                  product.badges?.[0] === "new"
+                    ? "bg-orange-500"
+                    : product.badges?.[0] === "sale"
+                    ? "bg-red-600"
+                    : product.badges?.[0] === "sold-out"
+                    ? "bg-gray-500"
+                    : "bg-gray-400";
+                return (
+                  <div
+                    key={product.id}
+                    className="bg-white rounded-lg shadow group border border-gray-100 flex-1 min-w-0 transition-transform hover:-translate-y-1 hover:shadow-lg relative"
+                  >
+                    {/* Badges (no arrow) */}
+                    {product.badges?.map((badge, j) => {
+                      const badgeColor =
                         badge === "new"
                           ? "bg-orange-500"
                           : badge === "sale"
                           ? "bg-red-600"
                           : badge === "sold-out"
                           ? "bg-gray-500"
-                          : ""
-                      }`}
-                    >
-                      {badge.replace("-", " ")}
-                    </span>
-                  ))}
-                  {/* Image */}
-                  <div className="h-48 bg-gray-100 flex items-center justify-center rounded-t-lg overflow-hidden">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      width={200}
-                      height={200}
-                      className="object-contain w-full h-full"
-                    />
-                  </div>
-                  {/* Info */}
-                  <div className="p-4 text-center">
-                    {product.brand && (
-                      <div className="text-amber-700 text-xs font-bold uppercase mb-1 tracking-wider">
-                        {product.brand}
-                      </div>
-                    )}
-                    <div className="font-medium text-gray-900 text-sm mb-2 h-10 leading-5 overflow-hidden">
-                      {product.name}
-                    </div>
-                    <div className="flex items-center justify-center gap-1 mb-2">
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <span key={i} className={`text-yellow-400 text-xs ${i < product.rating ? "" : "opacity-20"}`}>★</span>
-                        ))}
-                      </div>
-                      <span className="text-xs text-gray-500 ml-1">{product.reviews} review{product.reviews !== 1 ? "s" : ""}</span>
-                    </div>
-                    <div className="flex items-center justify-center gap-2 mt-2">
-                      <span className="font-bold text-lg text-red-600">
-                        {product.currency}{product.currentPrice}
-                      </span>
-                      {product.originalPrice && (
-                        <span className="text-sm text-gray-400 line-through">
-                          {product.currency}{product.originalPrice}
+                          : "bg-gray-400";
+                      return (
+                        <span
+                          key={badge}
+                          className={`absolute left-3 z-10 mt-1 ${badgeColor} text-white px-3 py-1 text-xs font-bold uppercase rounded`}
+                          style={{ top: `${10 + j * 32}px` }}
+                        >
+                          {badge.replace("-", " ")}
                         </span>
+                      );
+                    })}
+                    {/* Image */}
+                    <div className="h-48 bg-gray-100 flex items-center justify-center rounded-t-lg overflow-hidden">
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        width={200}
+                        height={200}
+                        className="object-contain w-full h-full"
+                      />
+                    </div>
+                    {/* Info */}
+                    <div className="p-4 text-center">
+                      {product.brand && (
+                        <div className="text-amber-700 text-xs font-bold uppercase mb-1 tracking-wider">
+                          {product.brand}
+                        </div>
                       )}
+                      <div className="font-medium text-gray-900 text-sm mb-2 h-10 leading-5 overflow-hidden">
+                        {product.name}
+                      </div>
+                      <div className="flex items-center justify-center gap-1 mb-2">
+                        <div className="flex">
+                          {[...Array(5)].map((_, i) => (
+                            <span key={i} className={`text-yellow-400 text-xs ${i < product.rating ? "" : "opacity-20"}`}>★</span>
+                          ))}
+                        </div>
+                        <span className="text-xs text-gray-500 ml-1">{product.reviews} review{product.reviews !== 1 ? "s" : ""}</span>
+                      </div>
+                      <div className="flex items-center justify-center gap-2 mt-2">
+                        <span className="font-bold text-lg text-red-600">
+                          {formatCurrency(product.currentPrice, "£")}
+                        </span>
+                        {product.originalPrice && (
+                          <span className="text-sm text-gray-400 line-through">
+                            {formatCurrency(product.originalPrice, "£")}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ))}
         </div>
