@@ -5,29 +5,59 @@ interface ProductSchemaProps {
   url: string
 }
 
-// Fix: Compute priceValidUntil statically to avoid hydration mismatch
-const priceValidUntil = new Date(Date.UTC(new Date().getUTCFullYear() + 1, 0, 1)).toISOString().split("T")[0]
+// Use a hardcoded priceValidUntil date to avoid hydration mismatch
+const priceValidUntil = "2026-01-01"
+
+// Helper: stable stringify with sorted keys
+function stableStringify(obj: any): string {
+  if (Array.isArray(obj)) {
+    return `[${obj.map(stableStringify).join(",")}]`
+  } else if (obj && typeof obj === "object" && obj !== null) {
+    const keys = Object.keys(obj).sort()
+    return `{${keys.map(k => JSON.stringify(k) + ":" + stableStringify(obj[k])).join(",")}}`
+  } else {
+    return JSON.stringify(obj)
+  }
+}
 
 export default function ProductSchema({ product, url }: ProductSchemaProps) {
   // Create the structured data for the product
+  const reviewsArr = Array.isArray(product.reviews) && product.reviews.length > 0
+    ? product.reviews.map((r) => ({
+        "@type": "Review",
+        reviewRating: {
+          "@type": "Rating",
+          ratingValue: String(r.rating),
+          bestRating: "5",
+          worstRating: "1",
+        },
+        author: {
+          "@type": "Person",
+          name: r.name ?? "",
+        },
+        datePublished: r.date ?? "",
+        reviewBody: r.comment ?? "",
+      }))
+    : []
+
   const productSchema = {
     "@context": "https://schema.org/",
     "@type": "Product",
-    name: product.name,
-    image: [product.image],
-    description: product.description,
+    name: product.name ?? "",
+    image: [product.image ?? ""],
+    description: product.description ?? "",
     sku: `JM-${product.id}`,
     mpn: `JM-${product.id}`,
     brand: {
       "@type": "Brand",
       name: "Jong Market",
     },
-    category: `Alcoholic Beverages > ${product.category}`,
+    category: `Alcoholic Beverages > ${product.category ?? ""}`,
     offers: {
       "@type": "Offer",
       url: url,
       priceCurrency: "XAF",
-      price: product.price * 600, // Convert to FCFA
+      price: String(product.price * 600), // Convert to FCFA and stringify
       priceValidUntil,
       itemCondition: "https://schema.org/NewCondition",
       availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
@@ -36,41 +66,23 @@ export default function ProductSchema({ product, url }: ProductSchemaProps) {
         name: "Jong Market",
       },
     },
-    aggregateRating: product.rating
+    aggregateRating: product.rating != null
       ? {
           "@type": "AggregateRating",
-          ratingValue: product.rating,
-          reviewCount: product.reviews?.length || 1,
+          ratingValue: String(product.rating),
+          reviewCount: String(product.reviews?.length || 1),
           bestRating: "5",
           worstRating: "1",
         }
-      : undefined,
-  }
-
-  // Add reviews if available
-  if (product.reviews && product.reviews.length > 0) {
-    productSchema["review"] = product.reviews.map((review) => ({
-      "@type": "Review",
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: review.rating,
-        bestRating: "5",
-        worstRating: "1",
-      },
-      author: {
-        "@type": "Person",
-        name: review.name,
-      },
-      datePublished: review.date,
-      reviewBody: review.comment,
-    }))
+      : null, // Always include the key
+    review: reviewsArr, // Always include the key
   }
 
   return (
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify(productSchema),
+        __html: stableStringify(productSchema),
       }}
     />
   )

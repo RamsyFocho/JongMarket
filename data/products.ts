@@ -325,7 +325,7 @@ export const products = [
     price: 50.99,
     rating: 4.7,
     image: "/images/products/MonkeyShoulder.jpg",
-    slug: "masala-chai-blend",
+    slug: "monkey-shoulder",
     inStock: true,
     stockCount: 35,
     description:
@@ -345,7 +345,7 @@ export const products = [
     price: 35.99,
     rating: 4.7,
     image: "/images/products/whiskey/blackLabel.jpg",
-    slug: "Black Label",
+    slug: "Black-Label",
     inStock: true,
     stockCount: 35,
     description:
@@ -365,7 +365,7 @@ export const products = [
     price: 75,
     rating: 4.7,
     image: "/images/products/whiskey/GreenLabel.jpg",
-    slug: "masala-chai-blend",
+    slug: "green-label",
     inStock: true,
     stockCount: 35,
     description:
@@ -385,7 +385,7 @@ export const products = [
     price: 84,
     rating: 4.7,
     image: "/images/products/whiskey/GoldLabel.jpg",
-    slug: "Black Label",
+    slug: "gold-Label",
     inStock: true,
     stockCount: 35,
     description:
@@ -405,7 +405,7 @@ export const products = [
     price: 16.67,
     rating: 4.7,
     image: "/images/products/whiskey/Johnnie Walker Red Label.jpg",
-    slug: "Black Label",
+    slug: "red-Label",
     inStock: true,
     stockCount: 35,
     description:
@@ -425,7 +425,7 @@ export const products = [
     price: 84,
     rating: 4.7,
     image: "/images/products/whiskey/blueLabel.jpg",
-    slug: "Black Label",
+    slug: "blue-Label",
     inStock: true,
     stockCount: 35,
     description:
@@ -445,7 +445,7 @@ export const products = [
     price: 16.9,
     rating: 4.7,
     image: "/images/products/whiskey/BALLANTINE'S 12 YEAR OLD True Music Reeps One….jpg",
-    slug: "Black Label",
+    slug: "ballantine",
     inStock: true,
     stockCount: 35,
     description:

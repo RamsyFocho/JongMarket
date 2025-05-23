@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useSearchParams } from 'next/navigation'
@@ -16,27 +16,85 @@ import WishlistButton from "@/components/product/wishlist-button"
 import { useCart } from "@/context/cart-context"
 import { useToast } from "@/components/ui/use-toast"
 
+// Cache for filter results
+const filterCache = new Map()
+const CACHE_SIZE_LIMIT = 100
+
+// Generate cache key for filter combination
+const generateCacheKey = (searchQuery, priceRange, selectedCategories, sortOption) => {
+  return JSON.stringify({
+    search: searchQuery.toLowerCase(),
+    price: priceRange,
+    categories: [...selectedCategories].sort(),
+    sort: sortOption
+  })
+}
+
+// Clean cache when it gets too large
+const cleanCache = () => {
+  if (filterCache.size > CACHE_SIZE_LIMIT) {
+    const keysToDelete = Array.from(filterCache.keys()).slice(0, 20)
+    keysToDelete.forEach(key => filterCache.delete(key))
+  }
+}
+
 export default function ProductsPage() {
   const searchParams = useSearchParams()
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '')
-  const [filteredProducts, setFilteredProducts] = useState(products)
   const [priceRange, setPriceRange] = useState([0, 500])
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [selectedCategories, setSelectedCategories] = useState([])
   const [sortOption, setSortOption] = useState("featured")
   const { t } = useLanguage()
   const { addToCart } = useCart()
   const { toast } = useToast()
+  
+  // Debounced search
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery)
+  const searchTimeoutRef = useRef(null)
 
-  // Apply filters, search, and sorting
+  // Debounce search query
   useEffect(() => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+    
+    searchTimeoutRef.current = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery)
+    }, 300)
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
+  }, [searchQuery])
+
+  // Memoized category options
+  const categoryOptions = useMemo(() => {
+    return Object.entries(categories).map(([slug, data]) => ({
+      value: slug,
+      label: data.title,
+    }))
+  }, [])
+
+  // Memoized filtered and sorted products with caching
+  const filteredProducts = useMemo(() => {
+    const cacheKey = generateCacheKey(debouncedSearchQuery, priceRange, selectedCategories, sortOption)
+    
+    // Check cache first
+    if (filterCache.has(cacheKey)) {
+      return filterCache.get(cacheKey)
+    }
+
     let result = [...products]
 
-    // Apply search filter if search query exists
-    if (searchQuery) {
+    // Apply search filter
+    if (debouncedSearchQuery) {
+      const query = debouncedSearchQuery.toLowerCase()
       result = result.filter((product) =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchQuery.toLowerCase())
+        product.name.toLowerCase().includes(query) ||
+        product.description?.toLowerCase().includes(query) ||
+        product.category.toLowerCase().includes(query)
       )
     }
 
@@ -53,26 +111,38 @@ export default function ProductsPage() {
     }
 
     // Apply sorting
-    if (sortOption === "price-asc") {
-      result.sort((a, b) => a.price - b.price)
-    } else if (sortOption === "price-desc") {
-      result.sort((a, b) => b.price - a.price)
-    } else if (sortOption === "rating") {
-      result.sort((a, b) => b.rating - a.rating)
+    switch (sortOption) {
+      case "price-asc":
+        result.sort((a, b) => a.price - b.price)
+        break
+      case "price-desc":
+        result.sort((a, b) => b.price - a.price)
+        break
+      case "rating":
+        result.sort((a, b) => b.rating - a.rating)
+        break
+      default:
+        // Keep original order for "featured"
+        break
     }
 
-    setFilteredProducts(result)
-  }, [searchQuery, priceRange, selectedCategories, sortOption])
+    // Cache the result
+    filterCache.set(cacheKey, result)
+    cleanCache()
+
+    return result
+  }, [debouncedSearchQuery, priceRange, selectedCategories, sortOption])
 
   // Update search query when URL parameter changes
   useEffect(() => {
     const search = searchParams.get('search')
-    if (search) {
+    if (search && search !== searchQuery) {
       setSearchQuery(search)
     }
-  }, [searchParams])
+  }, [searchParams, searchQuery])
 
-  const handleCategoryChange = (category: string) => {
+  // Memoized event handlers
+  const handleCategoryChange = useCallback((category) => {
     setSelectedCategories((prev) => {
       if (prev.includes(category)) {
         return prev.filter((c) => c !== category)
@@ -80,15 +150,120 @@ export default function ProductsPage() {
         return [...prev, category]
       }
     })
-  }
+  }, [])
 
-  const categoryOptions = Object.entries(categories).map(([slug, data]) => ({
-    value: slug,
-    label: data.title,
-  }))
+  const handlePriceRangeChange = useCallback((newRange) => {
+    setPriceRange(newRange)
+  }, [])
+
+  const handleSortChange = useCallback((e) => {
+    setSortOption(e.target.value)
+  }, [])
+
+  const handleResetFilters = useCallback(() => {
+    setPriceRange([0, 500])
+    setSelectedCategories([])
+    setSortOption("featured")
+    setSearchQuery('')
+  }, [])
+
+  const handleAddToCart = useCallback((product) => {
+    if (product.inStock) {
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        quantity: 1,
+      })
+      toast({
+        title: "Added to cart",
+        description: `${product.name} has been added to your cart.`,
+      })
+    }
+  }, [addToCart, toast])
+
+  // Memoized product cards to prevent unnecessary re-renders
+  const ProductCard = useMemo(() => {
+    return ({ product }) => (
+      <motion.div
+        key={product.id}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="group"
+      >
+        <div className="bg-white w-72 rounded-lg shadow-md overflow-hidden transition-shadow hover:shadow-lg">
+          <Link href={`/product/${product.slug}`}>
+            <div className="relative aspect-square overflow-hidden">
+              <Image
+                src={product.image || "/placeholder.svg"}
+                alt={product.name}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              {!product.inStock && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                  <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    {t("outOfStock")}
+                  </span>
+                </div>
+              )}
+            </div>
+          </Link>
+
+          <div className="p-4">
+            {product.category && (
+              <Link href={`/category/${product.category.toLowerCase().replace(/\s+/g, "-")}`}>
+                <span className="text-xs font-medium text-amber-600 uppercase tracking-wider">
+                  {product.category}
+                </span>
+              </Link>
+            )}
+
+            <Link href={`/product/${product.slug}`}>
+              <h3 className="font-semibold text-lg mt-1 group-hover:text-amber-600 transition-colors">
+                {product.name}
+              </h3>
+            </Link>
+
+            <div className="flex items-center mt-2">
+              <div className="flex text-amber-500">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="h-4 w-4"
+                    fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
+                  />
+                ))}
+              </div>
+              <span className="text-sm text-gray-500 ml-1">({product.rating})</span>
+            </div>
+
+            <div className="flex items-center justify-between mt-4">
+              <span className="font-bold text-lg">{formatCurrency(product.price)}</span>
+
+              <div className="flex items-center">
+                <WishlistButton product={product} variant="icon" />
+                <Button
+                  title="Add to cart"
+                  size="icon"
+                  className="h-9 w-9 rounded-full bg-amber-600 hover:bg-amber-700 ml-2"
+                  disabled={!product.inStock}
+                  onClick={() => handleAddToCart(product)}
+                >
+                  <ShoppingBag className="h-5 w-5" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    )
+  }, [t, handleAddToCart])
 
   return (
-    <div className="w-full px-4 py-16 ">
+    <div className="w-full px-4 py-16">
       {/* Breadcrumb */}
       <div className="flex items-center text-sm text-gray-500 mb-8">
         <Link href="/" className="hover:text-amber-600">
@@ -98,7 +273,7 @@ export default function ProductsPage() {
         <span className="text-gray-700 font-medium">All Products</span>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8 w-100% ">
+      <div className="flex flex-col md:flex-row gap-8 w-full">
         {/* Sidebar Filters */}
         <div className="w-full md:w-64 shrink-0">
           <div className="bg-white rounded-lg shadow-md p-6 sticky top-24">
@@ -115,7 +290,7 @@ export default function ProductsPage() {
                 max={500}
                 step={10}
                 value={priceRange}
-                onValueChange={setPriceRange}
+                onValueChange={handlePriceRangeChange}
                 className="mb-4"
               />
               <div className="flex items-center justify-between">
@@ -147,11 +322,7 @@ export default function ProductsPage() {
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => {
-                setPriceRange([0, 500])
-                setSelectedCategories([])
-                setSortOption("featured")
-              }}
+              onClick={handleResetFilters}
             >
               Reset Filters
             </Button>
@@ -161,14 +332,16 @@ export default function ProductsPage() {
         {/* Product Grid */}
         <div className="flex-1">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
-            <h1 className="text-2xl font-bold mb-4 sm:mb-0">All Products</h1>
+            <h1 className="text-2xl font-bold mb-4 sm:mb-0">
+              All Products ({filteredProducts.length})
+            </h1>
 
             {/* Sort Options */}
             <div className="flex items-center">
               <span className="text-sm text-gray-500 mr-2">Sort by:</span>
               <select
                 value={sortOption}
-                onChange={(e) => setSortOption(e.target.value)}
+                onChange={handleSortChange}
                 className="text-sm border rounded-md px-2 py-1"
               >
                 <option value="featured">Featured</option>
@@ -180,96 +353,9 @@ export default function ProductsPage() {
           </div>
 
           {filteredProducts.length > 0 ? (
-            <div className="  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProducts.map((product) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="group"
-                >
-                  {/*-----------Product Cart---------- */}
-                  <div className="bg-white w-72 rounded-lg shadow-md overflow-hidden transition-shadow hover:shadow-lg ">
-                    <Link href={`/product/${product.slug}`}>
-                      <div className="relative aspect-square overflow-hidden">
-                        <Image
-                          src={product.image || "/placeholder.svg"}
-                          alt={product.name}
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                        {!product.inStock && (
-                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                            <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                              {t("outOfStock")}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </Link>
-
-                    <div className="p-4">
-                      {product.category && (
-                        <Link href={`/category/${product.category.toLowerCase().replace(/\s+/g, "-")}`}>
-                          <span className="text-xs font-medium text-amber-600 uppercase tracking-wider">
-                            {product.category}
-                          </span>
-                        </Link>
-                      )}
-
-                      <Link href={`/product/${product.slug}`}>
-                        <h3 className="font-semibold text-lg mt-1 group-hover:text-amber-600 transition-colors">
-                          {product.name}
-                        </h3>
-                      </Link>
-
-                      <div className="flex items-center mt-2">
-                        <div className="flex text-amber-500">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className="h-4 w-4"
-                              fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-sm text-gray-500 ml-1">({product.rating})</span>
-                      </div>
-
-                      <div className="flex items-center justify-between mt-4">
-                        <span className="font-bold text-lg">{formatCurrency(product.price)}</span>
-
-                        <div className="flex items-center">
-                          <WishlistButton  product={product} variant="icon" />
-                          <Button
-                            title="Add to cart"
-                            size="icon"
-                            className="h-9 w-9 rounded-full bg-amber-600 hover:bg-amber-700 ml-2"
-                            disabled={!product.inStock}
-                            onClick={() => {
-                              if (product.inStock) {
-                                addToCart({
-                                  id: product.id,
-                                  name: product.name,
-                                  price: product.price,
-                                  image: product.image,
-                                  quantity: 1,
-                                })
-                                toast({
-                                  title: "Added to cart",
-                                  description: `${product.name} has been added to your cart.`,
-                                })
-                              }
-                            }}
-                          >
-                            <ShoppingBag className="h-5 w-5" />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
+                <ProductCard key={product.id} product={product} />
               ))}
             </div>
           ) : (
@@ -277,14 +363,7 @@ export default function ProductsPage() {
               <ShoppingBag className="h-16 w-16 mx-auto text-gray-400 mb-4" />
               <h2 className="text-xl font-semibold mb-2">No products found</h2>
               <p className="text-gray-500 mb-6">Try adjusting your filters to find what you're looking for.</p>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setPriceRange([0, 500])
-                  setSelectedCategories([])
-                  setSortOption("featured")
-                }}
-              >
+              <Button variant="outline" onClick={handleResetFilters}>
                 Reset Filters
               </Button>
             </div>

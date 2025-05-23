@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound, usePathname } from "next/navigation";
@@ -25,6 +25,144 @@ import WishlistButton from "@/components/product/wishlist-button";
 import ProductSchema from "@/components/seo/product-schema";
 import { Toaster } from "@/components/ui/toaster";
 
+// Cache for product data and computed values
+const productCache = new Map();
+const relatedProductsCache = new Map();
+
+// Memoized components for better performance
+const MemoizedProductImage = React.memo(({ 
+  src, 
+  alt, 
+  priority = false, 
+  className = "" 
+}: {
+  src: string;
+  alt: string;
+  priority?: boolean;
+  className?: string;
+}) => (
+  <Image
+    src={src || "/placeholder.svg"}
+    alt={alt}
+    fill
+    className={className}
+    priority={priority}
+    // Enable Next.js image optimization and caching
+    quality={85}
+    placeholder="blur"
+    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8A0XqoVKjYuUVElpQKiVCpUalQqJUSolQqVCJRKWvAYiVCJRKWvAYiUSlrwGIlQiUSlrwGIlEpa8BiJUIlEpa8BiJRKWvAYiVCpUbFyiolU"
+  />
+));
+
+const MemoizedStarRating = React.memo(({ rating }: { rating: number }) => (
+  <div className="flex text-amber-500">
+    {[...Array(5)].map((_, i) => (
+      <Star
+        key={i}
+        className="h-5 w-5"
+        fill={i < Math.floor(rating) ? "currentColor" : "none"}
+      />
+    ))}
+  </div>
+));
+
+const MemoizedRelatedProduct = React.memo(({ 
+  product, 
+  t 
+}: { 
+  product: any; 
+  t: (key: string) => string; 
+}) => (
+  <motion.div
+    whileHover={{ y: -5 }}
+    className="group"
+  >
+    <div className="bg-white rounded-lg shadow-md overflow-hidden transition-shadow hover:shadow-lg">
+      <Link href={`/product/${product.slug}`}>
+        <div className="relative aspect-square overflow-hidden">
+          <MemoizedProductImage
+            src={product.image}
+            alt={product.name}
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        </div>
+      </Link>
+
+      <div className="p-4">
+        {product.category && (
+          <Link
+            href={`/category/${product.category
+              .toLowerCase()
+              .replace(/\s+/g, "-")}`}
+          >
+            <span className="text-xs font-medium text-amber-600 uppercase tracking-wider">
+              {product.category}
+            </span>
+          </Link>
+        )}
+
+        <Link href={`/product/${product.slug}`}>
+          <h3 className="font-semibold text-lg mt-1 group-hover:text-amber-600 transition-colors">
+            {product.name}
+          </h3>
+        </Link>
+
+        <div className="flex items-center mt-2">
+          <MemoizedStarRating rating={product.rating} />
+          <span className="text-sm text-gray-500 ml-1">
+            ({product.rating})
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between mt-4">
+          <span className="font-bold text-lg">
+            {formatCurrency(product.price)}
+          </span>
+          <Link href={`/product/${product.slug}`}>
+            <Button
+              size="sm"
+              className="bg-amber-600 hover:bg-amber-700"
+            >
+              {t("viewDetails")}
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  </motion.div>
+));
+
+// Helper function to get cached product data
+const getCachedProduct = (slug: string) => {
+  const cacheKey = `product_${slug}`;
+  if (productCache.has(cacheKey)) {
+    return productCache.get(cacheKey);
+  }
+  
+  const product = products.find((p) => p.slug === slug);
+  if (product) {
+    productCache.set(cacheKey, product);
+  }
+  return product;
+};
+
+// Helper function to get cached related products
+const getCachedRelatedProducts = (product: any) => {
+  const cacheKey = `related_${product.id}`;
+  if (relatedProductsCache.has(cacheKey)) {
+    return relatedProductsCache.get(cacheKey);
+  }
+  
+  const related = product.relatedProducts
+    ? products.filter((p) => product.relatedProducts.includes(p.id))
+    : products
+        .filter((p) => p.category === product.category && p.id !== product.id)
+        .slice(0, 4);
+        
+  relatedProductsCache.set(cacheKey, related);
+  return related;
+};
+
 export default function ProductClientPage({
   params,
 }: {
@@ -36,35 +174,65 @@ export default function ProductClientPage({
   const { toast } = useToast();
   const { t } = useLanguage();
   const pathname = usePathname();
-  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const fullUrl = `${baseUrl}${pathname}`;
-
-  const product = products.find((p) => p.slug === params.slug);
+  
+  // Memoized values for better performance
+  const baseUrl = useMemo(() => 
+    typeof window !== "undefined" ? window.location.origin : "", 
+    []
+  );
+  
+  const fullUrl = useMemo(() => `${baseUrl}${pathname}`, [baseUrl, pathname]);
+  
+  // Use cached product data
+  const product = useMemo(() => getCachedProduct(params.slug), [params.slug]);
+  
+  // Memoized product images
+  const productImages = useMemo(() => [
+    product?.image,
+    "/placeholder.svg?height=500&width=500&text=Image+2",
+    "/placeholder.svg?height=500&width=500&text=Image+3",
+    "/placeholder.svg?height=500&width=500&text=Image+4",
+  ], [product?.image]);
+  
+  // Memoized related products
+  const relatedProducts = useMemo(() => 
+    product ? getCachedRelatedProducts(product) : [], 
+    [product]
+  );
+  
+  // Memoized product keywords for SEO
+  const productKeywords = useMemo(() => {
+    if (!product) return "";
+    return [
+      product.name,
+      product.category,
+      "premium drinks",
+      "buy online",
+      "Cameroon",
+      ...Object.values(product.details || {}).map(String),
+    ].join(", ");
+  }, [product]);
 
   if (!product) {
     notFound();
   }
 
-  // SEO: Update page title when component mounts
+  // SEO: Update page title when component mounts (cached)
   useEffect(() => {
-    document.title = `${product.name} | Premium ${product.category} | Jong Market`;
+    const title = `${product.name} | Premium ${product.category} | Jong Market`;
+    if (document.title !== title) {
+      document.title = title;
+    }
   }, [product]);
 
-  // Mock additional product images
-  const productImages = [
-    product.image,
-    "/placeholder.svg?height=500&width=500&text=Image+2",
-    "/placeholder.svg?height=500&width=500&text=Image+3",
-    "/placeholder.svg?height=500&width=500&text=Image+4",
-  ];
-
-  const handleQuantityChange = (value: number) => {
+  // Memoized handlers for better performance
+  const handleQuantityChange = useCallback((value: number) => {
     if (value < 1) return;
     if (product.inStock && value > product.stockCount) return;
     setQuantity(value);
-  };
+  }, [product.inStock, product.stockCount]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = useCallback(() => {
     if (!product.inStock) return;
 
     addToCart({
@@ -72,37 +240,19 @@ export default function ProductClientPage({
       name: product.name,
       price: product.price,
       image: product.image,
-      quantity: quantity, // Always set to selected quantity
+      quantity: quantity,
     });
 
     toast({
       title: "Added to cart",
       description: `${product.name} has been added to your cart.`,
     });
-  };
-
-  const relatedProducts = product.relatedProducts
-    ? products.filter((p) => product.relatedProducts.includes(p.id))
-    : products
-        .filter((p) => p.category === product.category && p.id !== product.id)
-        .slice(0, 4);
-
-  // Generate SEO-friendly keywords
-  const productKeywords = [
-    product.name,
-    product.category,
-    "premium drinks",
-    "buy online",
-    "Cameroon",
-    ...Object.values(product.details || {}).map(String),
-  ].join(", ");
+  }, [product, quantity, addToCart, toast]);
 
   return (
     <>
       {/* Structured Data for SEO */}
       <ProductSchema product={product} url={fullUrl} />
-      <Toaster />
-      {/* Toaster for toast notifications */}
       <Toaster />
 
       <div className="container mx-auto px-4 py-16">
@@ -146,12 +296,11 @@ export default function ProductClientPage({
                   transition={{ duration: 0.3 }}
                   className="h-full w-full"
                 >
-                  <Image
-                    src={productImages[activeImage] || "/placeholder.svg"}
+                  <MemoizedProductImage
+                    src={productImages[activeImage]}
                     alt={`${product.name} - ${product.category} - Premium quality`}
-                    fill
+                    priority={true}
                     className="object-contain p-4 md:p-8"
-                    priority
                   />
                 </motion.div>
               </AnimatePresence>
@@ -169,10 +318,9 @@ export default function ProductClientPage({
                   }`}
                   aria-label={`View image ${index + 1} of ${product.name}`}
                 >
-                  <Image
-                    src={image || "/placeholder.svg"}
+                  <MemoizedProductImage
+                    src={image}
                     alt={`${product.name} - Image ${index + 1}`}
-                    fill
                     className="object-cover"
                   />
                 </button>
@@ -205,17 +353,7 @@ export default function ProductClientPage({
             </div>
 
             <div className="flex items-center">
-              <div className="flex text-amber-500">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className="h-5 w-5"
-                    fill={
-                      i < Math.floor(product.rating) ? "currentColor" : "none"
-                    }
-                  />
-                ))}
-              </div>
+              <MemoizedStarRating rating={product.rating} />
               <span className="text-gray-500 ml-2">({product.rating})</span>
               {product.reviews && (
                 <span className="text-gray-500 ml-2">
@@ -350,10 +488,9 @@ export default function ProductClientPage({
 
               <div className="mt-6 grid md:grid-cols-2 gap-8">
                 <div className="relative h-64 rounded-lg overflow-hidden">
-                  <Image
+                  <MemoizedProductImage
                     src="/placeholder.svg?height=600&width=800"
                     alt={`${product.name} lifestyle image - Premium quality ${product.category}`}
-                    fill
                     className="object-cover"
                   />
                 </div>
@@ -448,17 +585,7 @@ export default function ProductClientPage({
                       {product.rating}
                     </div>
                     <div className="flex justify-center text-amber-500 mb-2">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="h-5 w-5"
-                          fill={
-                            i < Math.floor(product.rating)
-                              ? "currentColor"
-                              : "none"
-                          }
-                        />
-                      ))}
+                      <MemoizedStarRating rating={product.rating} />
                     </div>
                     <p className="text-gray-600">
                       Based on {product.reviews?.length || 0} reviews
@@ -527,17 +654,7 @@ export default function ProductClientPage({
                                     itemProp="ratingValue"
                                     content={review.rating.toString()}
                                   />
-                                  {[...Array(5)].map((_, i) => (
-                                    <Star
-                                      key={i}
-                                      className="h-4 w-4"
-                                      fill={
-                                        i < review.rating
-                                          ? "currentColor"
-                                          : "none"
-                                      }
-                                    />
-                                  ))}
+                                  <MemoizedStarRating rating={review.rating} />
                                 </div>
                                 <span
                                   className="text-gray-500 text-sm"
@@ -576,77 +693,11 @@ export default function ProductClientPage({
             <h2 className="text-2xl font-bold mb-8">You May Also Like</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedProducts.map((relatedProduct) => (
-                <motion.div
+                <MemoizedRelatedProduct
                   key={relatedProduct.id}
-                  whileHover={{ y: -5 }}
-                  className="group"
-                >
-                  <div className="bg-white rounded-lg shadow-md overflow-hidden transition-shadow hover:shadow-lg">
-                    <Link href={`/product/${relatedProduct.slug}`}>
-                      <div className="relative aspect-square overflow-hidden">
-                        <Image
-                          src={relatedProduct.image || "/placeholder.svg"}
-                          alt={relatedProduct.name}
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      </div>
-                    </Link>
-
-                    <div className="p-4">
-                      {relatedProduct.category && (
-                        <Link
-                          href={`/category/${relatedProduct.category
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}`}
-                        >
-                          <span className="text-xs font-medium text-amber-600 uppercase tracking-wider">
-                            {relatedProduct.category}
-                          </span>
-                        </Link>
-                      )}
-
-                      <Link href={`/product/${relatedProduct.slug}`}>
-                        <h3 className="font-semibold text-lg mt-1 group-hover:text-amber-600 transition-colors">
-                          {relatedProduct.name}
-                        </h3>
-                      </Link>
-
-                      <div className="flex items-center mt-2">
-                        <div className="flex text-amber-500">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className="h-4 w-4"
-                              fill={
-                                i < Math.floor(relatedProduct.rating)
-                                  ? "currentColor"
-                                  : "none"
-                              }
-                            />
-                          ))}
-                        </div>
-                        <span className="text-sm text-gray-500 ml-1">
-                          ({relatedProduct.rating})
-                        </span>
-                      </div>
-
-                      <div className="flex items-center justify-between mt-4">
-                        <span className="font-bold text-lg">
-                          {formatCurrency(relatedProduct.price)}
-                        </span>
-                        <Link href={`/product/${relatedProduct.slug}`}>
-                          <Button
-                            size="sm"
-                            className="bg-amber-600 hover:bg-amber-700"
-                          >
-                            {t("viewDetails")}
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
+                  product={relatedProduct}
+                  t={t}
+                />
               ))}
             </div>
           </div>
@@ -654,4 +705,43 @@ export default function ProductClientPage({
       </div>
     </>
   );
+}
+
+// Export for static generation (add to your page.tsx file)
+export async function generateStaticParams() {
+  return products.map((product) => ({
+    slug: product.slug,
+  }));
+}
+
+// Add metadata generation for better SEO caching
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const product = getCachedProduct(params.slug);
+  
+  if (!product) {
+    return {
+      title: 'Product Not Found',
+    };
+  }
+
+  return {
+    title: `${product.name} | Premium ${product.category} | Jong Market`,
+    description: product.description,
+    keywords: [
+      product.name,
+      product.category,
+      'premium drinks',
+      'buy online',
+      'Cameroon'
+    ].join(', '),
+    openGraph: {
+      title: product.name,
+      description: product.description,
+      images: [product.image],
+    },
+  };
 }
