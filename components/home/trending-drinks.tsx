@@ -1,131 +1,237 @@
 "use client"
-
-import { useRef } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { motion, useInView } from "framer-motion"
-import { Star, TrendingUp, ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { motion } from "framer-motion"
+import { Star, ChevronLeft, ChevronRight, Heart, ShoppingCart } from "lucide-react"
 import { products, formatCurrency } from "@/data/products"
 import { useLanguage } from "@/context/language-context"
+import { useCart } from "@/context/cart-context"
+import { useWishlist } from "@/context/wishlist-context"
+import { useToast } from "@/hooks/use-toast"
+import { Button } from "@/components/ui/button"
 
 // Get top rated products as trending
-const trendingProducts = [...products].sort((a, b) => b.rating - a.rating).slice(0, 4)
+const getTrendingProducts = () => {
+  return [...products]
+    .sort((a, b) => {
+      if (b.rating === a.rating) {
+        return (b.reviews?.length || 0) - (a.reviews?.length || 0)
+      }
+      return b.rating - a.rating
+    })
+    .slice(0, 12)
+}
 
 export default function TrendingDrinks() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, amount: 0.2 })
   const { t } = useLanguage()
+  const trendingProducts = getTrendingProducts()
+  const [currentTab, setCurrentTab] = useState(0)
+  const [itemsPerTab, setItemsPerTab] = useState(() => {
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth < 1024) return 1
+      return 3
+    }
+    return 3
+  })
+  const { addToCart } = useCart()
+  const { toast } = useToast()
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
+  useEffect(() => {
+    const updateItemsPerTab = () => {
+      if (window.innerWidth < 1024) {
+        setItemsPerTab(1)
+      } else {
+        setItemsPerTab(3)
+      }
+    }
+    updateItemsPerTab()
+    window.addEventListener('resize', updateItemsPerTab)
+    return () => window.removeEventListener('resize', updateItemsPerTab)
+  }, [])
+
+  // Group products into tabs
+  const totalTabs = Math.ceil(trendingProducts.length / itemsPerTab)
+  const currentProducts = trendingProducts.slice(
+    currentTab * itemsPerTab,
+    (currentTab + 1) * itemsPerTab
+  )
+
+  // Wishlist toggle handler
+  const handleWishlist = (product: any) => {
+    if (isInWishlist(product.id)) {
+      removeFromWishlist(product.id)
+      toast({
+        title: t('removedFromWishlist') || 'Removed from wishlist',
+        description: `${product.name} ${t('removedFromWishlistDesc') || 'has been removed from your wishlist.'}`,
+      })
+    } else {
+      addToWishlist(product)
+      toast({
+        title: t('addedToWishlist') || 'Added to wishlist',
+        description: `${product.name} ${t('addedToWishlistDesc') || 'has been added to your wishlist.'}`,
+      })
+    }
   }
 
-  const itemVariants = {
-    hidden: { y: 50, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-      },
-    },
+  // Add to cart with toast
+  const handleAddToCart = (product: any) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      quantity: 1,
+    })
+    toast({
+      title: t('addedToCart') || 'Added to cart',
+      description: `${product.name} ${t('addedToCartDesc') || 'has been added to your cart.'}`,
+    })
+  }
+
+  const goToPreviousTab = () => {
+    setCurrentTab(prev => (prev > 0 ? prev - 1 : totalTabs - 1))
+  }
+  const goToNextTab = () => {
+    setCurrentTab(prev => (prev < totalTabs - 1 ? prev + 1 : 0))
   }
 
   return (
-    <section className="py-16 bg-white">
-      <div className="w-70% ml-2 mr-2 px-4 ">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center mb-2">
-            <TrendingUp className="h-5 w-5 text-amber-600 mr-2" />
-            <h2 className="text-3xl font-bold">{t("trendingDrinks")}</h2>
-          </div>
-          <p className="text-gray-600 max-w-2xl mx-auto">{t("trendingDrinksDesc")}</p>
-          <div className="mt-4">
-            <Link href="/products">
-              <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
-                {t("viewAll")}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+    <section className="py-12 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">
+            {t('trendingDrinks') || 'BEST SELLERS'}
+          </h2>
+          <div className="flex gap-2">
+            <button
+              onClick={goToPreviousTab}
+              className="p-2 rounded-full border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-100 text-gray-600 transition-all duration-200"
+              aria-label="Previous tab"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button
+              onClick={goToNextTab}
+              className="p-2 rounded-full border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-100 text-gray-600 transition-all duration-200"
+              aria-label="Next tab"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
           </div>
         </div>
-
-        <motion.div
-          ref={ref}
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          // className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8  place-items-center border-2 border-red-500"
-          className="flex flex-wrap gap-5 justify-center"
-        >
-          {trendingProducts.map((product, index) => (
-            <motion.div key={product.id} variants={itemVariants} className="relative group w-80 md:w-1/2 lg:w-96">
-              <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-300"></div>
-              <div className="relative bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="absolute top-3 left-3 bg-amber-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
-                  {index + 1} Trending
-                </div>
-
-                <Link href={`/product/${product.slug}`}>
-                  <div className="relative aspect-square overflow-hidden h-80 w-full ">
+        {/* Products Grid */}
+        <div className="relative">
+          <motion.div
+            key={currentTab}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+            className="grid gap-6"
+            style={{ gridTemplateColumns: `repeat(${currentProducts.length}, 1fr)` }}
+          >
+            {currentProducts.map((product: any, index: number) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 group border border-gray-100"
+              >
+                {/* Product Image Container */}
+                <div className="relative overflow-hidden rounded-t-lg">
+                  {/* Wishlist Button */}
+                  <button
+                    onClick={() => handleWishlist(product)}
+                    className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 z-10"
+                    title={isInWishlist(product.id) ? 'Remove from wishlist' : 'Add to wishlist'}
+                  >
+                    <Heart
+                      className={`h-4 w-4 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-500'}`}
+                    />
+                  </button>
+                  {/* Product Image */}
+                  <div className="h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
                     <Image
                       src={product.image}
                       alt={product.name}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 bg-white"
                     />
                   </div>
-                </Link>
-
-                <div className="p-4">
-                  {product.category && (
-                    <Link href={`/category/${product.category.toLowerCase().replace(/\s+/g, "-")}`}>
-                      <span className="text-xs font-medium text-amber-600 uppercase tracking-wider">
-                        {product.category}
-                      </span>
-                    </Link>
-                  )}
-
-                  <Link href={`/product/${product.slug}`}>
-                    <h3 className="font-semibold text-lg mt-1 group-hover:text-amber-600 transition-colors">
-                      {product.name}
-                    </h3>
-                  </Link>
-
-                  <div className="flex items-center mt-2">
-                    <div className="flex text-amber-500">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="h-4 w-4"
-                          fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-sm text-gray-500 ml-1">({product.rating})</span>
-                  </div>
-
-                  <div className="flex items-center justify-between mt-4">
-                    <span className="font-bold text-lg">{formatCurrency(product.price)}</span>
-
-                    <Link href={`/product/${product.slug}`}>
-                      <Button size="sm" className="bg-amber-600 hover:bg-amber-700">
-                        {t("viewDetails")}
+                  {/* Add to Cart & View Details Split */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-80 text-white p-3 flex gap-2 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <Button
+                      onClick={() => handleAddToCart(product)}
+                      title="Add to cart"
+                      className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium bg-amber-600 hover:bg-amber-700 rounded transition-colors duration-200"
+                    >
+                      <ShoppingCart className="h-4 w-4" />
+                      {t('addToCart') || 'ADD TO CART'}
+                    </Button>
+                    <Link href={`/product/${product.slug}`} className="flex-1">
+                      <Button
+                        variant="outline"
+                        className="w-full flex items-center justify-center py-2 text-sm font-medium border-white text-white hover:bg-white hover:text-black rounded transition-colors duration-200"
+                        title="View details"
+                      >
+                        {t('viewDetails') || 'View Details'}
                       </Button>
                     </Link>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+                {/* Product Info */}
+                <div className="p-4">
+                  <Link href={`/product/${product.slug}`}>
+                    <h3 className="font-medium text-gray-900 text-sm mb-2 h-10 leading-5 overflow-hidden hover:text-amber-600 transition-colors">
+                      {product.name}
+                    </h3>
+                  </Link>
+                  {/* Rating */}
+                  <div className="flex items-center gap-1 mb-3">
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`h-3 w-3 ${i < Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-xs text-gray-500">
+                      {Array.isArray(product.reviews) ? product.reviews.length : product.reviews ? product.reviews : 0} reviews
+                    </span>
+                  </div>
+                  {/* Price */}
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-lg text-gray-900">
+                      {formatCurrency(product.price)}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+        {/* Tab Indicators */}
+        {totalTabs > 1 && (
+          <div className="flex justify-center mt-8 gap-2">
+            {Array.from({ length: totalTabs }).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentTab(index)}
+                className={`h-2 w-8 rounded-full transition-all duration-300 ${
+                  index === currentTab
+                    ? 'bg-gray-800 w-12'
+                    : 'bg-gray-300 hover:bg-gray-400'
+                }`}
+                aria-label={`Go to tab ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

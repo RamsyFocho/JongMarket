@@ -14,12 +14,6 @@ const paymentMethods = [
   { name: "Orange Money", image: "/images/payment/orange-money.png" },
 ];
 
-const deliveryServices = [
-  { name: "DHL", image: "/images/delivery/dhl.png" },
-  { name: "FedEx", image: "/images/delivery/fedex.png" },
-  { name: "UPS", image: "/images/delivery/ups.png" },
-  { name: "USPS", image: "/images/delivery/usps.png" },
-];
 
 export default function Footer() {
   const { t } = useLanguage();
@@ -197,17 +191,17 @@ export default function Footer() {
               <h4 className="text-lg font-semibold mb-4 text-white">
                 {t("paymentMethods")}
               </h4>
-              <div className="flex flex-wrap gap-4">
-                {paymentMethods.map((method) => (
-                  <div key={method.name} className=" h-10 w-16 relative">
+              <div className="flex flex-wrap ">
+                  <div className=" h-40  w-[382px] sm:w-[384px] relative">
                     <Image
-                      src={method.image || "/placeholder.svg"}
-                      alt={method.name}
+                      src={"/images/payment/footer_payment_methods.avif" || "/placeholder.svg"}
+                      alt={"payment methods"}
                       fill
-                      className="object-contain p-1"
+                      className="object-contain"
                     />
                   </div>
-                ))}
+                {/* {paymentMethods.map((method) => ( */}
+                {/* ))} */}
               </div>
             </div>
 
@@ -218,7 +212,7 @@ export default function Footer() {
               <div className="relative">
                 {/* input the srvice images */}
                 <div
-                  className=" h-10 w-[382px] relative"
+                  className=" h-10 w-[380px] relative"
                 >
                   <Image
                     src="/images/payment/shipping-services.png"
