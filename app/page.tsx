@@ -1,14 +1,16 @@
-import Link from "next/link"
-import Hero from "@/components/home/hero"
-import Sidebar from "@/components/layout/sidebar"
-import TrendingDrinks from "@/components/home/trending-drinks"
-import FeaturedCategories from "@/components/home/featured-categories"
-import SpecialPromotions from "@/components/home/special-promotions"
-import Newsletter from "@/components/home/newsletter"
-import CategoryGallery from "@/components/home/category-gallery"
-import AnimatedVideo from "@/components/home/animated-video"
-import MoreInfo from "@/components/home/moreInfo"
-import { categories } from "@/data/products"
+import Link from "next/link";
+import Hero from "@/components/home/hero";
+import Sidebar from "@/components/layout/sidebar";
+import TrendingDrinks from "@/components/home/trending-drinks";
+import FeaturedCategories from "@/components/home/featured-categories";
+import SpecialPromotions from "@/components/home/special-promotions";
+import Newsletter from "@/components/home/newsletter";
+import CategoryGallery from "@/components/home/category-gallery";
+import AnimatedVideo from "@/components/home/animated-video";
+import MoreInfo from "@/components/home/moreInfo";
+import { categories } from "@/data/products";
+import FeaturedDrinks from "@/components/home/featured-drinks";
+import OffersDrinks from "@/components/home/offers-drinks";
 
 // Define menu categories for the header
 const menuCategories = [
@@ -88,12 +90,12 @@ const menuCategories = [
       { name: "Herbal Liqueurs", slug: "herbal" },
     ],
   },
-]
+];
 
 export default function HomePage() {
   return (
     <div>
-       {/* <Hero />  */}
+      {/* <Hero />  */}
 
       <div className="w-full mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row gap-8">
@@ -118,19 +120,21 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-            <Hero /> 
+            <Hero />
             <TrendingDrinks />
+            <FeaturedDrinks />
             <FeaturedCategories />
+            <OffersDrinks />
             <SpecialPromotions />
             <CategoryGallery />
+            {/* Animated Video Section */}
+            <AnimatedVideo />
           </main>
         </div>
       </div>
 
-      {/* Animated Video Section */}
-      <AnimatedVideo />
-      <MoreInfo/>
+      <MoreInfo />
       <Newsletter />
     </div>
-  )
+  );
 }

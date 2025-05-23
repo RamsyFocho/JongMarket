@@ -149,7 +149,7 @@ export default function AnimatedVideo() {
   }
 
   return (
-    <section className="py-16 bg-gray-900 text-white">
+    <section className=" py-16 bg-transparent-500 text-black">
       <div className="container mx-auto px-4">
         <motion.div
           ref={containerRef}
@@ -161,7 +161,7 @@ export default function AnimatedVideo() {
           <motion.h2 variants={itemVariants} className="text-3xl md:text-4xl font-bold mb-4 font-serif">
             Experience Premium Quality
           </motion.h2>
-          <motion.p variants={itemVariants} className="text-gray-300 max-w-2xl mx-auto">
+          <motion.p variants={itemVariants} className="text-gray-700 max-w-2xl mx-auto">
             Immerse yourself in the world of exceptional drinks and discover the craftsmanship behind our premium
             selections.
           </motion.p>
@@ -175,7 +175,7 @@ export default function AnimatedVideo() {
           ref={videoContainerRef}
         >
           {/* YouTube Video */}
-          <div className="aspect-video bg-black relative">
+          <div className="aspect-video bg-black relative ">
             <div className="w-full h-full">
               <iframe
                 ref={iframeRef}
@@ -197,7 +197,7 @@ export default function AnimatedVideo() {
             >
               <Button
                 size="icon"
-                className="h-10 w-10 rounded-full bg-amber-600/90 hover:bg-amber-600 text-white"
+                className="h-10 w-10 rounded-full bg-amber-600/90 hover:bg-amber-600 text-black"
                 onClick={toggleFullscreen}
               >
                 <Maximize className="h-5 w-5" />
@@ -223,7 +223,7 @@ export default function AnimatedVideo() {
             <div className="bg-amber-600 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-white"
+                className="h-8 w-8 text-black"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -237,14 +237,14 @@ export default function AnimatedVideo() {
               </svg>
             </div>
             <h3 className="text-xl font-bold mb-2">Curated Selection</h3>
-            <p className="text-gray-300">Handpicked by our experts for exceptional quality and taste</p>
+            <p className="text-gray-700">Handpicked by our experts for exceptional quality and taste</p>
           </motion.div>
 
           <motion.div variants={itemVariants} className="text-center">
             <div className="bg-amber-600 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-white"
+                className="h-8 w-8 text-black"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -258,14 +258,14 @@ export default function AnimatedVideo() {
               </svg>
             </div>
             <h3 className="text-xl font-bold mb-2">Timely Delivery</h3>
-            <p className="text-gray-300">Fast and reliable shipping to ensure freshness and quality</p>
+            <p className="text-gray-700">Fast and reliable shipping to ensure freshness and quality</p>
           </motion.div>
 
           <motion.div variants={itemVariants} className="text-center">
             <div className="bg-amber-600 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-white"
+                className="h-8 w-8 text-black"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -279,7 +279,7 @@ export default function AnimatedVideo() {
               </svg>
             </div>
             <h3 className="text-xl font-bold mb-2">Quality Guarantee</h3>
-            <p className="text-gray-300">We stand behind every product with our satisfaction guarantee</p>
+            <p className="text-gray-700">We stand behind every product with our satisfaction guarantee</p>
           </motion.div>
         </motion.div>
       </div>

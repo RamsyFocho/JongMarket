@@ -45,7 +45,7 @@ export default function FeaturedCategories() {
 
   return (
     <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-2">
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center mb-2">
             <Grid3x3 className="h-5 w-5 text-amber-600 mr-2" />

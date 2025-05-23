@@ -88,7 +88,7 @@ export default function CategoryGallery() {
   return (
     <section className=" px-2 py-16 bg-gradient-to-b from-white to-gray-50  ">
       {/* In case of error, include container class in the classes  */}
-      <div className="ml-2 px-4 w-70% mr-2 ">
+      <div className=" w-full">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold mb-4">Explore Our Categories</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
@@ -97,7 +97,8 @@ export default function CategoryGallery() {
         </div>
 
         <div
-          className="relative h-[500px] md:h-[600px] overflow-hidden rounded-xl shadow-2xl"
+          className="relative w-full h-[500px] md:h-[600px] overflow-hidden rounded-xl shadow-2xl"
+          // className="relative h-full md:h-full overflow-hidden rounded-xl shadow-2xl"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -198,7 +199,7 @@ export default function CategoryGallery() {
         </div>
 
         {/* Category Thumbnails */}
-        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 ">
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 border-2 border-red-500">
           {categoryItems.map((category, index) => (
             <motion.div
               key={category.slug}

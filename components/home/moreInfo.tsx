@@ -8,9 +8,9 @@ import { ArrowRight } from "lucide-react";
 const MoreInfo = () => {
   return (
     <section className="py-16 px-4 bg-gradient-to-b from-amber-50/50 to-white">
-      <div className="max-w-4xl mx-auto">
+      <div className="w-full mx-auto">
         <motion.div 
-          className="bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-amber-100/50"
+          className="w-full bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-amber-100/50"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
