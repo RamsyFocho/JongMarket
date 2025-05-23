@@ -201,7 +201,7 @@ export default function TrendingDrinks() {
                       ))}
                     </div>
                     <span className="text-xs text-gray-500">
-                      {Array.isArray(product.reviews) ? product.reviews.length : product.reviews ? product.reviews : 0} reviews
+                      {Array.isArray(product.rating) ? product.rating.length : product.rating ? product.rating : 0} reviews
                     </span>
                   </div>
                   {/* Price */}
