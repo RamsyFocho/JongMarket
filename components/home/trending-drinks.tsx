@@ -69,8 +69,8 @@ export default function TrendingDrinks() {
     } else {
       addToWishlist(product)
       toast({
-        title: t('addedToWishlist') || 'Added to wishlist',
-        description: `${product.name} ${t('addedToWishlistDesc') || 'has been added to your wishlist.'}`,
+        title: t('AddedToWishlist') || 'Added to wishlist',
+        description: `${product.name} ${t('has been added to your wishlist') || 'has been added to your wishlist.'}`,
       })
     }
   }
@@ -85,7 +85,7 @@ export default function TrendingDrinks() {
       quantity: 1,
     })
     toast({
-      title: t('addedToCart') || 'Added to cart',
+      title: t('AddedToCart') || 'Added to cart',
       description: `${product.name} ${t('addedToCartDesc') || 'has been added to your cart.'}`,
     })
   }
@@ -175,7 +175,7 @@ export default function TrendingDrinks() {
                     <Link href={`/product/${product.slug}`} className="flex-1">
                       <Button
                         variant="outline"
-                        className="w-full flex items-center justify-center py-2 text-sm font-medium border-white text-white hover:bg-white hover:text-black rounded transition-colors duration-200"
+                        className="w-full flex items-center justify-center py-2 text-sm font-medium border-white hover:bg-white text-black rounded transition-colors duration-200"
                         title="View details"
                       >
                         {t('viewDetails') || 'View Details'}
