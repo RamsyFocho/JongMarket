@@ -8,6 +8,8 @@ import { Tag, Clock, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/data/products"
 import { useLanguage } from "@/context/language-context"
+import "@/styles/featured-drinks.css"
+import WishlistButton from "@/components/product/wishlist-button"
 
 // Mock promotions data
 const promotions = [
@@ -45,6 +47,10 @@ const promotions = [
     link: "/promotions/cocktail-accessories",
   },
 ]
+
+function getTabTransformClass(tab: number) {
+  return `tab-transform-${tab}`;
+}
 
 export default function SpecialPromotions() {
   const { t } = useLanguage()
@@ -132,19 +138,38 @@ export default function SpecialPromotions() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
             transition={{ duration: 0.4, ease: 'easeInOut' }}
-            className="grid gap-8"
+            className={`grid gap-8 ${getTabTransformClass(currentTab)}`}
             style={{ gridTemplateColumns: `repeat(${currentPromos.length}, 1fr)` }}
           >
-            {currentPromos.map((promo) => (
+            {currentPromos.map((promo, idx) => (
               <motion.div
                 key={promo.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
-                className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 group border border-gray-100 flex flex-col"
+                className="bg-gradient-to-br from-white via-gray-50 to-amber-50 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 group border border-amber-100 flex flex-col relative overflow-hidden premium-promo-card"
               >
+                {/* Badge Stack (Discount + Limited Time) */}
+                <div className="absolute left-3 top-3 z-20 flex flex-col gap-2">
+                  <span className="badge-arrow bg-red-600 text-white px-3 py-1 text-xs font-bold uppercase rounded-l rounded-r-none flex items-center shadow-md">
+                    -{promo.discount}
+                  </span>
+                  <span className="badge-arrow bg-amber-600 text-white px-3 py-1 text-xs font-bold uppercase rounded-l rounded-r-none flex items-center shadow-md">
+                    {t("limitedTimeOffer") || "Limited Time Offer"}
+                  </span>
+                </div>
+                {/* Wishlist Button */}
+                <div className="absolute top-3 right-3 z-20">
+                  <WishlistButton product={{
+                    id: promo.id,
+                    name: promo.title,
+                    price: promo.discountedPrice,
+                    image: promo.image,
+                    slug: promo.link,
+                  }} variant="icon" />
+                </div>
                 {/* Promo Image */}
-                <div className="relative overflow-hidden rounded-t-lg h-56 bg-gray-100 flex items-center justify-center">
+                <div className="relative overflow-hidden rounded-t-2xl h-56 bg-gray-100 flex items-center justify-center border-b border-amber-100">
                   <Link href={promo.link}>
                     <Image
                       src={promo.image || "/placeholder.svg?height=300&width=400"}
@@ -153,42 +178,41 @@ export default function SpecialPromotions() {
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </Link>
-                  {/* Discount Badge */}
-                  <div className="absolute top-3 right-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
-                    -{promo.discount}
-                  </div>
-                  {/* Limited Time Badge */}
-                  <div className="absolute top-3 left-3 bg-amber-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
-                    {t("limitedTimeOffer") || "Limited Time Offer"}
-                  </div>
                 </div>
                 {/* Promo Info */}
-                <div className="p-4 flex-1 flex flex-col justify-between">
+                <div className="p-6 flex-1 flex flex-col justify-between">
                   <Link href={promo.link}>
-                    <h3 className="font-semibold text-lg group-hover:text-amber-600 transition-colors min-h-[2.5rem]">
+                    <h3 className="font-semibold text-xl group-hover:text-amber-700 transition-colors min-h-[2.5rem] mb-1">
                       {promo.title}
                     </h3>
                   </Link>
-                  <p className="text-gray-600 text-sm mt-2 line-clamp-2 flex-1">{promo.description}</p>
-                  <div className="flex items-center justify-between mt-4">
-                    <div>
-                      <span className="text-gray-500 line-through text-sm">{formatCurrency(promo.originalPrice)}</span>
-                      <span className="font-bold text-lg text-amber-600 ml-2">
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-1">{promo.description}</p>
+                  {/* Price/Discount Area */}
+                  <div className="mb-4">
+                    <div className="flex items-end gap-2">
+                      <span className="text-gray-400 line-through text-base font-medium">
+                        {formatCurrency(promo.originalPrice)}
+                      </span>
+                      <span className="font-bold text-2xl text-amber-700">
                         {formatCurrency(promo.discountedPrice)}
                       </span>
                     </div>
-                    <div className="flex items-center text-gray-500 text-sm">
-                      <Clock className="h-4 w-4 mr-1" />
-                      <span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="badge-arrow bg-red-600 text-white px-2 py-0.5 text-xs font-bold uppercase rounded-l rounded-r-none flex items-center">
+                        -{promo.discount}
+                      </span>
+                      <span className="text-xs text-gray-500 flex items-center">
+                        <Clock className="h-4 w-4 mr-1" />
                         {t("endsIn") || "Ends in"} {promo.endsIn}
                       </span>
                     </div>
                   </div>
-                  <div className="mt-4">
-                    <Link href={promo.link}>
-                      <Button className="w-full bg-amber-600 hover:bg-amber-700">{t("viewDeal") || "View Deal"}</Button>
-                    </Link>
-                  </div>
+                  <Link href={promo.link}>
+                    <Button className="w-full bg-amber-600 hover:bg-amber-700 text-base font-semibold shadow-md">
+                      {t("viewDeal") || "View Deal"}
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
                 </div>
               </motion.div>
             ))}
