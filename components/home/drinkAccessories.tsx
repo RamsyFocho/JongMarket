@@ -67,7 +67,7 @@ export default function FeaturedDrinks() {
   return (
     <section className="max-w-7xl mx-auto bg-white p-8 rounded-lg shadow mb-12">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Featured Products</h2>
+        <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Drinks Accessories</h2>
         <div className="flex gap-2">
           <button
             className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 hover:border-amber-500 text-gray-500 hover:text-amber-600 transition"

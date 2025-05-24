@@ -1,32 +1,31 @@
 import Link from "next/link";
-import Hero from "@/components/home/hero";
-import Sidebar from "@/components/layout/sidebar";
-import TrendingDrinks from "@/components/home/trending-drinks";
-import FeaturedCategories from "@/components/home/featured-categories";
-import SpecialPromotions from "@/components/home/special-promotions";
-import BeerShowOut from "@/components/home/beerShowOut";
-import CategoryGallery from "@/components/home/category-gallery";
-import AnimatedVideo from "@/components/home/animated-video";
-import MoreInfo from "@/components/home/moreInfo";
-import DrinkAccessories from "@/components/home/drinkAccessories";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 import { categories } from "@/data/products";
-import FeaturedDrinks from "@/components/home/featured-drinks";
 
-
-// Define menu categories for the header
+const Hero = dynamic(() => import("@/components/home/hero"));
+const Sidebar = dynamic(() => import("@/components/layout/sidebar"));
+const TrendingDrinks = dynamic(() => import("@/components/home/trending-drinks"));
+const FeaturedDrinks = dynamic(() => import("@/components/home/featured-drinks"));
+const FeaturedCategories = dynamic(() => import("@/components/home/featured-categories"));
+const SpecialPromotions = dynamic(() => import("@/components/home/special-promotions"));
+const CategoryGallery = dynamic(() => import("@/components/home/category-gallery"));
+const AnimatedVideo = dynamic(() => import("@/components/home/animated-video"));
+const MoreInfo = dynamic(() => import("@/components/home/moreInfo"));
+const BeerShowOut = dynamic(() => import("@/components/home/beerShowOut"));
+const DrinkAccessories = dynamic(() => import("@/components/home/drinkAccessories"));
 
 export default function HomePage() {
   return (
     <div>
-      {/* <Hero />  */}
-
       <div className="w-full mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar - Responsive and Professional */}
-          <aside className="hidden md:block md:w-64 lg:w-72 xl:w-80 flex-shrink-0">
-            <Sidebar className="h-full" />
+          <aside className="hidden lg:block md:w-64 lg:w-72 xl:w-80 flex-shrink-0">
+            <Suspense fallback={<div>Loading sidebar...</div>}>
+              <Sidebar className="h-full" />
+            </Suspense>
           </aside>
-
           {/* Main Content */}
           <main className="flex-1  min-w-0">
             {/* Mobile-only category navigation */}
@@ -43,22 +42,36 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-            <Hero />
-            <TrendingDrinks />
-            <FeaturedDrinks />
-            <FeaturedCategories />
-            {/* <OffersDrinks /> */}
-            <SpecialPromotions />
-            <CategoryGallery />
-            {/* Animated Video Section */}
-            <AnimatedVideo />
+            <Suspense fallback={<div>Loading hero...</div>}>
+              <Hero />
+            </Suspense>
+            <Suspense fallback={<div>Loading trending drinks...</div>}>
+              <TrendingDrinks />
+            </Suspense>
+            <Suspense fallback={<div>Loading featured drinks...</div>}>
+              <FeaturedDrinks />
+            </Suspense>
+            <Suspense fallback={<div>Loading featured categories...</div>}>
+              <FeaturedCategories />
+            </Suspense>
+            <Suspense fallback={<div>Loading special promotions...</div>}>
+              <SpecialPromotions />
+            </Suspense>
+            <Suspense fallback={<div>Loading category gallery...</div>}>
+              <CategoryGallery />
+            </Suspense>
+            <Suspense fallback={<div>Loading animated video...</div>}>
+              <AnimatedVideo />
+            </Suspense>
           </main>
         </div>
       </div>
-
-      <MoreInfo />
-      <BeerShowOut/>
-      <DrinkAccessories/>
+      <Suspense fallback={null}>
+        <MoreInfo />
+        <BeerShowOut/>
+        <DrinkAccessories/>
+        {/* <Newsletter /> */}
+      </Suspense>
     </div>
   );
 }
