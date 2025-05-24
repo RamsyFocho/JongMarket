@@ -4,93 +4,16 @@ import Sidebar from "@/components/layout/sidebar";
 import TrendingDrinks from "@/components/home/trending-drinks";
 import FeaturedCategories from "@/components/home/featured-categories";
 import SpecialPromotions from "@/components/home/special-promotions";
-import Newsletter from "@/components/home/newsletter";
+import BeerShowOut from "@/components/home/beerShowOut";
 import CategoryGallery from "@/components/home/category-gallery";
 import AnimatedVideo from "@/components/home/animated-video";
 import MoreInfo from "@/components/home/moreInfo";
+import DrinkAccessories from "@/components/home/drinkAccessories";
 import { categories } from "@/data/products";
 import FeaturedDrinks from "@/components/home/featured-drinks";
-import OffersDrinks from "@/components/home/offers-drinks";
+
 
 // Define menu categories for the header
-const menuCategories = [
-  {
-    name: "Gin",
-    slug: "gin",
-    subcategories: [
-      { name: "London Dry Gin", slug: "london-dry" },
-      { name: "Plymouth Gin", slug: "plymouth" },
-      { name: "Old Tom Gin", slug: "old-tom" },
-      { name: "Navy Strength Gin", slug: "navy-strength" },
-    ],
-  },
-  {
-    name: "Whisky",
-    slug: "whiskey",
-    subcategories: [
-      { name: "American (including Bourbon & Rye)", slug: "american" },
-      { name: "Blended", slug: "blended" },
-      { name: "Blended Malt", slug: "blended-malt" },
-      { name: "Deluxe Premium", slug: "deluxe-premium" },
-      { name: "Irish", slug: "irish" },
-      { name: "Japanese", slug: "japanese" },
-      { name: "Malts", slug: "malts" },
-    ],
-  },
-  {
-    name: "Vodka",
-    slug: "vodka",
-    subcategories: [
-      { name: "Smirnoff", slug: "smirnoff" },
-      { name: "Grey Goose", slug: "grey-goose" },
-      { name: "Absolut", slug: "absolut" },
-      { name: "Glen's", slug: "glens" },
-      { name: "Ciroc", slug: "ciroc" },
-      { name: "Russian Standard", slug: "russian-standard" },
-    ],
-  },
-  {
-    name: "Champagne & Sparkling",
-    slug: "champagne",
-    subcategories: [
-      { name: "Champagne", slug: "champagne" },
-      { name: "Prosecco", slug: "prosecco" },
-      { name: "Cava", slug: "cava" },
-      { name: "Sparkling Wine", slug: "sparkling-wine" },
-    ],
-  },
-  {
-    name: "Wines",
-    slug: "wine",
-    subcategories: [
-      { name: "Red Wine", slug: "red" },
-      { name: "White Wine", slug: "white" },
-      { name: "Rosé Wine", slug: "rose" },
-      { name: "Dessert Wine", slug: "dessert" },
-    ],
-  },
-  {
-    name: "Beers, Ales & Ciders",
-    slug: "beer",
-    subcategories: [
-      { name: "Lager", slug: "lager" },
-      { name: "Ale", slug: "ale" },
-      { name: "Stout", slug: "stout" },
-      { name: "IPA", slug: "ipa" },
-      { name: "Cider", slug: "cider" },
-    ],
-  },
-  {
-    name: "Liqueurs",
-    slug: "liqueurs",
-    subcategories: [
-      { name: "Cream Liqueurs", slug: "cream" },
-      { name: "Fruit Liqueurs", slug: "fruit" },
-      { name: "Coffee Liqueurs", slug: "coffee" },
-      { name: "Herbal Liqueurs", slug: "herbal" },
-    ],
-  },
-];
 
 export default function HomePage() {
   return (
@@ -124,7 +47,7 @@ export default function HomePage() {
             <TrendingDrinks />
             <FeaturedDrinks />
             <FeaturedCategories />
-            <OffersDrinks />
+            {/* <OffersDrinks /> */}
             <SpecialPromotions />
             <CategoryGallery />
             {/* Animated Video Section */}
@@ -134,7 +57,8 @@ export default function HomePage() {
       </div>
 
       <MoreInfo />
-      <Newsletter />
+      <BeerShowOut/>
+      <DrinkAccessories/>
     </div>
   );
 }

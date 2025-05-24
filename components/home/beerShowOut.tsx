@@ -12,10 +12,8 @@ import { useLanguage } from "@/context/language-context";
 import "@/styles/featured-drinks.css";
 import { products } from "@/data/products";
 
-// Select featured products (e.g., those with 'sale' or 'new' badges)
-const featuredProducts = products.filter(
-  (p) => p.badges && (p.badges.includes("sale") || p.badges.includes("new"))
-);
+// Only show products in the 'beer' category
+const beerProducts = products.filter((p) => p.category && p.category.toLowerCase() === "beer");
 
 function getBadgeTopClass(index: number) {
   return `badge-top-${index}`;
@@ -52,9 +50,9 @@ export default function FeaturedDrinks() {
   }, []);
 
   // Tab logic
-  const totalTabs = Math.ceil(featuredProducts.length / productsPerTab);
+  const totalTabs = Math.ceil(beerProducts.length / productsPerTab);
   const productsTabs = Array.from({ length: totalTabs }, (_, i) =>
-    featuredProducts.slice(i * productsPerTab, (i + 1) * productsPerTab)
+    beerProducts.slice(i * productsPerTab, (i + 1) * productsPerTab)
   );
 
   // Auto-scroll
@@ -77,7 +75,7 @@ export default function FeaturedDrinks() {
   return (
     <section className="max-w-7xl mx-auto bg-white p-8 rounded-lg shadow mb-12">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Featured Products</h2>
+        <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Featured Beers</h2>
         <div className="flex gap-2">
           <button
             className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 hover:border-amber-500 text-gray-500 hover:text-amber-600 transition"
@@ -209,33 +207,30 @@ export default function FeaturedDrinks() {
                     <div className="flex gap-2 p-4 pt-0">
                       <Button
                         onClick={() => {
-                          if (isSoldOut) return;
-                          addToCart({
-                            id: product.id,
-                            name: product.name,
-                            price: product.currentPrice,
-                            image: product.image,
-                            quantity: 1,
-                          });
+                          if (isSoldOut) {
+                            toast({
+                              title: t("soldOut") || "Sold Out",
+                              description: t("thisProductIsSoldOut") || "This product is currently sold out.",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
+                          addToCart(product);
                           toast({
-                            title: t('AddedToCart') || 'Added to cart',
-                            description: `${product.name} ${t('addedToCartDesc') || 'has been added to your cart.'}`,
+                            title: t("addedToCart") || "Added to Cart",
+                            description: `${product.name} ${t("has been added to your cart") || "has been added to your cart."}`,
                           });
                         }}
-                        title="Add to cart"
-                        className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium bg-amber-600 hover:bg-amber-700 rounded"
-                        disabled={isSoldOut}
+                        className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg px-4 py-2 transition-all duration-200"
                       >
-                        <ShoppingCart className="h-4 w-4" />
-                        {isSoldOut ? t('outOfStock') || 'Sold Out' : t('addToCart') || 'Add to Cart'}
+                        {isSoldOut ? t("soldOut") || "Sold Out" : t("addToCart") || "Add to Cart"}
                       </Button>
-                      <Link href={`/product/${product.slug}`} className="flex-1">
+                      <Link href={`/product/${product.slug}`}>
                         <Button
                           variant="outline"
-                          className="w-full flex items-center justify-center py-2 text-sm font-medium border-white hover:bg-white text-black rounded"
-                          title="View details"
+                          className="flex-1 border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-100 transition-all duration-200"
                         >
-                          {t('viewDetails') || 'View More'}
+                          {t("viewMore") || "View More"}
                         </Button>
                       </Link>
                     </div>
@@ -246,17 +241,14 @@ export default function FeaturedDrinks() {
           ))}
         </div>
       </div>
-      {/* Tab indicators */}
-      <div className="flex justify-center mt-6 gap-2">
-        {productsTabs.map((_, idx) => (
+      <div className="flex justify-center mt-4">
+        {Array.from({ length: totalTabs }).map((_, tabIdx) => (
           <button
-            key={idx}
-            onClick={() => setCurrentTab(idx)}
-            className={`h-2 w-8 rounded-full transition-all duration-300 ${
-              idx === currentTab ? "bg-gray-800 w-12" : "bg-gray-300 hover:bg-gray-400"
-            }`}
-            aria-label={`Go to tab ${idx + 1}`}
-          />
+            key={tabIdx}
+            onClick={() => setCurrentTab(tabIdx)}
+            className={`w-3 h-3 rounded-full mx-1 transition-all duration-300 ${currentTab === tabIdx ? "bg-amber-500" : "bg-gray-300"}`}
+            aria-label={`Go to tab ${tabIdx + 1}`}
+          ></button>
         ))}
       </div>
     </section>

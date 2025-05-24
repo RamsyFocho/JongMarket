@@ -12,18 +12,8 @@ import { useLanguage } from "@/context/language-context";
 import "@/styles/featured-drinks.css";
 import { products } from "@/data/products";
 
-// Select featured products (e.g., those with 'sale' or 'new' badges)
-const featuredProducts = products.filter(
-  (p) => p.badges && (p.badges.includes("sale") || p.badges.includes("new"))
-);
-
-function getBadgeTopClass(index: number) {
-  return `badge-top-${index}`;
-}
-
-function getTabTransformClass(tab: number) {
-  return `tab-transform-${tab}`;
-}
+// Only show products in the 'accessories' category
+const accessoriesProducts = products.filter((p) => p.category && p.category.toLowerCase() === "accessories");
 
 export default function FeaturedDrinks() {
   const [currentTab, setCurrentTab] = useState(0);
@@ -52,9 +42,9 @@ export default function FeaturedDrinks() {
   }, []);
 
   // Tab logic
-  const totalTabs = Math.ceil(featuredProducts.length / productsPerTab);
+  const totalTabs = Math.ceil(accessoriesProducts.length / productsPerTab);
   const productsTabs = Array.from({ length: totalTabs }, (_, i) =>
-    featuredProducts.slice(i * productsPerTab, (i + 1) * productsPerTab)
+    accessoriesProducts.slice(i * productsPerTab, (i + 1) * productsPerTab)
   );
 
   // Auto-scroll
@@ -147,7 +137,7 @@ export default function FeaturedDrinks() {
                           });
                           toast({
                             title: t("AddedToWishlist") || "Added to wishlist",
-                            description: `${product.name} ${t("has been added to your wishlist") || "has been added to your wishlist."}`,
+                            description: `${product.name} ${t("hasBeenAddedToYourWishlist") || "has been added to your wishlist."}`,
                           });
                         }
                       }}
@@ -209,34 +199,30 @@ export default function FeaturedDrinks() {
                     <div className="flex gap-2 p-4 pt-0">
                       <Button
                         onClick={() => {
-                          if (isSoldOut) return;
-                          addToCart({
-                            id: product.id,
-                            name: product.name,
-                            price: product.currentPrice,
-                            image: product.image,
-                            quantity: 1,
-                          });
+                          if (isSoldOut) {
+                            toast({
+                              title: t("soldOut") || "Sold Out",
+                              description: t("thisProductIsSoldOut") || "This product is currently sold out.",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
+                          addToCart(product);
                           toast({
-                            title: t('AddedToCart') || 'Added to cart',
-                            description: `${product.name} ${t('addedToCartDesc') || 'has been added to your cart.'}`,
+                            title: t("addedToCart") || "Added to Cart",
+                            description: `${product.name} ${t("hasBeenAddedToYourCart") || "has been added to your cart."}`,
                           });
                         }}
-                        title="Add to cart"
-                        className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium bg-amber-600 hover:bg-amber-700 rounded"
-                        disabled={isSoldOut}
+                        className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg px-4 py-2 transition-all duration-200 flex items-center justify-center gap-2"
                       >
-                        <ShoppingCart className="h-4 w-4" />
-                        {isSoldOut ? t('outOfStock') || 'Sold Out' : t('addToCart') || 'Add to Cart'}
+                        <ShoppingCart className="w-5 h-5" />
+                        {t("addToCart") || "Add to Cart"}
                       </Button>
-                      <Link href={`/product/${product.slug}`} className="flex-1">
-                        <Button
-                          variant="outline"
-                          className="w-full flex items-center justify-center py-2 text-sm font-medium border-white hover:bg-white text-black rounded"
-                          title="View details"
-                        >
-                          {t('viewDetails') || 'View More'}
-                        </Button>
+                      <Link
+                        href={`/product/${product.slug}`}
+                        className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg px-4 py-2 transition-all duration-200 flex items-center justify-center gap-2 text-center"
+                      >
+                        {t("viewMore") || "View More"}
                       </Link>
                     </div>
                   </div>
@@ -246,19 +232,27 @@ export default function FeaturedDrinks() {
           ))}
         </div>
       </div>
-      {/* Tab indicators */}
-      <div className="flex justify-center mt-6 gap-2">
-        {productsTabs.map((_, idx) => (
+      {/* Dots Navigation */}
+      <div className="flex justify-center gap-2 mt-4">
+        {Array.from({ length: totalTabs }).map((_, i) => (
           <button
-            key={idx}
-            onClick={() => setCurrentTab(idx)}
-            className={`h-2 w-8 rounded-full transition-all duration-300 ${
-              idx === currentTab ? "bg-gray-800 w-12" : "bg-gray-300 hover:bg-gray-400"
-            }`}
-            aria-label={`Go to tab ${idx + 1}`}
-          />
+            key={i}
+            onClick={() => setCurrentTab(i)}
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${currentTab === i ? "bg-amber-500 scale-125" : "bg-gray-300 hover:bg-amber-400"}`}
+            aria-label={`Go to tab ${i + 1}`}
+          ></button>
         ))}
       </div>
     </section>
   );
+}
+
+// Helper for tab transform class (for sliding effect)
+function getTabTransformClass(tab: number) {
+  return `tab-transform-${tab}`;
+}
+
+// Helper for badge top class (for badge positioning)
+function getBadgeTopClass(index: number) {
+  return `badge-top-${index}`;
 }

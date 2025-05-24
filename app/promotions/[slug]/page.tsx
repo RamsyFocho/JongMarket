@@ -5,87 +5,66 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/data/products"
 import { useLanguage } from "@/context/language-context"
+import React from "react"
+import { useCart } from "@/context/cart-context";
+import { useWishlist } from "@/context/wishlist-context";
+import { useToast } from "@/hooks/use-toast";
+import { Heart, ShoppingCart } from "lucide-react";
+import { promotions } from "@/data/products"
 
-// Same mock data as in /promotions/page.tsx
-const promotions = [
-  {
-    id: 1,
-    slug: "summer-wine",
-    title: "Summer Wine Collection",
-    description: "Get 20% off on our curated selection of summer wines",
-    image: "/images/promotions/summer-wine.jpg",
-    discount: "20%",
-    originalPrice: 299.99,
-    discountedPrice: 239.99,
-    endsIn: "7 days",
-    category: "wine",
-  },
-  {
-    id: 2,
-    slug: "whiskey-tasting",
-    title: "Whiskey Tasting Set",
-    description: "Premium whiskey tasting set with 5 different varieties",
-    image: "/images/promotions/whiskey-tasting.jpg",
-    discount: "15%",
-    originalPrice: 149.99,
-    discountedPrice: 127.49,
-    endsIn: "3 days",
-    category: "whiskey",
-  },
-  {
-    id: 3,
-    slug: "cocktail-accessories",
-    title: "Cocktail Accessories Bundle",
-    description: "Complete set of premium cocktail making tools and accessories",
-    image: "/images/promotions/cocktail-accessories.jpg",
-    discount: "25%",
-    originalPrice: 89.99,
-    discountedPrice: 67.49,
-    endsIn: "5 days",
-    category: "accessories",
-  },
-  {
-    id: 4,
-    slug: "craft-beer",
-    title: "Craft Beer Selection",
-    description: "Explore our handpicked selection of craft beers from around the world",
-    image: "/images/promotions/craft-beer.jpg",
-    discount: "10%",
-    originalPrice: 79.99,
-    discountedPrice: 71.99,
-    endsIn: "10 days",
-    category: "beer",
-  },
-  {
-    id: 5,
-    slug: "champagne-bundle",
-    title: "Premium Champagne Bundle",
-    description: "Celebrate in style with our premium champagne selection",
-    image: "/images/promotions/champagne-bundle.jpg",
-    discount: "15%",
-    originalPrice: 399.99,
-    discountedPrice: 339.99,
-    endsIn: "4 days",
-    category: "champagne",
-  },
-  {
-    id: 6,
-    slug: "coffee-package",
-    title: "Coffee Lovers Package",
-    description: "Premium coffee beans and accessories for the perfect brew",
-    image: "/images/promotions/coffee-package.jpg",
-    discount: "20%",
-    originalPrice: 129.99,
-    discountedPrice: 103.99,
-    endsIn: "6 days",
-    category: "hot-drinks",
-  },
-]
+export default function PromotionDetailPage({ params }: { params: { slug: string } | Promise<{ slug: string }> }) {
+  const { t } = useLanguage();
+  const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { toast } = useToast();
+  // Unwrap params if it's a Promise (Next.js 14+)
+  let resolvedParams: { slug: string };
+  if (typeof (params as any).then === "function") {
+    resolvedParams = React.use(params as Promise<{ slug: string }>);
+  } else {
+    resolvedParams = params as { slug: string };
+  }
+  const promo = promotions.find((p) => p.slug === resolvedParams.slug);
+  if (!promo) return notFound();
 
-export default function PromotionDetailPage({ params }: { params: { slug: string } }) {
-  const { t } = useLanguage()
-  const promo = promotions.find((p) => p.slug === params.slug)
-  if (!promo) return notFound()
+  // Add to cart handler
+  const handleAddToCart = () => {
+    addToCart({
+      id: promo.id,
+      name: promo.title,
+      price: promo.discountedPrice,
+      image: promo.image,
+      quantity: 1,
+    });
+    toast({
+      title: t("addedToCart") || "Added to cart",
+      description: `${promo.title} ${t("hasBeenAddedToCart") || "has been added to your cart."}`,
+    });
+  };
+
+  // Wishlist toggle handler
+  const handleWishlist = () => {
+    if (isInWishlist(promo.id)) {
+      removeFromWishlist(promo.id);
+      toast({
+        title: t("removedFromWishlist") || "Removed from wishlist",
+        description: `${promo.title} ${t("removedFromWishlistDesc") || "has been removed from your wishlist."}`,
+      });
+    } else {
+      addToWishlist({
+        id: promo.id,
+        name: promo.title,
+        price: promo.discountedPrice,
+        image: promo.image,
+        slug: promo.slug,
+        category: promo.category,
+      });
+      toast({
+        title: t("AddedToWishlist") || "Added to wishlist",
+        description: `${promo.title} ${t("hasBeenAddedToWishlist") || "has been added to your wishlist."}`,
+      });
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -115,9 +94,26 @@ export default function PromotionDetailPage({ params }: { params: { slug: string
             <span className="font-bold text-2xl text-amber-600">{formatCurrency(promo.discountedPrice)}</span>
           </div>
           <div className="mb-6 text-gray-500">{t("endsIn") || "Ends in"} {promo.endsIn}</div>
-          <Button className="bg-amber-600 hover:bg-amber-700 w-full md:w-auto">{t("shopNow") || "Shop Now"}</Button>
+          <div className="flex flex-col sm:flex-row gap-3 w-full">
+            <Button
+              className="bg-amber-600 hover:bg-amber-700 flex-1"
+              onClick={handleAddToCart}
+            >
+              <ShoppingCart className="h-5 w-5 mr-2" />
+              {t("addToCart") || "Add to Cart"}
+            </Button>
+            <Button
+              variant={isInWishlist(promo.id) ? "secondary" : "outline"}
+              className={isInWishlist(promo.id) ? "text-red-600 border-red-200 flex-1" : "flex-1"}
+              onClick={handleWishlist}
+              title={isInWishlist(promo.id) ? t("removeFromWishlist") || "Remove from wishlist" : t("addToWishlist") || "Add to wishlist"}
+            >
+              <Heart className={`h-5 w-5 mr-2 ${isInWishlist(promo.id) ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
+              {isInWishlist(promo.id) ? t("inWishlist") || "In Wishlist" : t("addToWishlist") || "Add to Wishlist"}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
