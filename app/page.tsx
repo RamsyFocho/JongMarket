@@ -14,6 +14,7 @@ const AnimatedVideo = dynamic(() => import("@/components/home/animated-video"));
 const MoreInfo = dynamic(() => import("@/components/home/moreInfo"));
 const BeerShowOut = dynamic(() => import("@/components/home/beerShowOut"));
 const DrinkAccessories = dynamic(() => import("@/components/home/drinkAccessories"));
+const BrandsSection = dynamic(() => import("@/components/home/brandsSection"));
 
 export default function HomePage() {
   return (
@@ -70,6 +71,7 @@ export default function HomePage() {
         <MoreInfo />
         <BeerShowOut/>
         <DrinkAccessories/>
+        <BrandsSection/>
         {/* <Newsletter /> */}
       </Suspense>
     </div>
