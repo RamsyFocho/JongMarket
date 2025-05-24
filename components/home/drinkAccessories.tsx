@@ -17,16 +17,17 @@ const accessoriesProducts = products.filter((p) => p.category && p.category.toLo
 
 export default function FeaturedDrinks() {
   const [currentTab, setCurrentTab] = useState(0);
-  const [productsPerTab, setProductsPerTab] = useState(3);
+  const [productsPerTab, setProductsPerTab] = useState(3); // SSR-safe default
+  const [isClient, setIsClient] = useState(false);
   const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
-
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { toast } = useToast();
   const { t } = useLanguage();
 
-  // Responsive products per tab
+  // Hydration-safe responsive products per tab
   useEffect(() => {
+    setIsClient(true);
     const updateProductsPerTab = () => {
       if (window.innerWidth < 640) {
         setProductsPerTab(1);
@@ -41,16 +42,18 @@ export default function FeaturedDrinks() {
     return () => window.removeEventListener("resize", updateProductsPerTab);
   }, []);
 
-  // Tab logic
-  const totalTabs = Math.ceil(accessoriesProducts.length / productsPerTab);
+  // Tab logic (SSR-safe)
+  const effectiveProductsPerTab = isClient ? productsPerTab : 3;
+  const totalTabs = Math.ceil(accessoriesProducts.length / effectiveProductsPerTab);
   const productsTabs = Array.from({ length: totalTabs }, (_, i) =>
-    accessoriesProducts.slice(i * productsPerTab, (i + 1) * productsPerTab)
+    accessoriesProducts.slice(i * effectiveProductsPerTab, (i + 1) * effectiveProductsPerTab)
   );
 
   // Auto-scroll
   useEffect(() => {
+    if (totalTabs <= 1) return;
     autoScrollRef.current = setInterval(() => {
-      setCurrentTab((prev) => (prev < totalTabs - 1 ? prev + 1 : 0));
+      setCurrentTab((prev: number) => (prev < totalTabs - 1 ? prev + 1 : 0));
     }, 5000);
     return () => {
       if (autoScrollRef.current) clearInterval(autoScrollRef.current);
@@ -58,7 +61,7 @@ export default function FeaturedDrinks() {
   }, [totalTabs]);
 
   const handleArrow = (dir: "left" | "right") => {
-    setCurrentTab((prev) => {
+    setCurrentTab((prev: number) => {
       if (dir === "left") return prev > 0 ? prev - 1 : totalTabs - 1;
       return prev < totalTabs - 1 ? prev + 1 : 0;
     });
@@ -207,7 +210,10 @@ export default function FeaturedDrinks() {
                             });
                             return;
                           }
-                          addToCart(product);
+                          addToCart({
+                            ...product,
+                            quantity: 1
+                          });
                           toast({
                             title: t("addedToCart") || "Added to Cart",
                             description: `${product.name} ${t("hasBeenAddedToYourCart") || "has been added to your cart."}`,

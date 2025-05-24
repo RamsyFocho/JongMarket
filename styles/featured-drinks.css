@@ -8,7 +8,7 @@
 .badge-top-3 { top: 106px; }
 
 /* Tab transforms for up to 10 tabs */
-.tab-transform-0 { transform: translateX(0%); }
+/* .tab-transform-0 { transform: translateX(0%); }
 .tab-transform-1 { transform: translateX(-100%); }
 .tab-transform-2 { transform: translateX(-200%); }
 .tab-transform-3 { transform: translateX(-300%); }
@@ -17,4 +17,41 @@
 .tab-transform-6 { transform: translateX(-600%); }
 .tab-transform-7 { transform: translateX(-700%); }
 .tab-transform-8 { transform: translateX(-800%); }
-.tab-transform-9 { transform: translateX(-900%); }
+.tab-transform-9 { transform: translateX(-900%); } */
+
+/* Tab transform classes for carousel sliding */
+.tab-transform-0 { transform: translateX(0%); }
+.tab-transform-1 { transform: translateX(-100%); }
+.tab-transform-2 { transform: translateX(-200%); }
+.tab-transform-3 { transform: translateX(-300%); }
+.tab-transform-4 { transform: translateX(-400%); }
+.tab-transform-5 { transform: translateX(-500%); }
+
+/* Responsive card sizing */
+.promo-card-1 { 
+  flex: 0 0 100%; 
+  width: 100%; 
+  max-width: 28rem; 
+  margin-left: auto; 
+  margin-right: auto; 
+}
+
+.promo-card-2 { 
+  flex: 0 0 calc(50% - 12px); 
+  width: 100%; 
+  max-width: 28rem; 
+}
+
+.promo-card-3 { 
+  flex: 0 0 calc(33.333% - 16px); 
+  width: 100%; 
+  max-width: 20rem; 
+}
+
+.promo-card-4 { 
+  flex: 0 0 calc(25% - 18px); 
+  width: 100%; 
+  max-width: 20rem; 
+}
+
+

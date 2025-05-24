@@ -100,7 +100,7 @@ export default function FeaturedDrinks() {
           {productsTabs.map((tab, tabIdx) => (
             <div
               key={tabIdx}
-              className="flex min-w-full gap-8 px-2"
+              className="flex min-w-80 gap-8 px-2"
             >
               {tab.map((product, i) => {
                 const badgeColor =
@@ -155,7 +155,7 @@ export default function FeaturedDrinks() {
                       <Heart className={`h-5 w-5 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-500'}`} />
                     </button>
                     {/* Image */}
-                    <div className="h-48 bg-gray-100 flex items-center justify-center rounded-t-lg overflow-hidden">
+                    <div className="h-[17rem] bg-gray-100 flex items-center justify-center rounded-t-lg overflow-hidden">
                       <Image
                         src={product.image}
                         alt={product.name}
@@ -215,7 +215,10 @@ export default function FeaturedDrinks() {
                             });
                             return;
                           }
-                          addToCart(product);
+                          addToCart({
+                            ...product,
+                            quantity: 1
+                          });
                           toast({
                             title: t("addedToCart") || "Added to Cart",
                             description: `${product.name} ${t("has been added to your cart") || "has been added to your cart."}`,
