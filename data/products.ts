@@ -9,7 +9,7 @@ export const products = [
     originalPrice: 99.99,
     badges: ["sale"],
     rating: 4.8,
-    image: "/images/products/whiskey/The Macallan 12 Year Old Double Cask  --- little….jpg",
+    image: "/images/products/whiskey/The Macallan 12 Year Old Double Cask  --- little….avif",
     slug: "macallan-12-year-old",
     inStock: true, // Developer-controlled stock status
     stockCount: 25, // Developer-controlled stock quantity
@@ -47,7 +47,7 @@ export const products = [
     category: "Wine",
     price: 399.99,
     rating: 4.9,
-    image: "/images/products/chateau-margaux-2015.jpg",
+    image: "/images/products/château Margaux.avif",
     slug: "chateau-margaux-2015",
     inStock: true,
     stockCount: 10,
@@ -63,11 +63,11 @@ export const products = [
   },
   {
     id: 3,
-    name: "Westvleteren 12",
+    name: "Amstel lager",
     category: "Beer",
     price: 24.99,
     rating: 4.7,
-    image: "/images/products/westvleteren-12.jpg",
+    image: "/images/products/amstel.avif",
     slug: "westvleteren-12",
     inStock: true,
     stockCount: 50,
