@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
@@ -27,21 +27,20 @@ export default function TrendingDrinks() {
   const { t } = useLanguage()
   const trendingProducts = getTrendingProducts()
   const [currentTab, setCurrentTab] = useState(0)
-  const [itemsPerTab, setItemsPerTab] = useState(() => {
-    if (typeof window !== 'undefined') {
-      if (window.innerWidth < 1024) return 1
-      return 3
-    }
-    return 3
-  })
+  // SSR-safe: always start with 3 (desktop) columns
+  const [itemsPerTab, setItemsPerTab] = useState(3)
+  const [isClient, setIsClient] = useState(false)
+  const hasSetInitial = useRef(false)
   const { addToCart } = useCart()
   const { toast } = useToast()
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
 
   useEffect(() => {
+    setIsClient(true)
+    // Only run responsive logic after hydration
     const updateItemsPerTab = () => {
       if (window.innerWidth < 1024) {
-        setItemsPerTab(1)
+        setItemsPerTab(window.innerWidth < 768 ? 1 : 2)
       } else {
         setItemsPerTab(3)
       }
@@ -52,7 +51,7 @@ export default function TrendingDrinks() {
   }, [])
 
   // Group products into tabs
-  const totalTabs = Math.ceil(trendingProducts.length / itemsPerTab)
+  const totalTabs = Math.ceil(trendingProducts.length / itemsPerTab);
   const currentProducts = trendingProducts.slice(
     currentTab * itemsPerTab,
     (currentTab + 1) * itemsPerTab
@@ -130,8 +129,8 @@ export default function TrendingDrinks() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
             transition={{ duration: 0.4, ease: 'easeInOut' }}
-            className="grid gap-6"
-            style={{ gridTemplateColumns: `repeat(${currentProducts.length}, 1fr)` }}
+            className={`grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`}
+            style={isClient ? { gridTemplateColumns: `repeat(${itemsPerTab}, 1fr)` } : {}}
           >
             {currentProducts.map((product: any, index: number) => (
               <motion.div

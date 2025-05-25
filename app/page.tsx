@@ -1,109 +1,32 @@
 import Link from "next/link";
-import Hero from "@/components/home/hero";
-import Sidebar from "@/components/layout/sidebar";
-import TrendingDrinks from "@/components/home/trending-drinks";
-import FeaturedCategories from "@/components/home/featured-categories";
-import SpecialPromotions from "@/components/home/special-promotions";
-import Newsletter from "@/components/home/newsletter";
-import CategoryGallery from "@/components/home/category-gallery";
-import AnimatedVideo from "@/components/home/animated-video";
-import MoreInfo from "@/components/home/moreInfo";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 import { categories } from "@/data/products";
-import FeaturedDrinks from "@/components/home/featured-drinks";
-import OffersDrinks from "@/components/home/offers-drinks";
 
-// Define menu categories for the header
-const menuCategories = [
-  {
-    name: "Gin",
-    slug: "gin",
-    subcategories: [
-      { name: "London Dry Gin", slug: "london-dry" },
-      { name: "Plymouth Gin", slug: "plymouth" },
-      { name: "Old Tom Gin", slug: "old-tom" },
-      { name: "Navy Strength Gin", slug: "navy-strength" },
-    ],
-  },
-  {
-    name: "Whisky",
-    slug: "whiskey",
-    subcategories: [
-      { name: "American (including Bourbon & Rye)", slug: "american" },
-      { name: "Blended", slug: "blended" },
-      { name: "Blended Malt", slug: "blended-malt" },
-      { name: "Deluxe Premium", slug: "deluxe-premium" },
-      { name: "Irish", slug: "irish" },
-      { name: "Japanese", slug: "japanese" },
-      { name: "Malts", slug: "malts" },
-    ],
-  },
-  {
-    name: "Vodka",
-    slug: "vodka",
-    subcategories: [
-      { name: "Smirnoff", slug: "smirnoff" },
-      { name: "Grey Goose", slug: "grey-goose" },
-      { name: "Absolut", slug: "absolut" },
-      { name: "Glen's", slug: "glens" },
-      { name: "Ciroc", slug: "ciroc" },
-      { name: "Russian Standard", slug: "russian-standard" },
-    ],
-  },
-  {
-    name: "Champagne & Sparkling",
-    slug: "champagne",
-    subcategories: [
-      { name: "Champagne", slug: "champagne" },
-      { name: "Prosecco", slug: "prosecco" },
-      { name: "Cava", slug: "cava" },
-      { name: "Sparkling Wine", slug: "sparkling-wine" },
-    ],
-  },
-  {
-    name: "Wines",
-    slug: "wine",
-    subcategories: [
-      { name: "Red Wine", slug: "red" },
-      { name: "White Wine", slug: "white" },
-      { name: "Rosé Wine", slug: "rose" },
-      { name: "Dessert Wine", slug: "dessert" },
-    ],
-  },
-  {
-    name: "Beers, Ales & Ciders",
-    slug: "beer",
-    subcategories: [
-      { name: "Lager", slug: "lager" },
-      { name: "Ale", slug: "ale" },
-      { name: "Stout", slug: "stout" },
-      { name: "IPA", slug: "ipa" },
-      { name: "Cider", slug: "cider" },
-    ],
-  },
-  {
-    name: "Liqueurs",
-    slug: "liqueurs",
-    subcategories: [
-      { name: "Cream Liqueurs", slug: "cream" },
-      { name: "Fruit Liqueurs", slug: "fruit" },
-      { name: "Coffee Liqueurs", slug: "coffee" },
-      { name: "Herbal Liqueurs", slug: "herbal" },
-    ],
-  },
-];
+const Hero = dynamic(() => import("@/components/home/hero"));
+const Sidebar = dynamic(() => import("@/components/layout/sidebar"));
+const TrendingDrinks = dynamic(() => import("@/components/home/trending-drinks"));
+const FeaturedDrinks = dynamic(() => import("@/components/home/featured-drinks"));
+const FeaturedCategories = dynamic(() => import("@/components/home/featured-categories"));
+const SpecialPromotions = dynamic(() => import("@/components/home/special-promotions"));
+const CategoryGallery = dynamic(() => import("@/components/home/category-gallery"));
+const AnimatedVideo = dynamic(() => import("@/components/home/animated-video"));
+const MoreInfo = dynamic(() => import("@/components/home/moreInfo"));
+const BeerShowOut = dynamic(() => import("@/components/home/beerShowOut"));
+const DrinkAccessories = dynamic(() => import("@/components/home/drinkAccessories"));
+const BrandsSection = dynamic(() => import("@/components/home/brandsSection"));
 
 export default function HomePage() {
   return (
     <div>
-      {/* <Hero />  */}
-
       <div className="w-full mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar - Responsive and Professional */}
-          <aside className="hidden md:block md:w-64 lg:w-72 xl:w-80 flex-shrink-0">
-            <Sidebar className="h-full" />
+          <aside className="hidden lg:block md:w-64 lg:w-72 xl:w-80 flex-shrink-0">
+            <Suspense fallback={<div>Loading sidebar...</div>}>
+              <Sidebar className="h-full" />
+            </Suspense>
           </aside>
-
           {/* Main Content */}
           <main className="flex-1  min-w-0">
             {/* Mobile-only category navigation */}
@@ -120,21 +43,37 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-            <Hero />
-            <TrendingDrinks />
-            <FeaturedDrinks />
-            <FeaturedCategories />
-            <OffersDrinks />
-            <SpecialPromotions />
-            <CategoryGallery />
-            {/* Animated Video Section */}
-            <AnimatedVideo />
+            <Suspense fallback={<div>Loading hero...</div>}>
+              <Hero />
+            </Suspense>
+            <Suspense fallback={<div>Loading trending drinks...</div>}>
+              <TrendingDrinks />
+            </Suspense>
+            <Suspense fallback={<div>Loading featured drinks...</div>}>
+              <FeaturedDrinks />
+            </Suspense>
+            <Suspense fallback={<div>Loading featured categories...</div>}>
+              <FeaturedCategories />
+            </Suspense>
+            <Suspense fallback={<div>Loading special promotions...</div>}>
+              <SpecialPromotions />
+            </Suspense>
+            <Suspense fallback={<div>Loading category gallery...</div>}>
+              <CategoryGallery />
+            </Suspense>
+            <Suspense fallback={<div>Loading animated video...</div>}>
+              <AnimatedVideo />
+            </Suspense>
           </main>
         </div>
       </div>
-
-      <MoreInfo />
-      <Newsletter />
+      <Suspense fallback={null}>
+        <MoreInfo />
+        <BeerShowOut/>
+        <DrinkAccessories/>
+        <BrandsSection/>
+        {/* <Newsletter /> */}
+      </Suspense>
     </div>
   );
 }

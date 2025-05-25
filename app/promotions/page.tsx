@@ -4,11 +4,14 @@ import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { ChevronRight, Tag, Clock, ArrowRight } from "lucide-react"
+import { ChevronRight, Tag, Clock, ArrowRight, Heart, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { formatCurrency } from "@/data/products"
 import { useLanguage } from "@/context/language-context"
+import { useCart } from "@/context/cart-context"
+import { useWishlist } from "@/context/wishlist-context"
+import { useToast } from "@/hooks/use-toast"
 
 // Mock promotions data
 const promotions = [
@@ -89,9 +92,51 @@ const promotions = [
 export default function PromotionsPage() {
   const [activeTab, setActiveTab] = useState("all")
   const { t } = useLanguage()
+  const { addToCart } = useCart()
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
+  const { toast } = useToast()
 
   const filteredPromotions =
     activeTab === "all" ? promotions : promotions.filter((promo) => promo.category === activeTab)
+
+  // Add to cart handler
+  const handleAddToCart = (promo: typeof promotions[0]) => {
+    addToCart({
+      id: promo.id,
+      name: promo.title,
+      price: promo.discountedPrice,
+      image: promo.image,
+      quantity: 1,
+    })
+    toast({
+      title: t("addedToCart") || "Added to cart",
+      description: `${promo.title} ${t("hasBeenAddedToCart") || "has been added to your cart."}`,
+    })
+  }
+
+  // Wishlist toggle handler
+  const handleWishlist = (promo: typeof promotions[0]) => {
+    if (isInWishlist(promo.id)) {
+      removeFromWishlist(promo.id)
+      toast({
+        title: t("removedFromWishlist") || "Removed from wishlist",
+        description: `${promo.title} ${t("removedFromWishlistDesc") || "has been removed from your wishlist."}`,
+      })
+    } else {
+      addToWishlist({
+        id: promo.id,
+        name: promo.title,
+        price: promo.discountedPrice,
+        image: promo.image,
+        slug: promo.link.replace("/promotions/", ""),
+        category: promo.category,
+      })
+      toast({
+        title: t("AddedToWishlist") || "Added to wishlist",
+        description: `${promo.title} ${t("hasBeenAddedToWishlist") || "has been added to your wishlist."}`,
+      })
+    }
+  }
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -176,9 +221,25 @@ export default function PromotionsPage() {
                   </div>
                 </div>
 
-                <div className="mt-4">
-                  <Link href={promo.link}>
-                    <Button className="w-full bg-amber-600 hover:bg-amber-700">
+                <div className="mt-4 flex gap-2">
+                  <Button
+                    variant={isInWishlist(promo.id) ? "secondary" : "outline"}
+                    className={isInWishlist(promo.id) ? "text-red-600 border-red-200" : ""}
+                    onClick={() => handleWishlist(promo)}
+                    title={isInWishlist(promo.id) ? t("removeFromWishlist") || "Remove from wishlist" : t("addToWishlist") || "Add to wishlist"}
+                  >
+                    <Heart className={`h-5 w-5 mr-2 ${isInWishlist(promo.id) ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
+                    {isInWishlist(promo.id) ? t("inWishlist") || "In Wishlist" : t("addToWishlist") || "Add to Wishlist"}
+                  </Button>
+                  <Button
+                    className="bg-amber-600 hover:bg-amber-700 flex-1"
+                    onClick={() => handleAddToCart(promo)}
+                  >
+                    <ShoppingCart className="h-5 w-5 mr-2" />
+                    {t("addToCart") || "Add to Cart"}
+                  </Button>
+                  <Link href={promo.link} className="flex-1">
+                    <Button variant="outline" className="w-full flex items-center justify-center">
                       {t("viewDeal")}
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
