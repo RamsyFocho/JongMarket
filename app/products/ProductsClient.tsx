@@ -8,6 +8,7 @@ import { useCart } from "@/context/cart-context"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import Image from "next/image"
 
 // Define a fallback Product type based on your data/products.ts
 interface Product {
@@ -99,8 +100,9 @@ export default function ProductsClient({
         <div className="md:w-1/4">
           {/* Category Filter */}
           <div className="mb-4">
-            <label className="block mb-2 font-semibold">Category</label>
+            <label htmlFor="category-select" className="block mb-2 font-semibold">Category</label>
             <select
+              id="category-select"
               className="w-full border rounded p-2"
               value={selectedCategory || ""}
               onChange={(e) => setSelectedCategory(e.target.value || null)}
@@ -127,10 +129,10 @@ export default function ProductsClient({
             </Button>
           </form>
           {/* Product grid is NOT inside a form anymore */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 lg:grid-cols-5 gap-4">
             {filteredProducts.map((product) => (
               <div key={product.id} className="bg-white rounded-lg shadow-md p-4 flex flex-col">
-                <img src={product.image || "/placeholder.svg"} alt={product.name} className="h-40 object-cover mb-2 rounded" />
+                <Image src={product.image || "/placeholder.svg"} alt={product.name} className="h-40 object-cover mb-2 rounded" />
                 <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
                 <p className="text-gray-500 text-sm mb-2">{product.category}</p>
                 <span className="font-bold text-amber-600 mb-2">{formatCurrency(product.price)}</span>
