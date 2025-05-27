@@ -23,7 +23,8 @@ function getTabTransformClass(tab: number) {
   return `tab-transform-${tab}`;
 }
 
-export default function FeaturedDrinks() {
+// Rename the component to BeerShowOut for correct export
+function BeerShowOut() {
   const [currentTab, setCurrentTab] = useState(0);
   const [productsPerTab, setProductsPerTab] = useState(3);
   const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
@@ -160,11 +161,7 @@ export default function FeaturedDrinks() {
                         src={product.image}
                         alt={product.name}
                         width={200}
-<<<<<<< HEAD
-                        height={500}
-=======
                         height={200}
->>>>>>> fdbd92afd537fb96f949c49a424343127199ce80
                         className="object-contain w-full h-full"
                       />
                     </div>
@@ -261,3 +258,5 @@ export default function FeaturedDrinks() {
     </section>
   );
 }
+
+export default BeerShowOut;

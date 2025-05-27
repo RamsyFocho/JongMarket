@@ -316,8 +316,8 @@ export const products = [
     price: 399.99,
     badges: ["new"],
     rating: 4.9,
-    image: "/images/products/chateau-margaux-2015.jpg",
-    slug: "chateau-margaux-2015",
+    image: "/images/products/château-Margaux.jpg",
+    slug: "château-Margaux",
     inStock: true,
     stockCount: 10,
     description:
@@ -353,32 +353,29 @@ export const products = [
       brewery: "Brouwerij Westvleteren",
     },
   },
-<<<<<<< HEAD
-  {
-    id: 42,
-    name: "Heineken",
-    brand: "Heineken",
-    category: "Beer",
-    price: 14.99,
-    badges: ["new"],
-    rating: 4.5,
-    image: "/images/products/beer/heineken.jpg",
-    slug: "heineken",
-    inStock: true,
-    stockCount: 100,
-    description:
-      "Heineken is a world-famous Dutch lager known for its crisp, refreshing taste and subtle fruity notes. Brewed with pure malt and a unique A-yeast, it's a favorite for any occasion.",
-    details: {
-      origin: "Netherlands",
-      style: "Lager",
-      abv: "5%",
-      size: "330ml",
-      brewery: "Heineken N.V.",
-    },
+{
+  id: 42,
+  name: "Heineken",
+  brand: "Heineken",
+  category: "Beer",
+  price: 14.99,
+  badges: ["new"],
+  rating: 4.5,
+  image: "/images/products/beer/heineken.jpg",
+  slug: "heineken",
+  inStock: true,
+  stockCount: 100,
+  description:
+    "Heineken is a world-famous Dutch lager known for its crisp, refreshing taste and subtle fruity notes. Brewed with pure malt and a unique A-yeast, it's a favorite for any occasion.",
+  details: {
+    origin: "Netherlands",
+    style: "Lager",
+    abv: "5%",
+    size: "330ml",
+    brewery: "Heineken N.V.",
   },
-=======
->>>>>>> fdbd92afd537fb96f949c49a424343127199ce80
-  // Champagne
+},
+// Champagne
   {
     id: 61,
     name: "Dom Pérignon Vintage 2010",
@@ -433,7 +430,7 @@ export const products = [
     price: 18.99,
     badges: ["new"],
     rating: 4.8,
-    image: "/images/products/ethiopian-yirgacheffe-coffee.jpg",
+    image: "/images/products/yirgacheffe-coffee.jpg",
     slug: "ethiopian-yirgacheffe-coffee",
     inStock: true,
     stockCount: 40,

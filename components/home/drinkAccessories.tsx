@@ -15,9 +15,22 @@ import { products } from "@/data/products";
 // Only show products in the 'accessories' category
 const accessoriesProducts = products.filter((p) => p.category && p.category.toLowerCase() === "accessories");
 
-export default function FeaturedDrinks() {
+// Split accessories into 2 tabs, evenly (first tab gets extra if odd)
+const mid = Math.ceil(accessoriesProducts.length / 2);
+const accessoriesTabs = [
+  accessoriesProducts.slice(0, mid),
+  accessoriesProducts.slice(mid)
+];
+
+// Helper for badge vertical stacking
+function getBadgeTopClass(index: number) {
+  // Stacks badges vertically with spacing
+  return `top-[${index * 2.2 + 1}rem]`;
+}
+
+export default function DrinkAccessories() {
   const [currentTab, setCurrentTab] = useState(0);
-  const [productsPerTab, setProductsPerTab] = useState(3); // SSR-safe default
+  const [productsPerRow, setProductsPerRow] = useState(3); // SSR-safe default
   const [isClient, setIsClient] = useState(false);
   const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
   const { addToCart } = useCart();
@@ -25,45 +38,38 @@ export default function FeaturedDrinks() {
   const { toast } = useToast();
   const { t } = useLanguage();
 
-  // Hydration-safe responsive products per tab
+  // Hydration-safe responsive products per row
   useEffect(() => {
     setIsClient(true);
-    const updateProductsPerTab = () => {
+    const updateProductsPerRow = () => {
       if (window.innerWidth < 640) {
-        setProductsPerTab(1);
+        setProductsPerRow(1);
       } else if (window.innerWidth < 1024) {
-        setProductsPerTab(2);
+        setProductsPerRow(2);
       } else {
-        setProductsPerTab(3);
+        setProductsPerRow(3);
       }
     };
-    updateProductsPerTab();
-    window.addEventListener("resize", updateProductsPerTab);
-    return () => window.removeEventListener("resize", updateProductsPerTab);
+    updateProductsPerRow();
+    window.addEventListener("resize", updateProductsPerRow);
+    return () => window.removeEventListener("resize", updateProductsPerRow);
   }, []);
-
-  // Tab logic (SSR-safe)
-  const effectiveProductsPerTab = isClient ? productsPerTab : 3;
-  const totalTabs = Math.ceil(accessoriesProducts.length / effectiveProductsPerTab);
-  const productsTabs = Array.from({ length: totalTabs }, (_, i) =>
-    accessoriesProducts.slice(i * effectiveProductsPerTab, (i + 1) * effectiveProductsPerTab)
-  );
 
   // Auto-scroll
   useEffect(() => {
-    if (totalTabs <= 1) return;
+    if (accessoriesTabs.length <= 1) return;
     autoScrollRef.current = setInterval(() => {
-      setCurrentTab((prev: number) => (prev < totalTabs - 1 ? prev + 1 : 0));
-    }, 5000);
+      setCurrentTab((prev: number) => (prev < accessoriesTabs.length - 1 ? prev + 1 : 0));
+    }, 6000);
     return () => {
       if (autoScrollRef.current) clearInterval(autoScrollRef.current);
     };
-  }, [totalTabs]);
+  }, []);
 
   const handleArrow = (dir: "left" | "right") => {
     setCurrentTab((prev: number) => {
-      if (dir === "left") return prev > 0 ? prev - 1 : totalTabs - 1;
-      return prev < totalTabs - 1 ? prev + 1 : 0;
+      if (dir === "left") return prev > 0 ? prev - 1 : accessoriesTabs.length - 1;
+      return prev < accessoriesTabs.length - 1 ? prev + 1 : 0;
     });
   };
 
@@ -89,14 +95,19 @@ export default function FeaturedDrinks() {
         </div>
       </div>
       <div className="overflow-hidden">
+        {/* Tab slider container */}
         <div
-          className={`flex transition-transform duration-500 ${getTabTransformClass(currentTab)}`}
+          className={`transition-transform duration-500 flex w-full accessories-tab-slider tab-transform-${currentTab}`}
+          data-tab-count={accessoriesTabs.length}
         >
-          {productsTabs.map((tab, tabIdx) => (
+          {accessoriesTabs.map((tab, tabIdx) => (
             <div
               key={tabIdx}
-              className="flex min-w-[40rem] gap-8 px-2"
+              className="w-full flex flex-wrap gap-6 justify-center items-stretch px-2 flex-shrink-0"
             >
+              {tab.length === 0 && (
+                <div className="text-gray-400 text-center w-full py-12">No accessories in this tab.</div>
+              )}
               {tab.map((product, i) => {
                 const badgeColor =
                   product.badges?.[0] === "new"
@@ -110,7 +121,7 @@ export default function FeaturedDrinks() {
                 return (
                   <div
                     key={product.id}
-                    className="bg-white rounded-lg shadow group border border-gray-100 flex-1 min-w-0 transition-transform hover:-translate-y-1 hover:shadow-lg relative flex flex-col"
+                    className="bg-white rounded-lg shadow group border border-gray-200 flex flex-col relative min-w-[220px] max-w-xs w-full sm:w-[45%] md:w-[30%] flex-1 transition-transform hover:-translate-y-1 hover:shadow-lg"
                   >
                     {/* Badges (with right border arrow shape) */}
                     {product.badges?.map((badge, j) => (
@@ -150,7 +161,7 @@ export default function FeaturedDrinks() {
                       <Heart className={`h-5 w-5 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-500'}`} />
                     </button>
                     {/* Image */}
-                    <div className="h-[19rem] bg-gray-100 flex items-center justify-center rounded-t-lg overflow-hidden">
+                    <div className="h-[16rem] bg-gray-100 flex items-center justify-center rounded-t-lg overflow-hidden">
                       <Image
                         src={product.image}
                         alt={product.name}
@@ -211,7 +222,10 @@ export default function FeaturedDrinks() {
                             return;
                           }
                           addToCart({
-                            ...product,
+                            id: product.id,
+                            name: product.name,
+                            price: product.currentPrice !== undefined ? product.currentPrice : product.price,
+                            image: product.image,
                             quantity: 1
                           });
                           toast({
@@ -219,16 +233,18 @@ export default function FeaturedDrinks() {
                             description: `${product.name} ${t("hasBeenAddedToYourCart") || "has been added to your cart."}`,
                           });
                         }}
-                        className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg px-4 py-2 transition-all duration-200 flex items-center justify-center gap-2"
+                        className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
                       >
                         <ShoppingCart className="w-5 h-5" />
                         {t("addToCart") || "Add to Cart"}
                       </Button>
-                      <Link
-                        href={`/product/${product.slug}`}
-                        className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg px-4 py-2 transition-all duration-200 flex items-center justify-center gap-2 text-center"
-                      >
-                        {t("viewMore") || "View More"}
+                      <Link href={`/product/${product.slug}`} className="flex-1">
+                        <Button
+                          variant="outline"
+                          className="flex-1 border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 flex items-center justify-center gap-2"
+                        >
+                          {t("viewMore") || "View More"}
+                        </Button>
                       </Link>
                     </div>
                   </div>
@@ -238,27 +254,19 @@ export default function FeaturedDrinks() {
           ))}
         </div>
       </div>
-      {/* Dots Navigation */}
-      <div className="flex justify-center gap-2 mt-4">
-        {Array.from({ length: totalTabs }).map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentTab(i)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${currentTab === i ? "bg-amber-500 scale-125" : "bg-gray-300 hover:bg-amber-400"}`}
-            aria-label={`Go to tab ${i + 1}`}
-          ></button>
-        ))}
-      </div>
+      {/* Mobile Tab Indicators */}
+      {accessoriesTabs.length > 1 && isClient && (
+        <div className="flex justify-center gap-2 mt-4">
+          {accessoriesTabs.map((_, tabIdx) => (
+            <button
+              key={tabIdx}
+              onClick={() => setCurrentTab(tabIdx)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${currentTab === tabIdx ? "bg-amber-500 scale-110" : "bg-gray-300 hover:bg-gray-400"}`}
+              aria-label={`Go to tab ${tabIdx + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
-}
-
-// Helper for tab transform class (for sliding effect)
-function getTabTransformClass(tab: number) {
-  return `tab-transform-${tab}`;
-}
-
-// Helper for badge top class (for badge positioning)
-function getBadgeTopClass(index: number) {
-  return `badge-top-${index}`;
 }

@@ -18,3 +18,12 @@
 .tab-transform-7 { transform: translateX(-700%); }
 .tab-transform-8 { transform: translateX(-800%); }
 .tab-transform-9 { transform: translateX(-900%); }
+
+/* Accessories tab slider width for 2 tabs */
+.accessories-tab-slider[data-tab-count="2"] {
+  width: 200%;
+}
+.accessories-tab-slider[data-tab-count="1"] {
+  width: 100%;
+}
+/* Add more if you ever have more tabs */
