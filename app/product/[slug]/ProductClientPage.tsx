@@ -50,7 +50,7 @@ const MemoizedProductImage = React.memo(({
     // Enable Next.js image optimization and caching
     quality={85}
     placeholder="blur"
-    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8A0XqoVKjYuUVElpQKiVCpUalQqJUSolQqVCJRKWvAYiVCJRKWvAYiUSlrwGIlQiUSlrwGIlEpa8BiJUIlEpa8BiJRKWvAYiVCpUbFyiolU"
+    blurDataURL="data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8A0XqoVKjYuUVElpQKiVCpUalQqJUSolQqVCJRKWvAYiVCJRKWvAYiUSlrwGIlQiUSlrwGIlEpa8BiJUIlEpa8BiJRKWvAYiVCpUbFyiolU"
   />
 ));
 
@@ -60,7 +60,7 @@ const MemoizedStarRating = React.memo(({ rating }: { rating: number }) => (
       <Star
         key={i}
         className="h-5 w-5"
-        fill={i < Math.floor(rating) ? "currentColor" : "none"}
+        fill={i < Math.round(rating) ? "currentColor" : "none"}
       />
     ))}
   </div>
@@ -286,7 +286,7 @@ export default function ProductClientPage({
             transition={{ duration: 0.5 }}
             className="space-y-4"
           >
-            <div className="relative aspect-square rounded-lg overflow-hidden bg-white shadow-md">
+            <div className="relative aspect-square h-80 md:h-96 rounded-lg overflow-hidden bg-white shadow-md">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeImage}
@@ -398,7 +398,7 @@ export default function ProductClientPage({
                     <span className="text-gray-500 capitalize w-24">
                       {key}:
                     </span>
-                    <span className="font-medium">{value}</span>
+                    <span className="font-medium">{String(value)}</span>
                   </div>
                 ))}
               </div>
@@ -539,7 +539,7 @@ export default function ProductClientPage({
                       <span className="text-gray-500 capitalize block mb-1">
                         {key}
                       </span>
-                      <span className="font-medium">{value}</span>
+                      <span className="font-medium">{String(value)}</span>
                     </div>
                   ))}
                 </div>
@@ -595,7 +595,7 @@ export default function ProductClientPage({
                   <div className="space-y-2">
                     {[5, 4, 3, 2, 1].map((star) => {
                       const count =
-                        product.reviews?.filter((r) => r.rating === star)
+                        product.reviews?.filter(function(r: any) { return r.rating === star })
                           .length || 0;
                       const percentage = product.reviews?.length
                         ? (count / product.reviews.length) * 100
@@ -624,52 +624,54 @@ export default function ProductClientPage({
                 <div className="col-span-2">
                   {product.reviews && product.reviews.length > 0 ? (
                     <div className="space-y-6">
-                      {product.reviews.map((review) => (
-                        <motion.div
-                          key={review.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.5 }}
-                          className="border-b pb-6 last:border-b-0"
-                          itemScope
-                          itemType="https://schema.org/Review"
-                        >
-                          <div className="flex items-center mb-3">
-                            <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 font-bold mr-3">
-                              {review.name.charAt(0)}
-                            </div>
-                            <div>
-                              <h4 className="font-medium" itemProp="author">
-                                {review.name}
-                              </h4>
-                              <div className="flex items-center">
-                                <div
-                                  className="flex text-amber-500 mr-2"
-                                  itemProp="reviewRating"
-                                  itemScope
-                                  itemType="https://schema.org/Rating"
-                                >
-                                  <meta
-                                    itemProp="ratingValue"
-                                    content={review.rating.toString()}
-                                  />
-                                  <MemoizedStarRating rating={review.rating} />
+                      {product.reviews.map(function(review: any) {
+                        return (
+                          <motion.div
+                            key={review.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5 }}
+                            className="border-b pb-6 last:border-b-0"
+                            itemScope
+                            itemType="https://schema.org/Review"
+                          >
+                            <div className="flex items-center mb-3">
+                              <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 font-bold mr-3">
+                                {review.name.charAt(0)}
+                              </div>
+                              <div>
+                                <h4 className="font-medium" itemProp="author">
+                                  {review.name}
+                                </h4>
+                                <div className="flex items-center">
+                                  <div
+                                    className="flex text-amber-500 mr-2"
+                                    itemProp="reviewRating"
+                                    itemScope
+                                    itemType="https://schema.org/Rating"
+                                  >
+                                    <span
+                                      itemProp="ratingValue"
+                                      content={review.rating.toString()}
+                                    />
+                                    <MemoizedStarRating rating={review.rating} />
+                                  </div>
+                                  <span
+                                    className="text-gray-500 text-sm"
+                                    itemProp="datePublished"
+                                  >
+                                    {review.date}
+                                  </span>
                                 </div>
-                                <span
-                                  className="text-gray-500 text-sm"
-                                  itemProp="datePublished"
-                                >
-                                  {review.date}
-                                </span>
                               </div>
                             </div>
-                          </div>
-                          <p className="text-gray-700" itemProp="reviewBody">
-                            {review.comment}
-                          </p>
-                        </motion.div>
-                      ))}
+                            <p className="text-gray-700" itemProp="reviewBody">
+                              {review.comment}
+                            </p>
+                          </motion.div>
+                        );
+                      })}
                     </div>
                   ) : (
                     <div className="text-center py-8">
@@ -692,13 +694,15 @@ export default function ProductClientPage({
           <div>
             <h2 className="text-2xl font-bold mb-8">You May Also Like</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedProducts.map((relatedProduct) => (
-                <MemoizedRelatedProduct
-                  key={relatedProduct.id}
-                  product={relatedProduct}
-                  t={t}
-                />
-              ))}
+              {relatedProducts.map(function(relatedProduct: any) {
+                return (
+                  <MemoizedRelatedProduct
+                    key={relatedProduct.id}
+                    product={relatedProduct}
+                    t={t}
+                  />
+                );
+              })}
             </div>
           </div>
         )}

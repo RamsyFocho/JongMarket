@@ -47,16 +47,16 @@ export default function HomePage() {
               <Hero />
             </Suspense>
             <Suspense fallback={<div>Loading trending drinks...</div>}>
-              <TrendingDrinks />
+              <TrendingDrinks maxDisplay={6} />
             </Suspense>
             <Suspense fallback={<div>Loading featured drinks...</div>}>
-              <FeaturedDrinks />
+              <FeaturedDrinks maxDisplay={6} />
             </Suspense>
             <Suspense fallback={<div>Loading featured categories...</div>}>
-              <FeaturedCategories />
+              <FeaturedCategories maxDisplay={6} />
             </Suspense>
             <Suspense fallback={<div>Loading special promotions...</div>}>
-              <SpecialPromotions />
+              <SpecialPromotions maxDisplay={6} />
             </Suspense>
             <Suspense fallback={<div>Loading category gallery...</div>}>
               <CategoryGallery />
@@ -71,8 +71,8 @@ export default function HomePage() {
         <MoreInfo />
         <BeerShowOut/>
         <DrinkAccessories/>
-        <BrandsSection/>
         {/* <Newsletter /> */}
+        <BrandsSection/>
       </Suspense>
     </div>
   );

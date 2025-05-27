@@ -16,12 +16,50 @@ import WishlistButton from "@/components/product/wishlist-button"
 import { useCart } from "@/context/cart-context"
 import { useToast } from "@/components/ui/use-toast"
 
+// Type definitions
+interface Product {
+  id: number;
+  slug: string;
+  name: string;
+  brand: string;
+  description?: string;
+  category: string;
+  price: number;
+  currentPrice: number;
+  originalPrice: number;
+  badges: string[];
+  image: string;
+  rating: number;
+  inStock: boolean;
+  currency?: string;
+  [key: string]: any; // For any additional properties
+}
+
+interface CategoryOption {
+  value: string;
+  label: string;
+}
+
+interface CacheEntry {
+  search: string;
+  price: number[];
+  categories: string[];
+  sort: string;
+}
+
+type SortOption = "featured" | "price-asc" | "price-desc" | "rating";
+
 // Cache for filter results
-const filterCache = new Map()
+const filterCache = new Map<string, Product[]>()
 const CACHE_SIZE_LIMIT = 100
 
 // Generate cache key for filter combination
-const generateCacheKey = (searchQuery, priceRange, selectedCategories, sortOption) => {
+const generateCacheKey = (
+  searchQuery: string, 
+  priceRange: number[], 
+  selectedCategories: string[], 
+  sortOption: SortOption
+): string => {
   return JSON.stringify({
     search: searchQuery.toLowerCase(),
     price: priceRange,
@@ -31,7 +69,7 @@ const generateCacheKey = (searchQuery, priceRange, selectedCategories, sortOptio
 }
 
 // Clean cache when it gets too large
-const cleanCache = () => {
+const cleanCache = (): void => {
   if (filterCache.size > CACHE_SIZE_LIMIT) {
     const keysToDelete = Array.from(filterCache.keys()).slice(0, 20)
     keysToDelete.forEach(key => filterCache.delete(key))
@@ -40,17 +78,17 @@ const cleanCache = () => {
 
 export default function ProductsPage() {
   const searchParams = useSearchParams()
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '')
-  const [priceRange, setPriceRange] = useState([0, 500])
-  const [selectedCategories, setSelectedCategories] = useState([])
-  const [sortOption, setSortOption] = useState("featured")
+  const [searchQuery, setSearchQuery] = useState<string>(searchParams.get('search') || '')
+  const [priceRange, setPriceRange] = useState<number[]>([0, 500])
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [sortOption, setSortOption] = useState<SortOption>("featured")
   const { t } = useLanguage()
   const { addToCart } = useCart()
   const { toast } = useToast()
   
   // Debounced search
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery)
-  const searchTimeoutRef = useRef(null)
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>(searchQuery)
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Debounce search query
   useEffect(() => {
@@ -70,7 +108,7 @@ export default function ProductsPage() {
   }, [searchQuery])
 
   // Memoized category options
-  const categoryOptions = useMemo(() => {
+  const categoryOptions = useMemo((): CategoryOption[] => {
     return Object.entries(categories).map(([slug, data]) => ({
       value: slug,
       label: data.title,
@@ -78,20 +116,20 @@ export default function ProductsPage() {
   }, [])
 
   // Memoized filtered and sorted products with caching
-  const filteredProducts = useMemo(() => {
+  const filteredProducts = useMemo((): Product[] => {
     const cacheKey = generateCacheKey(debouncedSearchQuery, priceRange, selectedCategories, sortOption)
     
     // Check cache first
     if (filterCache.has(cacheKey)) {
-      return filterCache.get(cacheKey)
+      return filterCache.get(cacheKey)!
     }
 
-    let result = [...products]
+    let result: Product[] = [...products]
 
     // Apply search filter
     if (debouncedSearchQuery) {
       const query = debouncedSearchQuery.toLowerCase()
-      result = result.filter((product) =>
+      result = result.filter((product: Product) =>
         product.name.toLowerCase().includes(query) ||
         product.description?.toLowerCase().includes(query) ||
         product.category.toLowerCase().includes(query)
@@ -100,12 +138,12 @@ export default function ProductsPage() {
 
     // Filter by price
     result = result.filter(
-      (product) => product.price >= priceRange[0] && product.price <= priceRange[1]
+      (product: Product) => (product.currentPrice || product.price) >= priceRange[0] && (product.currentPrice || product.price) <= priceRange[1]
     )
 
     // Filter by category
     if (selectedCategories.length > 0) {
-      result = result.filter((product) =>
+      result = result.filter((product: Product) =>
         selectedCategories.includes(product.category.toLowerCase())
       )
     }
@@ -113,13 +151,13 @@ export default function ProductsPage() {
     // Apply sorting
     switch (sortOption) {
       case "price-asc":
-        result.sort((a, b) => a.price - b.price)
+        result.sort((a: Product, b: Product) => (a.currentPrice || a.price) - (b.currentPrice || b.price))
         break
       case "price-desc":
-        result.sort((a, b) => b.price - a.price)
+        result.sort((a: Product, b: Product) => (b.currentPrice || b.price) - (a.currentPrice || a.price))
         break
       case "rating":
-        result.sort((a, b) => b.rating - a.rating)
+        result.sort((a: Product, b: Product) => b.rating - a.rating)
         break
       default:
         // Keep original order for "featured"
@@ -142,37 +180,37 @@ export default function ProductsPage() {
   }, [searchParams, searchQuery])
 
   // Memoized event handlers
-  const handleCategoryChange = useCallback((category) => {
-    setSelectedCategories((prev) => {
+  const handleCategoryChange = useCallback((category: string): void => {
+    setSelectedCategories((prev: string[]) => {
       if (prev.includes(category)) {
-        return prev.filter((c) => c !== category)
+        return prev.filter((c: string) => c !== category)
       } else {
         return [...prev, category]
       }
     })
   }, [])
 
-  const handlePriceRangeChange = useCallback((newRange) => {
+  const handlePriceRangeChange = useCallback((newRange: number[]): void => {
     setPriceRange(newRange)
   }, [])
 
-  const handleSortChange = useCallback((e) => {
-    setSortOption(e.target.value)
+  const handleSortChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>): void => {
+    setSortOption(e.target.value as SortOption)
   }, [])
 
-  const handleResetFilters = useCallback(() => {
+  const handleResetFilters = useCallback((): void => {
     setPriceRange([0, 500])
     setSelectedCategories([])
     setSortOption("featured")
     setSearchQuery('')
   }, [])
 
-  const handleAddToCart = useCallback((product) => {
+  const handleAddToCart = useCallback((product: Product): void => {
     if (product.inStock) {
       addToCart({
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: product.currentPrice || product.price,
         image: product.image,
         quantity: 1,
       })
@@ -185,7 +223,7 @@ export default function ProductsPage() {
 
   // Memoized product cards to prevent unnecessary re-renders
   const ProductCard = useMemo(() => {
-    return ({ product }) => (
+    return ({ product }: { product: Product }) => (
       <motion.div
         key={product.id}
         initial={{ opacity: 0, y: 20 }}
@@ -241,7 +279,7 @@ export default function ProductsPage() {
             </div>
 
             <div className="flex items-center justify-between mt-4">
-              <span className="font-bold text-lg">{formatCurrency(product.price)}</span>
+              <span className="font-bold text-lg">{formatCurrency(product.currentPrice || product.price)}</span>
 
               <div className="flex items-center">
                 <WishlistButton product={product} variant="icon" />
@@ -303,7 +341,7 @@ export default function ProductsPage() {
             <div className="mb-8">
               <h3 className="text-sm font-medium mb-4">Categories</h3>
               <div className="space-y-3">
-                {categoryOptions.map((category) => (
+                {categoryOptions.map((category: CategoryOption) => (
                   <div key={category.value} className="flex items-center">
                     <Checkbox
                       id={`category-${category.value}`}
@@ -343,6 +381,8 @@ export default function ProductsPage() {
                 value={sortOption}
                 onChange={handleSortChange}
                 className="text-sm border rounded-md px-2 py-1"
+                title="Sort products by"
+                aria-label="Sort products by"
               >
                 <option value="featured">Featured</option>
                 <option value="price-asc">Price: Low to High</option>
@@ -353,8 +393,8 @@ export default function ProductsPage() {
           </div>
 
           {filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProducts.map((product) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+              {filteredProducts.map((product: Product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>

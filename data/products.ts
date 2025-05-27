@@ -74,7 +74,7 @@ export const products = [
     badges: ["new"],
     rating: 4.5,
     image: "/images/products/whiskey/Chivas Regal 12 Year Old - Gift Box _ The Whisky….jpg",
-    slug: "buffalo-trace-bourbon",
+    slug: "chivas-regal-12-year", // This slug seems correct based on server render. The client was expecting "buffalo-trace-bourbon"
     inStock: true,
     stockCount: 45,
     description:
@@ -95,8 +95,8 @@ export const products = [
     price: 24.99,
     badges: [],
     rating: 4.6,
-    image: "/images/products/whiskey/jackDaniel.jpg",
-    slug: "redbreast-12-year-old",
+    image: "/images/products/whiskey/jackDaniel.jpg", // Assuming this image name is intentional and matches the file
+    slug: "jack-daniels-old-no7", // This slug seems correct based on server render. The client was expecting "redbreast-12-year-old"
     inStock: true,
     stockCount: 18,
     description:
@@ -316,7 +316,7 @@ export const products = [
     price: 399.99,
     badges: ["new"],
     rating: 4.9,
-    image: "/images/products/château-Margaux.avif",
+    image: "/images/products/chateau-margaux-2015.jpg",
     slug: "chateau-margaux-2015",
     inStock: true,
     stockCount: 10,
@@ -339,7 +339,7 @@ export const products = [
     price: 24.99,
     badges: ["new"],
     rating: 4.7,
-    image: "/images/westvleteren-12.jpeg",
+    image: "/images/products/westvleteren-12.jpg",
     slug: "westvleteren-12",
     inStock: true,
     stockCount: 50,
@@ -362,7 +362,7 @@ export const products = [
     price: 189.99,
     badges: ["sale"],
     rating: 4.9,
-    image: "/images/products/dom-perignon-vintage-2010.avif",
+    image: "/images/products/dom-perignon-vintage-2010.jpg",
     slug: "dom-perignon-vintage-2010",
     inStock: true,
     stockCount: 15,
@@ -385,7 +385,7 @@ export const products = [
     price: 199.99,
     badges: ["new"],
     rating: 4.8,
-    image: "/images/hennessy-xo.jpg",
+    image: "/images/products/hennessy-xo.jpg",
     slug: "hennessy-xo",
     inStock: true,
     stockCount: 20,
@@ -408,7 +408,7 @@ export const products = [
     price: 18.99,
     badges: ["new"],
     rating: 4.8,
-    image: "/images/products/yirgacheffe-coffee.avif",
+    image: "/images/products/ethiopian-yirgacheffe-coffee.jpg",
     slug: "ethiopian-yirgacheffe-coffee",
     inStock: true,
     stockCount: 40,
@@ -430,7 +430,7 @@ export const products = [
     price: 24.99,
     badges: ["new"],
     rating: 4.7,
-    image: "/images/jasmine-dragon-pearl-tea.jpg",
+    image: "/images/products/jasmine-dragon-pearl-tea.jpg",
     slug: "jasmine-dragon-pearl-tea",
     inStock: true,
     stockCount: 25,
@@ -496,7 +496,7 @@ export const products = [
     price: 16.99,
     badges: ["new"],
     rating: 4.7,
-    image: "/images/products/masala-chai-blend.avif",
+    image: "/images/products/masala-chai-blend.jpg",
     slug: "masala-chai-blend",
     inStock: true,
     stockCount: 35,
@@ -742,8 +742,8 @@ export const products = [
       varieties: "Cabernet/Merlot, Pinot Noir, Chardonnay",
       care: "Dishwasher safe",
       dimensions: '9" H x 3.5" W',
-    },
-    currency: "USD"
+    }
+    ,currency: "USD"
   },
   {
     id: 1004,

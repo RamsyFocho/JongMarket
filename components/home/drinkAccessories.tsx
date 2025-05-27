@@ -68,7 +68,7 @@ export default function FeaturedDrinks() {
   };
 
   return (
-    <section className="max-w-7xl mx-auto bg-white p-8 rounded-lg shadow mb-12">
+    <section className="w-full mx-auto bg-white p-8 rounded-lg shadow mb-12">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Drinks Accessories</h2>
         <div className="flex gap-2">
@@ -95,7 +95,7 @@ export default function FeaturedDrinks() {
           {productsTabs.map((tab, tabIdx) => (
             <div
               key={tabIdx}
-              className="flex min-w-full gap-8 px-2"
+              className="flex min-w-[40rem] gap-8 px-2"
             >
               {tab.map((product, i) => {
                 const badgeColor =
@@ -150,7 +150,7 @@ export default function FeaturedDrinks() {
                       <Heart className={`h-5 w-5 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-500'}`} />
                     </button>
                     {/* Image */}
-                    <div className="h-48 bg-gray-100 flex items-center justify-center rounded-t-lg overflow-hidden">
+                    <div className="h-[19rem] bg-gray-100 flex items-center justify-center rounded-t-lg overflow-hidden">
                       <Image
                         src={product.image}
                         alt={product.name}

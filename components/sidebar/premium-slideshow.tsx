@@ -114,7 +114,7 @@ export default function PremiumSlideshow() {
                         src={product.image || "/placeholder.svg"}
                         alt={product.name}
                         fill
-                        className="object-cover"
+                        className="object-contain"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                       <div className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">
