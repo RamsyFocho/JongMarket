@@ -310,14 +310,14 @@ export const products = [
   // Wine
   {
     id: 21,
-    name: "Château Margaux 2015",
+    name: "Chateau Margaux 2015",
     brand: "Château Margaux",
     category: "Wine",
     price: 399.99,
     badges: ["new"],
     rating: 4.9,
-    image: "/images/products/château-Margaux.jpg",
-    slug: "château-Margaux",
+    image: "/images/products/chateau_margaux.jpg",
+    slug: "chateau-margaux-2015",
     inStock: true,
     stockCount: 10,
     description:
@@ -384,7 +384,7 @@ export const products = [
     price: 189.99,
     badges: ["sale"],
     rating: 4.9,
-    image: "/images/products/dom-perignon-vintage-2010.jpg",
+    image: "/images/dom-perignon-vintage-2010.jpg",
     slug: "dom-perignon-vintage-2010",
     inStock: true,
     stockCount: 15,

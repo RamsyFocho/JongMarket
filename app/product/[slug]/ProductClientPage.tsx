@@ -164,10 +164,9 @@ const getCachedRelatedProducts = (product: any) => {
 };
 
 export default function ProductClientPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+  slug,
+}: {slug: string}) {
+  console.log("Slug in PCP "+ slug);
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const { addToCart } = useCart();
@@ -184,8 +183,8 @@ export default function ProductClientPage({
   const fullUrl = useMemo(() => `${baseUrl}${pathname}`, [baseUrl, pathname]);
   
   // Use cached product data
-  const product = useMemo(() => getCachedProduct(params.slug), [params.slug]);
-  
+  // const product = useMemo(() => getCachedProduct(slug), [slug]);
+  const product = products.find((p) => p.slug === slug);
   // Memoized product images
   const productImages = useMemo(() => [
     product?.image,
@@ -724,7 +723,7 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }) {
-  const product = getCachedProduct(params.slug);
+  const product = getCachedProduct(slug);
   
   if (!product) {
     return {

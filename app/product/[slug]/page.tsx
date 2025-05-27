@@ -4,9 +4,8 @@ import ProductDisplay from "@/components/product/product-display"
 import { products } from "@/data/products"
 import ProductClientPage from "./ProductClientPage"
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const resolvedParams = await params;
-  const product = products.find((p) => p.slug === resolvedParams.slug)
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const product = products.find((p) => p.slug === params.slug)
 
   if (!product) {
     return {
@@ -42,20 +41,22 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       images: [product.image],
     },
     alternates: {
-      canonical: `https://jongmarket.com/product/${resolvedParams.slug}`,
+      canonical: `https://jongmarket.com/product/${params.slug}`,
       languages: {
-        "en-US": `https://jongmarket.com/product/${resolvedParams.slug}`,
-        "fr-FR": `https://jongmarket.com/fr/product/${resolvedParams.slug}`,
+        "en-US": `https://jongmarket.com/product/${params.slug}`,
+        "fr-FR": `https://jongmarket.com/fr/product/${params.slug}`,
       },
     },
   }
 }
 
-export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
-  const resolvedParams = await params;
-  const product = products.find((p) => p.slug === resolvedParams.slug)
-  if (!product) {
+export default async function ProductPage({ params }: Promise<{ params: { slug: string } }>) {
+  const {slug} = await params
+  const foundProduct = products.find((p) => p.slug === slug)
+  console.log(foundProduct)
+  console.log("Slug "+slug)
+  if (!foundProduct) {
     notFound()
   }
-  return <ProductClientPage params={resolvedParams} />
+  return <ProductClientPage slug={slug} />
 }
