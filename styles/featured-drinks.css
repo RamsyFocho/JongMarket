@@ -1,0 +1,20 @@
+/* Badge arrow shape and stacking for FeaturedDrinks */
+.badge-arrow {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%);
+}
+.badge-top-0 { top: 10px; }
+.badge-top-1 { top: 42px; }
+.badge-top-2 { top: 74px; }
+.badge-top-3 { top: 106px; }
+
+/* Tab transforms for up to 10 tabs */
+.tab-transform-0 { transform: translateX(0%); }
+.tab-transform-1 { transform: translateX(-100%); }
+.tab-transform-2 { transform: translateX(-200%); }
+.tab-transform-3 { transform: translateX(-300%); }
+.tab-transform-4 { transform: translateX(-400%); }
+.tab-transform-5 { transform: translateX(-500%); }
+.tab-transform-6 { transform: translateX(-600%); }
+.tab-transform-7 { transform: translateX(-700%); }
+.tab-transform-8 { transform: translateX(-800%); }
+.tab-transform-9 { transform: translateX(-900%); }
