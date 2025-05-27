@@ -52,7 +52,7 @@ const BrandsSection = () => {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-slate-50 via-white to-slate-100 py-16 lg:py-24 overflow-hidden">
+    <section className="relative w-full bg-gradient-to-br from-slate-50 via-white to-slate-100 py-16 lg:py-24 overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-10 left-10 w-32 h-32 bg-amber-400 rounded-full blur-3xl"></div>
@@ -60,7 +60,7 @@ const BrandsSection = () => {
         <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-purple-400 rounded-full blur-2xl"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 relative">
         {/* Header */}
         <div className="text-center mb-12 lg:mb-16">
           <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full border border-white/40 mb-4">
@@ -76,7 +76,7 @@ const BrandsSection = () => {
         </div>
 
         {/* Brands Carousel */}
-        <div className="relative">
+        <div className="relative w-full">
           {/* Navigation Buttons */}
           <button
             onClick={prevSlide}
@@ -116,7 +116,7 @@ const BrandsSection = () => {
                           {/* Brand Card */}
                           <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 lg:p-8 border border-white/50 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:bg-white/90 hover:-translate-y-2">
                             {/* Brand Logo Container */}
-                            <div className="aspect-[3/2] flex items-center justify-center mb-3 relative overflow-hidden rounded-lg bg-gray-50/50">
+                            <div className="border-2 border-yellow-500 aspect-[3/2] flex items-center justify-center mb-3 relative overflow-hidden rounded-lg bg-gray-50/50">
                               <img
                                 src={brand.logo}
                                 alt={`${brand.name} logo`}

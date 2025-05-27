@@ -112,7 +112,7 @@ export default function SpecialPromotion() {
   }
 
   return (
-    <section className="max-w-7xl mx-auto bg-white p-8 rounded-lg shadow mb-12">
+    <section className="max-w-full mx-auto bg-white p-8 rounded-lg shadow mb-12">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Special Promotion</h2>
         <div className="flex gap-2 items-center">
@@ -181,10 +181,10 @@ export default function SpecialPromotion() {
                 
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-red-600 font-bold text-xl">
-                    {promo.discountedPrice.toLocaleString()} $
+                    {formatCurrency(promo.discountedPrice, "FCFA")}
                   </span>
                   <span className="line-through text-gray-400">
-                    {promo.originalPrice.toLocaleString()} $
+                    {formatCurrency(promo.originalPrice, "FCFA")}
                   </span>
                   <span className="ml-2 text-green-600 font-semibold">{promo.discount} OFF</span>
                 </div>

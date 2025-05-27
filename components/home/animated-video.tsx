@@ -171,7 +171,7 @@ export default function AnimatedVideo() {
           variants={containerVariants}
           initial="hidden"
           animate={controls}
-          className="relative max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl"
+          className="relative max-w-full mx-auto rounded-xl overflow-hidden shadow-2xl"
           ref={videoContainerRef}
         >
           {/* YouTube Video */}

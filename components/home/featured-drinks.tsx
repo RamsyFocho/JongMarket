@@ -80,7 +80,7 @@ const ProductCard = React.memo<ProductCardProps>(({
   const reviewCount = Array.isArray(product.reviews) ? product.reviews.length : (product.reviews || 0);
 
   return (
-    <article className={`group bg-white rounded-xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 flex flex-col min-w-0 flex-1 relative overflow-hidden max-w-xs mx-auto`}>  
+    <article className={`group bg-white rounded-xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 flex flex-col min-w-0 flex-1 relative overflow-hidden max-w-[28rem] mx-5`}>  
       {/* Badges (arrow shape, stacked) */}
       {product.badges?.map((badge, idx) => (
         <span key={badge} className={badgeClass(badge, idx)}>{badge.replace("-", " ")}</span>
@@ -94,15 +94,15 @@ const ProductCard = React.memo<ProductCardProps>(({
         <Heart className={`h-4 w-4 transition-colors ${isInWishlist ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-500'}`} />
       </button>
       {/* Image Container - priority, large, always on top */}
-      <div className="relative w-full h-64 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center overflow-hidden rounded-t-xl">
+      <div className="relative w-full h-64 bg-white flex items-center justify-center overflow-hidden rounded-t-xl">
         <Image
           src={product.image}
           alt={product.name}
           fill
-          className="object-contain p-6 transition-transform duration-300 group-hover:scale-110 z-10"
+          className="object-contain w-full transition-transform duration-300 group-hover:scale-110 z-10"
           loading="eager"
           priority
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 288px"
+          sizes="(max-width: 100%) 100%, (max-width: 100%) 100%, 288px"
           onError={(e) => {
             e.currentTarget.src = '/placeholder-product.jpg';
           }}
@@ -339,11 +339,11 @@ export default function FeaturedDrinks() {
   }
 
   return (
-    <section className="max-w-7xl mx-auto bg-white p-6 lg:p-8 rounded-xl shadow-sm mb-12">
+    <section className="max-w-full mx-auto bg-white p-6 lg:p-8 rounded-xl shadow-sm mb-12">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-xl lg:text-2xl font-bold text-gray-900 tracking-tight">
-          {t('Featured Products') || 'Featured Products'}
+          {t('Feature Products') || 'Feature Products'}
         </h2>
         
         {totalTabs > 1 && (
