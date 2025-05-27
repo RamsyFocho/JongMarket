@@ -353,6 +353,7 @@ export const products = [
       brewery: "Brouwerij Westvleteren",
     },
   },
+<<<<<<< HEAD
   {
     id: 42,
     name: "Heineken",
@@ -375,6 +376,8 @@ export const products = [
       brewery: "Heineken N.V.",
     },
   },
+=======
+>>>>>>> fdbd92afd537fb96f949c49a424343127199ce80
   // Champagne
   {
     id: 61,
