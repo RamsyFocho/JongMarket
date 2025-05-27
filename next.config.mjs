@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: { ignoreDuringBuilds: true },
-  typescript: { ignoreBuildErrors: true },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -15,25 +19,8 @@ const nextConfig = {
     ],
   },
   compress: true,
-
-  experimental: {
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
-      },
-    },
-    optimizePackageImports: [
-      'lucide-react',
-      '@heroicons/react',
-      'recharts',
-      'framer-motion',
-    ],
-    ppr: false,
-    serverExternalPackages: [ /* your server packages */ ],
-  },
+  poweredByHeader: false,
+  output: 'standalone',
 
   async headers() {
     return [
@@ -77,7 +64,15 @@ const nextConfig = {
     ];
   },
 
-  webpack: (config, { dev }) => {
+  async redirects() {
+    return [];
+  },
+
+  async rewrites() {
+    return [];
+  },
+
+  webpack(config, { dev }) {
     if (!dev) {
       config.optimization = {
         ...config.optimization,
@@ -109,17 +104,6 @@ const nextConfig = {
     });
 
     return config;
-  },
-
-  output: 'standalone',
-  poweredByHeader: false,
-
-  async redirects() {
-    return [];
-  },
-
-  async rewrites() {
-    return [];
   },
 };
 
