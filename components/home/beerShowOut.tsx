@@ -160,7 +160,7 @@ export default function FeaturedDrinks() {
                         src={product.image}
                         alt={product.name}
                         width={200}
-                        height={200}
+                        height={500}
                         className="object-contain w-full h-full"
                       />
                     </div>

@@ -353,6 +353,28 @@ export const products = [
       brewery: "Brouwerij Westvleteren",
     },
   },
+  {
+    id: 42,
+    name: "Heineken",
+    brand: "Heineken",
+    category: "Beer",
+    price: 14.99,
+    badges: ["new"],
+    rating: 4.5,
+    image: "/images/products/beer/heineken.jpg",
+    slug: "heineken",
+    inStock: true,
+    stockCount: 100,
+    description:
+      "Heineken is a world-famous Dutch lager known for its crisp, refreshing taste and subtle fruity notes. Brewed with pure malt and a unique A-yeast, it's a favorite for any occasion.",
+    details: {
+      origin: "Netherlands",
+      style: "Lager",
+      abv: "5%",
+      size: "330ml",
+      brewery: "Heineken N.V.",
+    },
+  },
   // Champagne
   {
     id: 61,
