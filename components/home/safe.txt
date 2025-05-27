@@ -102,11 +102,14 @@ export default function SpecialPromotion() {
         </div>
       </div>
       <div className="overflow-hidden">
-        <div className={`flex transition-transform duration-500 tab-transform-${currentTab}`}>
+        <div className={`transition-transform duration-500 tab-transform-${currentTab}`}>
           {promoTabs.map((tab, tabIdx) => (
-            <div key={tabIdx} className="flex min-w-full gap-8 px-2">
+            <div
+              key={tabIdx}
+              className={`grid gap-8 ${perTab === 1 ? 'grid-cols-1' : perTab === 2 ? 'grid-cols-1 sm:grid-cols-2' : perTab === 3 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'}`}
+            >
               {tab.map((promo) => (
-                <div key={promo.id} className="bg-white rounded-lg shadow border border-gray-100 flex flex-col relative p-4 w-full max-w-xs">
+                <div key={promo.id} className="bg-white rounded-lg shadow border border-gray-100 flex flex-col relative p-4 min-h-[420px]">
                   {/* Badges */}
                   <div className="flex gap-2 mb-2">
                     {promo.badges?.map((badge) => (
