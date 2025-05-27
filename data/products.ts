@@ -317,7 +317,7 @@ export const products = [
     badges: ["new"],
     rating: 4.9,
     image: "/images/products/château-Margaux.jpg",
-    slug: "chateau-margaux-2015",
+    slug: "château-Margaux",
     inStock: true,
     stockCount: 10,
     description:
