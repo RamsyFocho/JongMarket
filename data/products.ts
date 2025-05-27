@@ -38,7 +38,8 @@ export const products = [
         name: "Sarah Thompson",
         rating: 4,
         date: "2023-04-22",
-        comment: "Very smooth and enjoyable. Great value for a 12 year old single malt.",
+        comment:
+          "Very smooth and enjoyable. Great value for a 12 year old single malt.",
       },
     ],
     relatedProducts: [7, 9, 10],
@@ -73,7 +74,8 @@ export const products = [
     price: 37.99,
     badges: ["new"],
     rating: 4.5,
-    image: "/images/products/whiskey/Chivas Regal 12 Year Old - Gift Box _ The Whisky….jpg",
+    image:
+      "/images/products/whiskey/Chivas Regal 12 Year Old - Gift Box _ The Whisky….jpg",
     slug: "chivas-regal-12-year", // This slug seems correct based on server render. The client was expecting "buffalo-trace-bourbon"
     inStock: true,
     stockCount: 45,
@@ -145,13 +147,13 @@ export const products = [
     stockCount: 35,
     description:
       "Sophisticated and versatile — suitable for both sipping and cocktails",
-      details: {
-        origin: "United States",
-        region: "Kentucky",
-        abv: "45%",
-        size: "750ml",
-        type: "Bourbon",
-      },
+    details: {
+      origin: "United States",
+      region: "Kentucky",
+      abv: "45%",
+      size: "750ml",
+      type: "Bourbon",
+    },
   },
   {
     id: 7,
@@ -189,13 +191,13 @@ export const products = [
     stockCount: 35,
     description:
       "Sophisticated and versatile — suitable for both sipping and cocktails",
-      details: {
-        origin: "United States",
-        region: "Kentucky",
-        abv: "45%",
-        size: "750ml",
-        type: "Bourbon",
-      },
+    details: {
+      origin: "United States",
+      region: "Kentucky",
+      abv: "45%",
+      size: "750ml",
+      type: "Bourbon",
+    },
   },
   {
     id: 9,
@@ -211,13 +213,13 @@ export const products = [
     stockCount: 35,
     description:
       "Sophisticated and versatile — suitable for both sipping and cocktails",
-      details: {
-        origin: "United States",
-        region: "Kentucky",
-        abv: "45%",
-        size: "750ml",
-        type: "Bourbon",
-      },
+    details: {
+      origin: "United States",
+      region: "Kentucky",
+      abv: "45%",
+      size: "750ml",
+      type: "Bourbon",
+    },
   },
   {
     id: 10,
@@ -233,13 +235,13 @@ export const products = [
     stockCount: 35,
     description:
       "Sophisticated and versatile — suitable for both sipping and cocktails",
-      details: {
-        origin: "United States",
-        region: "Kentucky",
-        abv: "45%",
-        size: "750ml",
-        type: "Bourbon",
-      },
+    details: {
+      origin: "United States",
+      region: "Kentucky",
+      abv: "45%",
+      size: "750ml",
+      type: "Bourbon",
+    },
   },
   {
     id: 11,
@@ -249,19 +251,20 @@ export const products = [
     price: 16.9,
     badges: [],
     rating: 4.7,
-    image: "/images/products/whiskey/BALLANTINE'S 12 YEAR OLD True Music Reeps One….jpg",
+    image:
+      "/images/products/whiskey/BALLANTINE'S 12 YEAR OLD True Music Reeps One….jpg",
     slug: "ballantine",
     inStock: true,
     stockCount: 35,
     description:
       "Sophisticated and versatile — suitable for both sipping and cocktails",
-      details: {
-        origin: "United States",
-        region: "Kentucky",
-        abv: "45%",
-        size: "750ml",
-        type: "Bourbon",
-      },
+    details: {
+      origin: "United States",
+      region: "Kentucky",
+      abv: "45%",
+      size: "750ml",
+      type: "Bourbon",
+    },
   },
   {
     id: 12,
@@ -277,13 +280,13 @@ export const products = [
     stockCount: 35,
     description:
       "Sophisticated and versatile — suitable for both sipping and cocktails",
-      details: {
-        origin: "United States",
-        region: "Kentucky",
-        abv: "45%",
-        size: "750ml",
-        type: "Bourbon",
-      },
+    details: {
+      origin: "United States",
+      region: "Kentucky",
+      abv: "45%",
+      size: "750ml",
+      type: "Bourbon",
+    },
   },
   {
     id: 13,
@@ -299,13 +302,13 @@ export const products = [
     stockCount: 35,
     description:
       "Sophisticated and versatile — suitable for both sipping and cocktails",
-      details: {
-        origin: "United States",
-        region: "Kentucky",
-        abv: "45%",
-        size: "750ml",
-        type: "Bourbon",
-      },
+    details: {
+      origin: "United States",
+      region: "Kentucky",
+      abv: "45%",
+      size: "750ml",
+      type: "Bourbon",
+    },
   },
   // Wine
   {
@@ -339,7 +342,7 @@ export const products = [
     price: 24.99,
     badges: ["new"],
     rating: 4.7,
-    image: "/images/products/westvleteren-12.jpg",
+    image: "/images/westvl.jpg",
     slug: "westvleteren-12",
     inStock: true,
     stockCount: 50,
@@ -384,7 +387,7 @@ export const products = [
     price: 189.99,
     badges: ["sale"],
     rating: 4.9,
-    image: "/images/products/dom-perignon-vintage-2010.jpg",
+    image: "/images/dom-perignon-vintage-2010.jpg",
     slug: "dom-perignon-vintage-2010",
     inStock: true,
     stockCount: 15,
@@ -407,7 +410,7 @@ export const products = [
     price: 199.99,
     badges: ["new"],
     rating: 4.8,
-    image: "/images/products/hennessy-xo.jpg",
+    image: "/images/products/Spirits/hennessy-xo.jpg",
     slug: "hennessy-xo",
     inStock: true,
     stockCount: 20,
@@ -474,7 +477,7 @@ export const products = [
     price: 39.99,
     badges: ["new"],
     rating: 4.9,
-    image: "/images/products/ceremonial-grade-matcha.jpg",
+    image: "/images/ceremonial-grade-matcha.jpg",
     slug: "ceremonial-grade-matcha",
     inStock: true,
     stockCount: 15,
@@ -541,18 +544,19 @@ export const products = [
     price: 16.99, // ~10,200 FCFA
     badges: ["sale"],
     rating: 4.6,
-    image: "/images/products/gin/gordons.jpg",
+    image: "/images/gordons.jpg",
     slug: "gordons-dry-gin",
     inStock: true,
     stockCount: 100,
-    description: "The world's best-selling London Dry gin. A distinctively refreshing taste from the finest juniper berries. Very popular in Cameroon for its quality and accessibility.",
+    description:
+      "The world's best-selling London Dry gin. A distinctively refreshing taste from the finest juniper berries. Very popular in Cameroon for its quality and accessibility.",
     details: {
       origin: "United Kingdom",
       style: "London Dry Gin",
       abv: "37.5%",
       size: "750ml",
-      availability: "Widely available in Cameroon"
-    }
+      availability: "Widely available in Cameroon",
+    },
   },
   {
     id: 122,
@@ -566,14 +570,15 @@ export const products = [
     slug: "beefeater-gin",
     inStock: true,
     stockCount: 75,
-    description: "A classic London Dry Gin with a bold juniper character, making it perfect for gin and tonic or cocktails. Well-established in the Cameroonian market.",
+    description:
+      "A classic London Dry Gin with a bold juniper character, making it perfect for gin and tonic or cocktails. Well-established in the Cameroonian market.",
     details: {
       origin: "England",
       style: "London Dry Gin",
       abv: "40%",
       size: "750ml",
-      availability: "Common in Cameroon bars and stores"
-    }
+      availability: "Common in Cameroon bars and stores",
+    },
   },
   {
     id: 123,
@@ -587,14 +592,15 @@ export const products = [
     slug: "tanqueray-gin",
     inStock: true,
     stockCount: 60,
-    description: "A perfectly balanced gin with a distinctive flavor of piney juniper and subtle citrus notes. Popular in premium bars across Cameroon.",
+    description:
+      "A perfectly balanced gin with a distinctive flavor of piney juniper and subtle citrus notes. Popular in premium bars across Cameroon.",
     details: {
       origin: "England",
       style: "London Dry Gin",
       abv: "43.1%",
       size: "750ml",
-      availability: "Available in major cities"
-    }
+      availability: "Available in major cities",
+    },
   },
   {
     id: 124,
@@ -608,14 +614,15 @@ export const products = [
     slug: "gin-royal",
     inStock: true,
     stockCount: 150,
-    description: "A popular gin choice in Cameroon, known for its accessible price point and reliable quality. Perfect for mixed drinks and parties.",
+    description:
+      "A popular gin choice in Cameroon, known for its accessible price point and reliable quality. Perfect for mixed drinks and parties.",
     details: {
       origin: "Cameroon",
       style: "Dry Gin",
       abv: "40%",
       size: "750ml",
-      availability: "Widely available throughout Cameroon"
-    }
+      availability: "Widely available throughout Cameroon",
+    },
   },
   // Vodka
   {
@@ -630,14 +637,15 @@ export const products = [
     slug: "smirnoff-red",
     inStock: true,
     stockCount: 120,
-    description: "The world's most popular vodka brand, widely available throughout Cameroon. Triple distilled for exceptional smoothness.",
+    description:
+      "The world's most popular vodka brand, widely available throughout Cameroon. Triple distilled for exceptional smoothness.",
     details: {
       origin: "Various",
       style: "Classic Vodka",
       abv: "37.5%",
       size: "750ml",
-      availability: "Widely available across Cameroon"
-    }
+      availability: "Widely available across Cameroon",
+    },
   },
   {
     id: 142,
@@ -651,14 +659,15 @@ export const products = [
     slug: "absolut",
     inStock: true,
     stockCount: 85,
-    description: "Swedish vodka with a clean, distinctive taste. Popular in Cameroon's bars and clubs for cocktails.",
+    description:
+      "Swedish vodka with a clean, distinctive taste. Popular in Cameroon's bars and clubs for cocktails.",
     details: {
       origin: "Sweden",
       style: "Wheat Vodka",
       abv: "40%",
       size: "750ml",
-      availability: "Common in urban areas"
-    }
+      availability: "Common in urban areas",
+    },
   },
   {
     id: 143,
@@ -672,14 +681,15 @@ export const products = [
     slug: "grey-goose",
     inStock: true,
     stockCount: 30,
-    description: "Premium French vodka, found in Cameroon's high-end establishments and luxury retail stores. Known for its exceptionally smooth taste.",
+    description:
+      "Premium French vodka, found in Cameroon's high-end establishments and luxury retail stores. Known for its exceptionally smooth taste.",
     details: {
       origin: "France",
       style: "Wheat Vodka",
       abv: "40%",
       size: "750ml",
-      availability: "Available in premium stores"
-    }
+      availability: "Available in premium stores",
+    },
   },
   {
     id: 144,
@@ -693,14 +703,15 @@ export const products = [
     slug: "supermount",
     inStock: true,
     stockCount: 200,
-    description: "A popular local choice in Cameroon, known for its affordability and consistent quality. Perfect for parties and events.",
+    description:
+      "A popular local choice in Cameroon, known for its affordability and consistent quality. Perfect for parties and events.",
     details: {
       origin: "Cameroon",
       style: "Classic Vodka",
       abv: "40%",
       size: "750ml",
-      availability: "Available everywhere in Cameroon"
-    }
+      availability: "Available everywhere in Cameroon",
+    },
   },
   // Accessories (mock, USD)
   {
@@ -715,7 +726,8 @@ export const products = [
     slug: "crystal-whiskey-decanter-set",
     inStock: true,
     stockCount: 8,
-    description: "This elegant crystal whiskey decanter set includes a hand-blown decanter and four matching whiskey glasses. The set features a timeless design with intricate detailing that will enhance any home bar or office.",
+    description:
+      "This elegant crystal whiskey decanter set includes a hand-blown decanter and four matching whiskey glasses. The set features a timeless design with intricate detailing that will enhance any home bar or office.",
     details: {
       material: "Lead-free Crystal",
       capacity: "750ml (Decanter), 300ml (Glasses)",
@@ -723,7 +735,7 @@ export const products = [
       care: "Hand wash recommended",
       dimensions: 'Decanter: 10" H x 4" W',
     },
-    currency: "USD"
+    currency: "USD",
   },
   {
     id: 1002,
@@ -737,13 +749,14 @@ export const products = [
     slug: "stainless-steel-wine-opener",
     inStock: true,
     stockCount: 50,
-    description: "A professional-grade stainless steel wine opener with ergonomic grip and double-hinged fulcrum for easy cork removal.",
+    description:
+      "A professional-grade stainless steel wine opener with ergonomic grip and double-hinged fulcrum for easy cork removal.",
     details: {
       material: "Stainless Steel",
       type: "Corkscrew",
       care: "Dishwasher safe",
     },
-    currency: "USD"
+    currency: "USD",
   },
   {
     id: 1003,
@@ -757,15 +770,16 @@ export const products = [
     slug: "riedel-wine-glass-set",
     inStock: true,
     stockCount: 30,
-    description: "This premium set of Riedel wine glasses is designed to enhance the aroma and flavor of your favorite wines. Each glass is specifically shaped to bring out the best characteristics of different wine varieties, from bold reds to crisp whites.",
+    description:
+      "This premium set of Riedel wine glasses is designed to enhance the aroma and flavor of your favorite wines. Each glass is specifically shaped to bring out the best characteristics of different wine varieties, from bold reds to crisp whites.",
     details: {
       material: "Crystal Glass",
       pieces: "6 Glasses",
       varieties: "Cabernet/Merlot, Pinot Noir, Chardonnay",
       care: "Dishwasher safe",
       dimensions: '9" H x 3.5" W',
-    }
-    ,currency: "USD"
+    },
+    currency: "USD",
   },
   {
     id: 1004,
@@ -779,13 +793,14 @@ export const products = [
     slug: "electric-wine-bottle-opener",
     inStock: true,
     stockCount: 40,
-    description: "Effortlessly open wine bottles with this rechargeable electric opener. Includes foil cutter and USB charging cable.",
+    description:
+      "Effortlessly open wine bottles with this rechargeable electric opener. Includes foil cutter and USB charging cable.",
     details: {
       material: "ABS, Stainless Steel",
       battery: "Rechargeable",
       accessories: "Foil cutter, USB cable",
     },
-    currency: "USD"
+    currency: "USD",
   },
   {
     id: 1005,
@@ -799,15 +814,16 @@ export const products = [
     slug: "whiskey-stones-gift-set",
     inStock: true,
     stockCount: 60,
-    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    description:
+      "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
     details: {
       material: "Granite",
       pieces: "9 Stones, 1 Tongs, 1 Pouch",
       care: "Rinse and freeze",
     },
-    currency: "USD"
-  }
-]
+    currency: "USD",
+  },
+];
 
 // Categories data
 export const categories = {
@@ -865,7 +881,7 @@ export const categories = {
       "Explore our collection of premium vodkas from around the world, including classic and flavored varieties from renowned distilleries.",
     products: products.filter((p) => p.category === "Vodka"),
   },
-}
+};
 
 // Blog posts data
 export const blogPosts = [
@@ -873,7 +889,8 @@ export const blogPosts = [
     id: 1,
     title: "The Art of Whiskey Tasting: A Beginner's Guide",
     slug: "art-of-whiskey-tasting",
-    excerpt: "Learn how to appreciate the complex flavors and aromas of whiskey with our comprehensive tasting guide.",
+    excerpt:
+      "Learn how to appreciate the complex flavors and aromas of whiskey with our comprehensive tasting guide.",
     date: "2023-05-15",
     author: "James Wilson",
     category: "Guides",
@@ -911,7 +928,8 @@ export const blogPosts = [
     id: 2,
     title: "Coffee Brewing Methods: Finding Your Perfect Cup",
     slug: "coffee-brewing-methods",
-    excerpt: "Explore different coffee brewing techniques and discover which method creates your ideal flavor profile.",
+    excerpt:
+      "Explore different coffee brewing techniques and discover which method creates your ideal flavor profile.",
     date: "2023-06-22",
     author: "Elena Rodriguez",
     category: "Hot Drinks",
@@ -947,32 +965,32 @@ export const blogPosts = [
       <p>The best way to discover your preference is to experiment. Visit local cafés that specialize in different brewing methods or invest in inexpensive equipment to try at home. Your perfect cup awaits!</p>
     `,
   },
-]
+];
 
 // Search function
 export function searchProducts(query: string) {
   if (!query || query.trim() === "") {
-    return []
+    return [];
   }
 
-  const searchTerm = query.toLowerCase().trim()
+  const searchTerm = query.toLowerCase().trim();
 
   return products.filter(
     (product) =>
       product.name.toLowerCase().includes(searchTerm) ||
       product.category.toLowerCase().includes(searchTerm) ||
-      product.description?.toLowerCase().includes(searchTerm),
-  )
+      product.description?.toLowerCase().includes(searchTerm)
+  );
 }
 
 // Currency conversion (USD to FCFA)
-export const exchangeRate = 600 // 1 USD = 600 FCFA (approximate)
+export const exchangeRate = 600; // 1 USD = 600 FCFA (approximate)
 
 export function formatCurrency(price: number, currency = "FCFA"): string {
   if (currency === "FCFA") {
-    return `${Math.round(price * exchangeRate).toLocaleString()} ${currency}`
+    return `${Math.round(price * exchangeRate).toLocaleString()} ${currency}`;
   }
-  return `${currency} ${price.toFixed(2)}`
+  return `${currency} ${price.toFixed(2)}`;
 }
 
 export const promotions = [
@@ -981,48 +999,50 @@ export const promotions = [
     slug: "summer-wine",
     title: "Summer Wine Collection",
     description: "Get 20% off on our curated selection of summer wines",
-    image: "/images/promotions/summer-wine.jpg",
+    image: "/images/summer.jpg",
     discount: "20%",
     originalPrice: 299.99,
     discountedPrice: 239.99,
     endsIn: "7 days",
     category: "wine",
     badges: ["sale", "summer"],
-    extraInfo: "Limited time only!"
+    extraInfo: "Limited time only!",
   },
   {
     id: 2,
     slug: "whiskey-tasting",
     title: "Whiskey Tasting Set",
     description: "Premium whiskey tasting set with 5 different varieties",
-    image: "/images/promotions/whiskey-tasting.jpg",
+    image: "/images/whiskey.jpg",
     discount: "15%",
     originalPrice: 149.99,
     discountedPrice: 127.49,
     endsIn: "3 days",
     category: "whiskey",
     badges: ["new", "limited"],
-    extraInfo: "Includes exclusive brands!"
+    extraInfo: "Includes exclusive brands!",
   },
   {
     id: 3,
     slug: "cocktail-accessories",
     title: "Cocktail Accessories Bundle",
-    description: "Complete set of premium cocktail making tools and accessories",
-    image: "/images/promotions/cocktail-accessories.jpg",
+    description:
+      "Complete set of premium cocktail making tools and accessories",
+    image: "/images/accessories.jpg",
     discount: "25%",
     originalPrice: 89.99,
     discountedPrice: 67.49,
     endsIn: "5 days",
     category: "accessories",
     badges: ["sale"],
-    extraInfo: "Perfect for home bars!"
+    extraInfo: "Perfect for home bars!",
   },
   {
     id: 4,
     slug: "craft-beer",
     title: "Craft Beer Selection",
-    description: "Explore our handpicked selection of craft beers from around the world",
+    description:
+      "Explore our handpicked selection of craft beers from around the world",
     image: "/images/promotions/craft-beer.jpg",
     discount: "10%",
     originalPrice: 79.99,
@@ -1030,7 +1050,7 @@ export const promotions = [
     endsIn: "10 days",
     category: "beer",
     badges: ["featured"],
-    extraInfo: "International selection!"
+    extraInfo: "International selection!",
   },
   {
     id: 5,
@@ -1044,7 +1064,7 @@ export const promotions = [
     endsIn: "4 days",
     category: "champagne",
     badges: ["luxury"],
-    extraInfo: "Perfect for celebrations!"
+    extraInfo: "Perfect for celebrations!",
   },
   {
     id: 6,
@@ -1058,6 +1078,6 @@ export const promotions = [
     endsIn: "6 days",
     category: "hot-drinks",
     badges: ["new"],
-    extraInfo: "Fresh arrivals!"
+    extraInfo: "Fresh arrivals!",
   },
 ];
