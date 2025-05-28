@@ -211,10 +211,13 @@ export default function Header() {
       spacer.id = "header-spacer";
 
       // Insert after the header
-      if (headerRef.current && headerRef.current.parentNode) {
-        headerRef.current.parentNode.insertBefore(
+      if (
+        headerRef.current &&
+        (headerRef.current as HTMLElement).parentNode
+      ) {
+        (headerRef.current as HTMLElement).parentNode!.insertBefore(
           spacer,
-          headerRef.current.nextSibling
+          (headerRef.current as HTMLElement).nextSibling
         );
       }
     }

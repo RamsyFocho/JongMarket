@@ -47,16 +47,16 @@ export default function HomePage() {
               <Hero />
             </Suspense>
             <Suspense fallback={<div>Loading trending drinks...</div>}>
-              <TrendingDrinks maxDisplay={6} />
+              <TrendingDrinks/>
             </Suspense>
             <Suspense fallback={<div>Loading featured drinks...</div>}>
-              <FeaturedDrinks maxDisplay={6} />
+              <FeaturedDrinks/>
             </Suspense>
             <Suspense fallback={<div>Loading featured categories...</div>}>
-              <FeaturedCategories maxDisplay={6} />
+              <FeaturedCategories />
             </Suspense>
             <Suspense fallback={<div>Loading special promotions...</div>}>
-              <SpecialPromotions maxDisplay={6} />
+              <SpecialPromotions />
             </Suspense>
             <Suspense fallback={<div>Loading category gallery...</div>}>
               <CategoryGallery />
