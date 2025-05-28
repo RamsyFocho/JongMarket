@@ -3,7 +3,7 @@ import { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { formatCurrency } from "@/data/products";
 import Link from "next/link";
-import { Heart, ShoppingCart, Eye, ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart, ShoppingCart, Eye, ChevronLeft, ChevronRight, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/cart-context";
 import { useWishlist } from "@/context/wishlist-context";
@@ -38,6 +38,7 @@ interface ProductCardProps {
   onAddToCart: (product: Product) => void;
   onToggleWishlist: (product: Product) => void;
   isInWishlist: boolean;
+  index: number;
 }
 
 // Custom hook for responsive behavior
@@ -60,85 +61,128 @@ const useResponsive = () => {
   return screenSize;
 };
 
-// Optimized Product Card Component
+// Enhanced Product Card Component with premium styling
 const ProductCard = React.memo<ProductCardProps>(({ 
   product, 
   isCompact, 
   onAddToCart, 
   onToggleWishlist, 
-  isInWishlist 
+  isInWishlist,
+  index
 }) => {
   const { t } = useLanguage();
   const isSoldOut = product.badges?.includes("sold-out");
   const primaryBadge = product.badges?.[0];
 
-  // Arrow badge shape
-  const badgeClass = (badge: string, idx: number) =>
-    `absolute left-3 z-20 badge-arrow badge-top-${idx} ${badge === "new" ? "bg-orange-500" : badge === "sale" ? "bg-red-600" : badge === "sold-out" ? "bg-gray-500" : "bg-gray-400"} text-white px-3 py-1 text-xs font-bold uppercase rounded-l rounded-r-none flex items-center`;
+  const getBadgeColor = (badge: string) => {
+    const colors = {
+      'new': 'bg-gradient-to-r from-green-500 to-emerald-500',
+      'sale': 'bg-gradient-to-r from-red-500 to-pink-500',
+      'sold-out': 'bg-gradient-to-r from-gray-500 to-slate-500',
+      'popular': 'bg-gradient-to-r from-purple-500 to-violet-500',
+      'limited': 'bg-gradient-to-r from-orange-500 to-amber-500'
+    };
+    return colors[badge as keyof typeof colors] || 'bg-gradient-to-r from-blue-500 to-indigo-500';
+  };
 
   const currentPrice = product.currentPrice ?? product.price;
   const reviewCount = Array.isArray(product.reviews) ? product.reviews.length : (product.reviews || 0);
 
   return (
-    <article className={`group bg-white rounded-xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 flex flex-col min-w-0 flex-1 relative overflow-hidden max-w-[28rem] mx-5`}>  
-      {/* Badges (arrow shape, stacked) */}
+    <article 
+      className="group relative bg-white/10 backdrop-blur-lg rounded-3xl p-6 hover:bg-white/15 transition-all duration-500 transform hover:scale-105 hover:-rotate-1 border border-white/20 shadow-xl hover:shadow-2xl hover:shadow-purple-500/20 flex flex-col min-w-0 flex-1 overflow-hidden"
+      style={{
+        animationDelay: `${index * 100}ms`,
+        animation: 'slideInUp 0.6s ease-out forwards'
+      }}
+    >
+      {/* Enhanced Badge */}
       {product.badges?.map((badge, idx) => (
-        <span key={badge} className={badgeClass(badge, idx)}>{badge.replace("-", " ")}</span>
+        <div 
+          key={badge} 
+          className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold text-white z-10 ${getBadgeColor(badge)} shadow-lg`}
+        >
+          {badge.replace("-", " ").toUpperCase()}
+        </div>
       ))}
-      {/* Wishlist Button */}
+
+      {/* Enhanced Wishlist Button */}
       <button
         onClick={() => onToggleWishlist(product)}
-        className="absolute top-3 right-3 z-20 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105 active:scale-95"
+        className="absolute top-4 right-4 p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-all duration-300 group-hover:scale-110 z-10 shadow-lg"
         aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
       >
-        <Heart className={`h-4 w-4 transition-colors ${isInWishlist ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-500'}`} />
+        <Heart className={`h-5 w-5 transition-colors duration-300 ${
+          isInWishlist ? 'fill-pink-500 text-pink-500' : 'text-white hover:text-pink-400'
+        }`} />
       </button>
-      {/* Image Container - priority, large, always on top */}
-      <div className="relative w-full h-64 bg-white flex items-center justify-center overflow-hidden rounded-t-xl">
+
+      {/* Enhanced Image Container */}
+      <div className="relative overflow-hidden rounded-2xl mb-6 aspect-square bg-white/5">
         <Image
           src={product.image}
           alt={product.name}
           fill
-          className="object-contain w-full transition-transform duration-300 group-hover:scale-110 z-10"
+          className="object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-2"
           loading="eager"
           priority
-          sizes="(max-width: 100%) 100%, (max-width: 100%) 100%, 288px"
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           onError={(e) => {
             e.currentTarget.src = '/placeholder-product.jpg';
           }}
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        
         {isSoldOut && (
-          <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center z-20">
-            <span className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-lg">
+          <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center z-20 backdrop-blur-sm">
+            <span className="bg-gray-900/80 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-lg backdrop-blur-sm">
               {t('outOfStock') || 'Out of Stock'}
             </span>
           </div>
         )}
       </div>
-      {/* Content */}
-      <div className="flex-1 p-4 flex flex-col justify-between min-h-0">
+
+      {/* Enhanced Content */}
+      <div className="flex-1 flex flex-col justify-between space-y-4">
+        {/* Brand */}
         {product.brand && (
-          <div className="text-amber-700 text-xs font-semibold uppercase mb-1 tracking-wider">
+          <div className="text-purple-200 text-xs font-semibold uppercase tracking-wider">
             {product.brand}
           </div>
         )}
-        <Link href={`/product/${product.slug}`} className="block mb-2">
-          <h3 className="font-medium text-gray-900 text-sm leading-5 hover:text-amber-600 transition-colors duration-200 line-clamp-2 min-h-[2.5rem]">
+
+        {/* Product Name */}
+        <Link href={`/product/${product.slug}`} className="block">
+          <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-200 transition-colors duration-300 line-clamp-2">
             {product.name}
           </h3>
         </Link>
-        <div className="flex items-center gap-2 mb-3">
-          <div className="flex" role="img" aria-label={`${product.rating} out of 5 stars`}>
+
+        {/* Enhanced Rating */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1">
             {Array.from({ length: 5 }, (_, i) => (
-              <span key={i} className={`text-yellow-400 text-sm ${i < product.rating ? '' : 'opacity-20'}`}>★</span>
+              <Star
+                key={i}
+                className={`w-4 h-4 ${
+                  i < Math.floor(product.rating)
+                    ? 'text-yellow-400 fill-yellow-400'
+                    : 'text-gray-400'
+                }`}
+              />
             ))}
           </div>
-          <span className="text-xs text-gray-500">
+          <span className="text-yellow-400 font-semibold text-sm">
+            {product.rating}
+          </span>
+          <span className="text-gray-300 text-sm">
             ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
           </span>
         </div>
-        <div className="flex items-center gap-2 mb-4">
-          <span className="font-bold text-lg text-red-600">
+
+        {/* Enhanced Price */}
+        <div className="flex items-center gap-2 py-2">
+          <span className="text-2xl font-bold text-white">
             {formatCurrency(currentPrice, "FCFA")}
           </span>
           {product.originalPrice && product.originalPrice !== currentPrice && (
@@ -147,58 +191,66 @@ const ProductCard = React.memo<ProductCardProps>(({
             </span>
           )}
         </div>
-        <div className="flex gap-2 mt-auto">
+
+        {/* Enhanced Action Buttons */}
+        <div className="flex items-center justify-between flex-col gap-2 md:flex-row pt-4 border-t border-white/10">
           <Button
             onClick={() => onAddToCart(product)}
             disabled={isSoldOut}
-            size="sm"
-            className="flex-1 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-300"
+            className="w-full md:w-[fit] flex-1 mr-2 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl disabled:from-gray-500 disabled:to-gray-600"
           >
             <ShoppingCart className="h-4 w-4 mr-2" />
             {isSoldOut ? t('outOfStock') || 'Out of Stock' : t('addToCart') || 'Add to Cart'}
           </Button>
-          <Button asChild variant="outline" size="sm" className="flex-1">
+          
+          <Button 
+            asChild 
+            variant="outline" 
+            className="w-full md:w-[fit] bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30 hover:border-white/50 rounded-xl transition-all duration-300 transform hover:scale-105"
+          >
             <Link href={`/product/${product.slug}`}>
-              {t('viewDetails') || 'View Details'}
+              <Eye className="h-4 w-4 mr-2" />
+              {t('viewDetails') || 'View'}
             </Link>
           </Button>
         </div>
       </div>
+
+      {/* Hover glow effect */}
+      <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-purple-600/0 to-pink-600/0 group-hover:from-purple-600/10 group-hover:to-pink-600/10 transition-all duration-500 pointer-events-none"></div>
     </article>
   );
 });
 ProductCard.displayName = 'ProductCard';
 
-// Loading Skeleton Component
-const ProductCardSkeleton = ({ isCompact }: { isCompact: boolean }) => (
-  <div className={`
-    bg-white rounded-xl shadow-sm border border-gray-100 
-    flex ${isCompact ? 'flex-col max-w-sm mx-auto' : 'flex-row lg:flex-col xl:flex-row'}
-    min-w-0 flex-1 overflow-hidden animate-pulse
-  `}>
-    <div className={`
-      bg-gray-200
-      ${isCompact ? 'w-full h-72' : 'w-full sm:w-72 h-72 lg:w-full lg:h-72 xl:w-72 xl:h-72'}
-    `} />
-    <div className="flex-1 p-4 space-y-3">
-      <div className="h-3 bg-gray-200 rounded w-1/4" />
-      <div className="h-4 bg-gray-200 rounded w-3/4" />
-      <div className="h-3 bg-gray-200 rounded w-1/2" />
-      <div className="h-5 bg-gray-200 rounded w-1/3" />
-      <div className="flex gap-2">
-        <div className="h-8 bg-gray-200 rounded flex-1" />
-        <div className="h-8 bg-gray-200 rounded flex-1" />
+// Enhanced Loading Skeleton Component
+const ProductCardSkeleton = ({ isCompact, index }: { isCompact: boolean; index: number }) => (
+  <div 
+    className="bg-white/5 backdrop-blur-lg rounded-3xl p-6 border border-white/10 shadow-xl animate-pulse"
+    style={{
+      animationDelay: `${index * 100}ms`
+    }}
+  >
+    <div className="aspect-square bg-white/10 rounded-2xl mb-6" />
+    <div className="space-y-4">
+      <div className="h-3 bg-white/10 rounded w-1/4" />
+      <div className="h-6 bg-white/10 rounded w-3/4" />
+      <div className="h-4 bg-white/10 rounded w-1/2" />
+      <div className="h-6 bg-white/10 rounded w-1/3" />
+      <div className="flex gap-2 pt-4">
+        <div className="h-10 bg-white/10 rounded-xl flex-1" />
+        <div className="h-10 bg-white/10 rounded-xl w-20" />
       </div>
     </div>
   </div>
 );
 
-// Main Component
+// Main Component with Premium Styling
 export default function FeaturedDrinks() {
   const [currentTab, setCurrentTab] = useState(0);
   const [isClient, setIsClient] = useState(false);
-  const [productsPerTab, setProductsPerTab] = useState(3); // SSR-safe default
-  const [isCompact, setIsCompact] = useState(false); // SSR-safe default
+  const [productsPerTab, setProductsPerTab] = useState(3);
+  const [isCompact, setIsCompact] = useState(false);
   const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
   const screenSize = useResponsive();
   const { addToCart } = useCart();
@@ -206,10 +258,9 @@ export default function FeaturedDrinks() {
   const { toast } = useToast();
   const { t } = useLanguage();
 
-  // Hydration fix
+  // Hydration fix with responsive logic
   useEffect(() => {
     setIsClient(true);
-    // Responsive logic for productsPerTab and isCompact
     const updateResponsive = () => {
       if (window.innerWidth < 640) {
         setProductsPerTab(1);
@@ -217,8 +268,11 @@ export default function FeaturedDrinks() {
       } else if (window.innerWidth < 1024) {
         setProductsPerTab(2);
         setIsCompact(false);
-      } else {
+      } else if (window.innerWidth < 1536) {
         setProductsPerTab(3);
+        setIsCompact(false);
+      } else {
+        setProductsPerTab(4);
         setIsCompact(false);
       }
     };
@@ -233,7 +287,6 @@ export default function FeaturedDrinks() {
     []
   );
 
-  // SSR-safe: Always use desktop layout on server, responsive after hydration
   const effectiveProductsPerTab = isClient ? productsPerTab : 3;
   const effectiveIsCompact = isClient ? isCompact : false;
 
@@ -314,21 +367,27 @@ export default function FeaturedDrinks() {
     }
   }, [isInWishlist, removeFromWishlist, addToWishlist, toast, t]);
 
-  // Show skeleton during hydration
+  // Show enhanced skeleton during hydration
   if (!isClient) {
     return (
-      <section className="max-w-7xl mx-auto bg-white p-6 lg:p-8 rounded-xl shadow-sm mb-12">
-        <div className="flex items-center justify-between mb-8">
-          <div className="h-6 bg-gray-200 rounded w-48 animate-pulse" />
-          <div className="flex gap-2">
-            <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
-            <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
-          </div>
+      <section className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16 px-4 relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Array.from({ length: 3 }, (_, i) => (
-            <ProductCardSkeleton key={i} isCompact={false} />
-          ))}
+        
+        <div className="relative max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="h-12 bg-white/10 rounded w-64 mx-auto mb-6 animate-pulse" />
+            <div className="h-6 bg-white/5 rounded w-96 mx-auto animate-pulse" />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {Array.from({ length: 3 }, (_, i) => (
+              <ProductCardSkeleton key={i} isCompact={false} index={i} />
+            ))}
+          </div>
         </div>
       </section>
     );
@@ -339,80 +398,132 @@ export default function FeaturedDrinks() {
   }
 
   return (
-    <section className="max-w-full mx-auto bg-white p-6 lg:p-8 rounded-xl shadow-sm mb-12">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-xl lg:text-2xl font-bold text-gray-900 tracking-tight">
-          {t('Feature Products') || 'Feature Products'}
-        </h2>
-        
+    <section className="min-h-screen bg-gradient-to-br from-amber-900 via-yellow-900 to-slate-900 py-16 px-4 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-3xl animate-spin-slow"></div>
+      </div>
+
+      <div className="relative max-w-7xl mx-auto">
+        {/* Enhanced Header */}
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <Zap className="w-8 h-8 text-purple-400" />
+            <h2 className="text-6xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
+              {t('Feature Products') || 'Feature Products'}
+            </h2>
+            <Zap className="w-8 h-8 text-pink-400" />
+          </div>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+            Discover our carefully curated collection of premium beverages and featured products
+          </p>
+        </div>
+
+        {/* Enhanced Navigation */}
         {totalTabs > 1 && (
-          <div className="flex gap-2">
+          <div className="flex justify-center gap-4 mb-12">
             <Button
-              variant="outline"
-              size="sm"
               onClick={handlePrevious}
-              className="w-8 h-8 p-0 rounded-full border-gray-300 hover:border-amber-500 hover:text-amber-600"
+              className="bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 rounded-2xl p-4 transition-all duration-300 hover:scale-110"
               aria-label="Previous products"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-6 w-6" />
             </Button>
             <Button
-              variant="outline"
-              size="sm"
               onClick={handleNext}
-              className="w-8 h-8 p-0 rounded-full border-gray-300 hover:border-amber-500 hover:text-amber-600"
+              className="bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 rounded-2xl p-4 transition-all duration-300 hover:scale-110"
               aria-label="Next products"
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-6 w-6" />
             </Button>
+          </div>
+        )}
+
+        {/* Enhanced Products Carousel */}
+        <div className="overflow-hidden rounded-3xl mb-12">
+          <div 
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(-${currentTab * 100}%)` }}
+          >
+            {productsTabs.map((tabProducts, tabIndex) => (
+              <div
+                key={tabIndex}
+                className={`min-w-full grid gap-8 ${
+                  isClient 
+                    ? (effectiveProductsPerTab === 1 
+                        ? 'grid-cols-1' 
+                        : effectiveProductsPerTab === 2 
+                        ? 'grid-cols-1 sm:grid-cols-2' 
+                        : effectiveProductsPerTab === 3
+                        ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+                        : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4') 
+                    : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+                }`}
+              >
+                {tabProducts.map((product, index) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    isCompact={effectiveIsCompact}
+                    onAddToCart={handleAddToCart}
+                    onToggleWishlist={handleToggleWishlist}
+                    isInWishlist={isInWishlist(product.id)}
+                    index={index}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Enhanced Tab Indicators */}
+        {totalTabs > 1 && (
+          <div className="flex justify-center items-center gap-4">
+            <div className="flex gap-2">
+              {productsTabs.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleTabClick(index)}
+                  className={`transition-all duration-300 ${
+                    index === currentTab
+                      ? 'w-8 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full scale-125'
+                      : 'w-3 h-3 bg-white/30 hover:bg-white/50 rounded-full hover:scale-110'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>
 
-      {/* Products Carousel */}
-      <div className="overflow-hidden rounded-lg">
-        <div 
-          className={`flex transition-transform duration-500 ease-in-out tab-transform-${currentTab}`}
-        >
-          {productsTabs.map((tabProducts, tabIndex) => (
-            <div
-              key={tabIndex}
-              className={`min-w-full grid gap-6 ${isClient ? (effectiveProductsPerTab === 1 ? 'grid-cols-1' : effectiveProductsPerTab === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3') : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'}`}
-            >
-              {tabProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  isCompact={effectiveIsCompact}
-                  onAddToCart={handleAddToCart}
-                  onToggleWishlist={handleToggleWishlist}
-                  isInWishlist={isInWishlist(product.id)}
-                />
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
+      <style jsx>{`
+        @keyframes slideInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
 
-      {/* Tab Indicators */}
-      {totalTabs > 1 && (
-        <div className="flex justify-center mt-8 gap-2">
-          {productsTabs.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => handleTabClick(index)}
-              className={`
-                h-2 rounded-full transition-all duration-300
-                ${index === currentTab 
-                  ? 'bg-amber-600 w-8' 
-                  : 'bg-gray-300 hover:bg-gray-400 w-2'}
-              `}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
+        @keyframes spin-slow {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        .animate-spin-slow {
+          animation: spin-slow 20s linear infinite;
+        }
+      `}</style>
     </section>
   );
 }
