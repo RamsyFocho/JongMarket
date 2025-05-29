@@ -1,529 +1,419 @@
-"use client";
-import { useRef, useState, useEffect, useMemo, useCallback } from "react";
-import Image from "next/image";
-import { formatCurrency } from "@/data/products";
-import Link from "next/link";
-import { Heart, ShoppingCart, Eye, ChevronLeft, ChevronRight, Star, Zap } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useCart } from "@/context/cart-context";
-import { useWishlist } from "@/context/wishlist-context";
-import { useToast } from "@/hooks/use-toast";
-import { useLanguage } from "@/context/language-context";
-import { products } from "@/data/products";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import React from "react";
+"use client"
+import { products } from '@/data/products';
+import React, { useState, useRef, useEffect } from 'react';
+import { Heart, ShoppingCart, Eye, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCart } from '@/context/cart-context';
+import { useWishlist } from '@/context/wishlist-context';
+import { useRouter } from 'next/navigation';
+import { formatCurrency } from '@/lib/format-currency';
+import { useToast } from "@/components/ui/use-toast";
 
-// Constants
-const AUTO_SCROLL_INTERVAL = 5000;
-const ANIMATION_DURATION = 500;
+const FeatureDrinks = () => {
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { addToCart } = useCart();
+  const { toast } = useToast();
+  const router = useRouter();
 
-// Types
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  currentPrice?: number;
-  originalPrice?: number;
-  image: string;
-  slug: string;
-  brand?: string;
-  badges?: string[];
-  rating: number;
-  reviews?: any[] | number;
-}
+  // Get 10 featured drinks (with 'featured', 'new', or 'sale' badges)
+  const featuredDrinks = products
+    .filter(p => Array.isArray(p.badges) && (p.badges.includes('featured') || p.badges.includes('new') || p.badges.includes('sale')))
+    .slice(0, 10);
 
-interface ProductCardProps {
-  product: Product;
-  isCompact: boolean;
-  onAddToCart: (product: Product) => void;
-  onToggleWishlist: (product: Product) => void;
-  isInWishlist: boolean;
-  index: number;
-}
-
-// Custom hook for responsive behavior
-const useResponsive = () => {
-  const [screenSize, setScreenSize] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
-  
-  useEffect(() => {
-    const updateScreenSize = () => {
-      const width = window.innerWidth;
-      if (width < 768) setScreenSize('mobile');
-      else if (width < 1024) setScreenSize('tablet');
-      else setScreenSize('desktop');
+  const getBadgeStyle = (badge: string) => {
+    const styles: Record<string, string> = {
+      featured: 'bg-gradient-to-r from-amber-500 to-yellow-500 text-white',
+      new: 'bg-gradient-to-r from-green-500 to-emerald-500 text-white',
+      sale: 'bg-gradient-to-r from-red-500 to-pink-500 text-white',
+      'best seller': 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white',
+      limited: 'bg-gradient-to-r from-orange-500 to-red-500 text-white',
+      'sold-out': 'bg-gray-500 text-white',
+      organic: 'bg-gradient-to-r from-green-600 to-lime-600 text-white',
+      'hot deal': 'bg-gradient-to-r from-pink-500 to-rose-500 text-white',
     };
-    
-    updateScreenSize();
-    window.addEventListener('resize', updateScreenSize);
-    return () => window.removeEventListener('resize', updateScreenSize);
-  }, []);
-  
-  return screenSize;
-};
-
-// Enhanced Product Card Component with premium styling
-const ProductCard = React.memo<ProductCardProps>(({ 
-  product, 
-  isCompact, 
-  onAddToCart, 
-  onToggleWishlist, 
-  isInWishlist,
-  index
-}) => {
-  const { t } = useLanguage();
-  const isSoldOut = product.badges?.includes("sold-out");
-  const primaryBadge = product.badges?.[0];
-
-  const getBadgeColor = (badge: string) => {
-    const colors = {
-      'new': 'bg-gradient-to-r from-green-500 to-emerald-500',
-      'sale': 'bg-gradient-to-r from-red-500 to-pink-500',
-      'sold-out': 'bg-gradient-to-r from-gray-500 to-slate-500',
-      'popular': 'bg-gradient-to-r from-purple-500 to-violet-500',
-      'limited': 'bg-gradient-to-r from-orange-500 to-amber-500'
-    };
-    return colors[badge as keyof typeof colors] || 'bg-gradient-to-r from-blue-500 to-indigo-500';
+    return styles[badge.toLowerCase()] || 'bg-gray-500 text-white';
   };
 
-  const currentPrice = product.currentPrice ?? product.price;
-  const reviewCount = Array.isArray(product.reviews) ? product.reviews.length : (product.reviews || 0);
-
-  return (
-    <article 
-      className="group relative bg-white/10 backdrop-blur-lg rounded-3xl p-6 hover:bg-white/15 transition-all duration-500 transform hover:scale-105 hover:-rotate-1 border border-white/20 shadow-xl hover:shadow-2xl hover:shadow-purple-500/20 flex flex-col min-w-0 flex-1 overflow-hidden"
-      style={{
-        animationDelay: `${index * 100}ms`,
-        animation: 'slideInUp 0.6s ease-out forwards'
-      }}
-    >
-      {/* Enhanced Badge */}
-      {product.badges?.map((badge, idx) => (
-        <div 
-          key={badge} 
-          className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold text-white z-10 ${getBadgeColor(badge)} shadow-lg`}
-        >
-          {badge.replace("-", " ").toUpperCase()}
-        </div>
-      ))}
-
-      {/* Enhanced Wishlist Button */}
-      <button
-        onClick={() => onToggleWishlist(product)}
-        className="absolute top-4 right-4 p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-all duration-300 group-hover:scale-110 z-10 shadow-lg"
-        aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-      >
-        <Heart className={`h-5 w-5 transition-colors duration-300 ${
-          isInWishlist ? 'fill-pink-500 text-pink-500' : 'text-white hover:text-pink-400'
-        }`} />
-      </button>
-
-      {/* Enhanced Image Container */}
-      <div className="relative overflow-hidden rounded-2xl mb-6 aspect-square bg-white/5">
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          className="object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-2"
-          loading="eager"
-          priority
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          onError={(e) => {
-            e.currentTarget.src = '/placeholder-product.jpg';
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        
-        {isSoldOut && (
-          <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center z-20 backdrop-blur-sm">
-            <span className="bg-gray-900/80 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-lg backdrop-blur-sm">
-              {t('outOfStock') || 'Out of Stock'}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Enhanced Content */}
-      <div className="flex-1 flex flex-col justify-between space-y-4">
-        {/* Brand */}
-        {product.brand && (
-          <div className="text-purple-200 text-xs font-semibold uppercase tracking-wider">
-            {product.brand}
-          </div>
-        )}
-
-        {/* Product Name */}
-        <Link href={`/product/${product.slug}`} className="block">
-          <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-200 transition-colors duration-300 line-clamp-2">
-            {product.name}
-          </h3>
-        </Link>
-
-        {/* Enhanced Rating */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1">
-            {Array.from({ length: 5 }, (_, i) => (
-              <Star
-                key={i}
-                className={`w-4 h-4 ${
-                  i < Math.floor(product.rating)
-                    ? 'text-yellow-400 fill-yellow-400'
-                    : 'text-gray-400'
-                }`}
-              />
-            ))}
-          </div>
-          <span className="text-yellow-400 font-semibold text-sm">
-            {product.rating}
-          </span>
-          <span className="text-gray-300 text-sm">
-            ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
-          </span>
-        </div>
-
-        {/* Enhanced Price */}
-        <div className="flex items-center gap-2 py-2">
-          <span className="text-2xl font-bold text-white">
-            {formatCurrency(currentPrice, "FCFA")}
-          </span>
-          {product.originalPrice && product.originalPrice !== currentPrice && (
-            <span className="text-sm text-gray-400 line-through">
-              {formatCurrency(product.originalPrice, "FCFA")}
-            </span>
-          )}
-        </div>
-
-        {/* Enhanced Action Buttons */}
-        <div className="flex items-center justify-between flex-col gap-2 md:flex-row pt-4 border-t border-white/10">
-          <Button
-            onClick={() => onAddToCart(product)}
-            disabled={isSoldOut}
-            className="w-full md:w-[fit] flex-1 mr-2 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl disabled:from-gray-500 disabled:to-gray-600"
-          >
-            <ShoppingCart className="h-4 w-4 mr-2" />
-            {isSoldOut ? t('outOfStock') || 'Out of Stock' : t('addToCart') || 'Add to Cart'}
-          </Button>
-          
-          <Button 
-            asChild 
-            variant="outline" 
-            className="w-full md:w-[fit] bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30 hover:border-white/50 rounded-xl transition-all duration-300 transform hover:scale-105"
-          >
-            <Link href={`/product/${product.slug}`}>
-              <Eye className="h-4 w-4 mr-2" />
-              {t('viewDetails') || 'View'}
-            </Link>
-          </Button>
-        </div>
-      </div>
-
-      {/* Hover glow effect */}
-      <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-purple-600/0 to-pink-600/0 group-hover:from-purple-600/10 group-hover:to-pink-600/10 transition-all duration-500 pointer-events-none"></div>
-    </article>
-  );
-});
-ProductCard.displayName = 'ProductCard';
-
-// Enhanced Loading Skeleton Component
-const ProductCardSkeleton = ({ isCompact, index }: { isCompact: boolean; index: number }) => (
-  <div 
-    className="bg-white/5 backdrop-blur-lg rounded-3xl p-6 border border-white/10 shadow-xl animate-pulse"
-    style={{
-      animationDelay: `${index * 100}ms`
-    }}
-  >
-    <div className="aspect-square bg-white/10 rounded-2xl mb-6" />
-    <div className="space-y-4">
-      <div className="h-3 bg-white/10 rounded w-1/4" />
-      <div className="h-6 bg-white/10 rounded w-3/4" />
-      <div className="h-4 bg-white/10 rounded w-1/2" />
-      <div className="h-6 bg-white/10 rounded w-1/3" />
-      <div className="flex gap-2 pt-4">
-        <div className="h-10 bg-white/10 rounded-xl flex-1" />
-        <div className="h-10 bg-white/10 rounded-xl w-20" />
-      </div>
-    </div>
-  </div>
-);
-
-// Main Component with Premium Styling
-export default function FeaturedDrinks() {
-  const [currentTab, setCurrentTab] = useState(0);
-  const [isClient, setIsClient] = useState(false);
-  const [productsPerTab, setProductsPerTab] = useState(3);
-  const [isCompact, setIsCompact] = useState(false);
-  const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
-  const screenSize = useResponsive();
-  const { addToCart } = useCart();
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
-  const { toast } = useToast();
-  const { t } = useLanguage();
-
-  // Hydration fix with responsive logic
-  useEffect(() => {
-    setIsClient(true);
-    const updateResponsive = () => {
-      if (window.innerWidth < 640) {
-        setProductsPerTab(1);
-        setIsCompact(true);
-      } else if (window.innerWidth < 1024) {
-        setProductsPerTab(2);
-        setIsCompact(false);
-      } else if (window.innerWidth < 1536) {
-        setProductsPerTab(3);
-        setIsCompact(false);
+  const toggleWishlist = (id: number) => {
+    setWishlist(prev => {
+      const newWishlist = new Set(prev);
+      if (newWishlist.has(id)) {
+        newWishlist.delete(id);
       } else {
-        setProductsPerTab(4);
-        setIsCompact(false);
+        newWishlist.add(id);
       }
-    };
-    updateResponsive();
-    window.addEventListener('resize', updateResponsive);
-    return () => window.removeEventListener('resize', updateResponsive);
-  }, []);
-
-  // Memoized featured products
-  const featuredProducts = useMemo(
-    () => products.filter(p => p.badges?.some(badge => ['sale', 'new'].includes(badge))),
-    []
-  );
-
-  const effectiveProductsPerTab = isClient ? productsPerTab : 3;
-  const effectiveIsCompact = isClient ? isCompact : false;
-
-  // Memoized tab calculation
-  const { totalTabs, productsTabs } = useMemo(() => {
-    const tabs = Math.ceil(featuredProducts.length / effectiveProductsPerTab);
-    const tabsData = Array.from({ length: tabs }, (_, i) =>
-      featuredProducts.slice(i * effectiveProductsPerTab, (i + 1) * effectiveProductsPerTab)
-    );
-    return { totalTabs: tabs, productsTabs: tabsData };
-  }, [featuredProducts, effectiveProductsPerTab]);
-
-  // Auto-scroll effect
-  useEffect(() => {
-    if (!isClient || totalTabs <= 1) return;
-    
-    autoScrollRef.current = setInterval(() => {
-      setCurrentTab(prev => (prev + 1) % totalTabs);
-    }, AUTO_SCROLL_INTERVAL);
-
-    return () => {
-      if (autoScrollRef.current) {
-        clearInterval(autoScrollRef.current);
-      }
-    };
-  }, [isClient, totalTabs]);
-
-  // Navigation handlers
-  const handlePrevious = useCallback(() => {
-    setCurrentTab(prev => prev === 0 ? totalTabs - 1 : prev - 1);
-  }, [totalTabs]);
-
-  const handleNext = useCallback(() => {
-    setCurrentTab(prev => (prev + 1) % totalTabs);
-  }, [totalTabs]);
-
-  const handleTabClick = useCallback((index: number) => {
-    setCurrentTab(index);
-  }, []);
-
-  // Product action handlers
-  const handleAddToCart = useCallback((product: Product) => {
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.currentPrice ?? product.price,
-      image: product.image,
-      quantity: 1,
+      return newWishlist;
     });
-    
-    toast({
-      title: t('AddedToCart') || 'Added to cart',
-      description: `${product.name} ${t('addedToCartDesc') || 'has been added to your cart.'}`,
-    });
-  }, [addToCart, toast, t]);
+  };
 
-  const handleToggleWishlist = useCallback((product: Product) => {
-    const inWishlist = isInWishlist(product.id);
-    
-    if (inWishlist) {
-      removeFromWishlist(product.id);
-      toast({
-        title: t('removedFromWishlist') || 'Removed from wishlist',
-        description: `${product.name} ${t('removedFromWishlistDesc') || 'has been removed from your wishlist.'}`,
-      });
-    } else {
-      addToWishlist({
-        id: product.id,
-        name: product.name,
-        price: product.currentPrice ?? product.price,
-        image: product.image,
-        slug: product.slug,
-      });
-      toast({
-        title: t('AddedToWishlist') || 'Added to wishlist',
-        description: `${product.name} ${t('has been added to your wishlist') || 'has been added to your wishlist.'}`,
-      });
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star
+        key={i}
+        className={`w-4 h-4 ${
+          i < Math.floor(rating)
+            ? 'text-amber-400 fill-amber-400'
+            : i < rating
+            ? 'text-amber-400 fill-amber-200'
+            : 'text-gray-300'
+        }`}
+      />
+    ));
+  };
+
+  // Touch and mouse handlers for smooth sliding
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!scrollContainerRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
+    setScrollLeft(scrollContainerRef.current.scrollLeft);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!scrollContainerRef.current) return;
+    setIsDragging(true);
+    setStartX(e.touches[0].pageX - scrollContainerRef.current.offsetLeft);
+    setScrollLeft(scrollContainerRef.current.scrollLeft);
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isDragging || !scrollContainerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    if (!isDragging || !scrollContainerRef.current) return;
+    const x = e.touches[0].pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
+
+  const scrollToNext = () => {
+    if (scrollContainerRef.current) {
+      const cardWidth = 320; // Approximate card width
+      scrollContainerRef.current.scrollBy({ left: cardWidth, behavior: 'smooth' });
     }
-  }, [isInWishlist, removeFromWishlist, addToWishlist, toast, t]);
+  };
 
-  // Show enhanced skeleton during hydration
-  if (!isClient) {
-    return (
-      <section className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16 px-4 relative overflow-hidden">
-        {/* Animated background elements */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        </div>
-        
-        <div className="relative max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="h-12 bg-white/10 rounded w-64 mx-auto mb-6 animate-pulse" />
-            <div className="h-6 bg-white/5 rounded w-96 mx-auto animate-pulse" />
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {Array.from({ length: 3 }, (_, i) => (
-              <ProductCardSkeleton key={i} isCompact={false} index={i} />
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const scrollToPrev = () => {
+    if (scrollContainerRef.current) {
+      const cardWidth = 320;
+      scrollContainerRef.current.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+    }
+  };
 
-  if (featuredProducts.length === 0) {
-    return null;
+  // Sync local wishlist with global wishlist
+  // useEffect(() => {
+  //   if (globalWishlist) {
+  //     setWishlist(new Set(globalWishlist.map((item: any) => item.id)));
+  //   }
+  // }, [globalWishlist]);
+
+  // Touch and mouse handlers for smooth sliding
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('mousemove', handleMouseMove);
+      container.addEventListener('mouseup', handleMouseUp);
+      container.addEventListener('mouseleave', handleMouseUp);
+      container.addEventListener('touchmove', handleTouchMove);
+      container.addEventListener('touchend', handleTouchEnd);
+
+      return () => {
+        container.removeEventListener('mousemove', handleMouseMove);
+        container.removeEventListener('mouseup', handleMouseUp);
+        container.removeEventListener('mouseleave', handleMouseUp);
+        container.removeEventListener('touchmove', handleTouchMove);
+        container.removeEventListener('touchend', handleTouchEnd);
+      };
+    }
+  }, [isDragging, startX, scrollLeft]);
+
+  // --- Handlers with correct object structure ---
+  const handleAddToCart = (drink: any) => {
+  addToCart({
+    id: drink.id,
+    name: drink.name,
+    price: drink.currentPrice ?? drink.price,
+    image: drink.image,
+    quantity: 1,
+  });
+  toast({
+    title: "Added to cart",
+    description: `${drink.name} has been added to your cart.`,
+  });
+};
+
+const handleToggleWishlist = (drink: any) => {
+  if (isInWishlist(drink.id)) {
+    removeFromWishlist(drink.id);
+    toast({
+      title: "Removed from wishlist",
+      description: `${drink.name} has been removed from your wishlist.`,
+    });
+  } else {
+    addToWishlist({
+      id: drink.id,
+      name: drink.name,
+      price: drink.currentPrice ?? drink.price,
+      image: drink.image,
+      slug: drink.slug,
+      category: drink.category,
+      rating: drink.rating,
+    });
+    toast({
+      title: "Added to wishlist",
+      description: `${drink.name} has been added to your wishlist.`,
+    });
   }
+};
+
+  const handleView = (drink: any) => {
+    router.push(`/product/${drink.slug}`);
+  };
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-amber-900 via-yellow-900 to-slate-900 py-16 px-4 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-3xl animate-spin-slow"></div>
-      </div>
-
-      <div className="relative max-w-7xl mx-auto">
-        {/* Enhanced Header */}
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <Zap className="w-8 h-8 text-purple-400" />
-            <h2 className="text-6xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
-              {t('Feature Products') || 'Feature Products'}
-            </h2>
-            <Zap className="w-8 h-8 text-pink-400" />
-          </div>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            Discover our carefully curated collection of premium beverages and featured products
+    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-amber-50 via-yellow-50 to-white dark:from-background dark:via-background dark:to-background">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-12 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-200/20 via-yellow-200/20 to-amber-200/20 blur-3xl -z-10 animate-pulse dark:hidden"></div>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 bg-clip-text text-transparent mb-4 tracking-tight dark:text-foreground dark:bg-none">
+            Featured Drinks
+          </h2>
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed dark:text-gray-300">
+            Discover our handcrafted selection of premium beverages, made with the finest ingredients
           </p>
         </div>
-
-        {/* Enhanced Navigation */}
-        {totalTabs > 1 && (
-          <div className="flex justify-center gap-4 mb-12">
-            <Button
-              onClick={handlePrevious}
-              className="bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 rounded-2xl p-4 transition-all duration-300 hover:scale-110"
-              aria-label="Previous products"
-            >
-              <ChevronLeft className="h-6 w-6" />
-            </Button>
-            <Button
-              onClick={handleNext}
-              className="bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 rounded-2xl p-4 transition-all duration-300 hover:scale-110"
-              aria-label="Next products"
-            >
-              <ChevronRight className="h-6 w-6" />
-            </Button>
-          </div>
-        )}
-
-        {/* Enhanced Products Carousel */}
-        <div className="overflow-hidden rounded-3xl mb-12">
-          <div 
-            className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${currentTab * 100}%)` }}
+        {/* Navigation Buttons - Desktop */}
+        <div className="hidden md:flex justify-between items-center mb-8">
+          <button
+            onClick={scrollToPrev}
+            className="p-3 bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-amber-100"
+            title="Previous"
           >
-            {productsTabs.map((tabProducts, tabIndex) => (
+            <ChevronLeft className="w-6 h-6 text-amber-600" />
+          </button>
+          <button
+            onClick={scrollToNext}
+            className="p-3 bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-amber-100"
+            title="Next"
+          >
+            <ChevronRight className="w-6 h-6 text-amber-600" />
+          </button>
+        </div>
+        {/* Scrollable Container */}
+        <div className="relative">
+          <div
+            ref={scrollContainerRef}
+            className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 cursor-grab active:cursor-grabbing"
+            style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              WebkitOverflowScrolling: 'touch',
+            }}
+            onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
+          >
+            {featuredDrinks.map((drink, index) => (
               <div
-                key={tabIndex}
-                className={`min-w-full grid gap-8 ${
-                  isClient 
-                    ? (effectiveProductsPerTab === 1 
-                        ? 'grid-cols-1' 
-                        : effectiveProductsPerTab === 2 
-                        ? 'grid-cols-1 sm:grid-cols-2' 
-                        : effectiveProductsPerTab === 3
-                        ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-                        : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4') 
-                    : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-                }`}
+                key={drink.id}
+                className={`flex-shrink-0 w-80 group relative animate-slideIn delay-[${index * 100}ms]`}
+                onMouseEnter={() => setHoveredCard(drink.id)}
+                onMouseLeave={() => setHoveredCard(null)}
               >
-                {tabProducts.map((product, index) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    isCompact={effectiveIsCompact}
-                    onAddToCart={handleAddToCart}
-                    onToggleWishlist={handleToggleWishlist}
-                    isInWishlist={isInWishlist(product.id)}
-                    index={index}
-                  />
-                ))}
+                {/* Card Container */}
+                <div className="relative bg-white/80 dark:bg-background backdrop-blur-sm rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-amber-100/50 h-full">
+                  {/* Floating Elements (Desktop only) */}
+                  <div className="absolute top-4 right-4 z-30 gap-2 hidden md:flex">
+                    <button
+                      onClick={() => handleToggleWishlist(drink)}
+                      className={`p-2 rounded-full backdrop-blur-md transition-all duration-300 ${
+                        isInWishlist(drink.id)
+                          ? ' text-white shadow-lg scale-110'
+                          : 'bg-white/80 text-gray-600 hover:bg-white hover:text-red-500 dark:bg-background dark:text-gray-300'
+                      }`}
+                      title={isInWishlist(drink.id) ? 'Remove from wishlist' : 'Add to wishlist'}
+                    >
+                      <Heart className={`w-5 h-5 ${isInWishlist(drink.id) ? 'fill-red-500 text-red-500' : ''}`} />
+                    </button>
+                  </div>
+                  {/* Badges */}
+                  <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+                    {drink.badges && drink.badges.map((badge: string, badgeIndex: number) => (
+                      <span
+                        key={badgeIndex}
+                        className={`px-3 py-1 text-xs font-bold rounded-full backdrop-blur-sm shadow-lg ${getBadgeStyle(badge)}`}
+                      >
+                        {badge}
+                      </span>
+                    ))}
+                  </div>
+                  {/* Image Container */}
+                  <div className="relative h-64 sm:h-72 overflow-hidden bg-gradient-to-br from-amber-100 to-yellow-100 dark:from-background dark:to-background">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent z-10 pointer-events-none"></div>
+                    <img
+                      src={drink.image}
+                      alt={drink.name}
+                      className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                    {/* Hover Overlay (Desktop only) */}
+                    <div className={`absolute inset-0 bg-gradient-to-t from-amber-900/80 via-amber-600/40 to-transparent transition-opacity duration-500 z-20 hidden md:flex items-end ${
+                      hoveredCard === drink.id ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                    }`}>
+                      <div className="absolute bottom-6 left-6 right-6">
+                        <div className="flex gap-3">
+                          <button className="flex-1 bg-white/90 hover:bg-white text-gray-900 py-3 px-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 text-sm dark:bg-background dark:text-foreground" title="View details" onClick={() => handleView(drink)}>
+                            <Eye className="w-4 h-4" />
+                            View
+                          </button>
+                          <button
+                            className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 text-sm ${
+                              drink.badges && drink.badges.includes('sold-out')
+                                ? 'bg-gray-400 text-white cursor-not-allowed'
+                                : 'bg-amber-500 hover:bg-amber-600 text-white'
+                            }`}
+                            disabled={drink.badges && drink.badges.includes('sold-out')}
+                            title={drink.badges && drink.badges.includes('sold-out') ? 'Sold Out' : 'Add to cart'}
+                            onClick={() => handleAddToCart(drink)}
+                          >
+                            <ShoppingCart className="w-4 h-4" />
+                            {drink.badges && drink.badges.includes('sold-out') ? 'Sold Out' : 'Add to Cart'}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Content */}
+                  <div className="p-6 pb-7">
+                    <div className="mb-2">
+                      <span className="text-sm font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-full dark:bg-background dark:text-amber-400">
+                        {drink.category}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-amber-700 transition-colors duration-300 dark:text-foreground">
+                      {drink.name}
+                    </h3>
+                    {/* Rating */}
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="flex items-center gap-1">
+                        {renderStars(drink.rating)}
+                      </div>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {drink.rating}
+                      </span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        ({Array.isArray(drink.reviews) ? drink.reviews.length : 0} reviews)
+                      </span>
+                    </div>
+                    {/* Price */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+                          {formatCurrency(drink.currentPrice ?? drink.price, 'FCFA')}
+                        </span>
+                        {drink.originalPrice && (
+                          <span className="text-lg text-gray-400 line-through dark:text-gray-500">
+                            {formatCurrency(drink.originalPrice, 'FCFA')}
+                          </span>
+                        )}
+                      </div>
+                      {/* Mobile Action Buttons (Mobile only) */}
+                      <div className="flex gap-2 md:hidden">
+                        <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors duration-300 dark:bg-background dark:text-foreground" title="View details" onClick={() => handleView(drink)}>
+                          <Eye className="w-4 h-4 text-gray-600 dark:text-amber-400" />
+                        </button>
+                        <button
+                          className={`p-2 rounded-xl transition-colors duration-300 ${
+                            drink.badges && drink.badges.includes('sold-out')
+                              ? 'bg-gray-300 cursor-not-allowed'
+                              : 'bg-amber-500 hover:bg-amber-600'
+                          }`}
+                          disabled={drink.badges && drink.badges.includes('sold-out')}
+                          title={drink.badges && drink.badges.includes('sold-out') ? 'Sold Out' : 'Add to cart'}
+                          onClick={() => handleAddToCart(drink)}
+                        >
+                          <ShoppingCart className={`w-4 h-4 ${
+                            drink.badges && drink.badges.includes('sold-out') ? 'text-gray-500' : 'text-white'
+                          }`} />
+                        </button>
+                        <button
+                          onClick={() => handleToggleWishlist(drink)}
+                          className={`p-2 rounded-full backdrop-blur-md transition-all duration-300 ${
+                            isInWishlist(drink.id)
+                              ? 'bg-red-500 text-white shadow-lg scale-110'
+                              : 'bg-white/80 text-gray-600 hover:bg-white hover:text-red-500 dark:bg-background dark:text-gray-300'
+                          }`}
+                          title={isInWishlist(drink.id) ? 'Remove from wishlist' : 'Add to wishlist'}
+                        >
+                          <Heart className={`w-5 h-5 ${isInWishlist(drink.id) ? 'fill-current' : ''}`} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Decorative Elements */}
+                  <div className="absolute -top-2 -right-2 w-24 h-24 bg-gradient-to-br from-amber-200/30 to-yellow-200/30 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700 dark:hidden"></div>
+                  <div className="absolute -bottom-2 -left-2 w-32 h-32 bg-gradient-to-tr from-yellow-200/20 to-amber-200/20 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700 dark:hidden"></div>
+                </div>
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Enhanced Tab Indicators */}
-        {totalTabs > 1 && (
-          <div className="flex justify-center items-center gap-4">
+          {/* Scroll Indicator - Mobile */}
+          <div className="flex justify-center mt-6 md:hidden">
             <div className="flex gap-2">
-              {productsTabs.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleTabClick(index)}
-                  className={`transition-all duration-300 ${
-                    index === currentTab
-                      ? 'w-8 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full scale-125'
-                      : 'w-3 h-3 bg-white/30 hover:bg-white/50 rounded-full hover:scale-110'
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
+              {Array.from({ length: Math.ceil(featuredDrinks.length / 2) }, (_, i) => (
+                <div
+                  key={i}
+                  className="w-2 h-2 rounded-full bg-amber-300 opacity-50"
+                ></div>
               ))}
             </div>
           </div>
-        )}
+        </div>
+        {/* Call to Action */}
+        <div className="text-center mt-12">
+          <button className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white px-12 py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105" title="View all drinks">
+            View All Drinks
+          </button>
+        </div>
       </div>
-
       <style jsx>{`
-        @keyframes slideInUp {
+        @keyframes slideIn {
           from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateX(30px);
           }
           to {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateX(0);
           }
         }
-
-        @keyframes spin-slow {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
-
-        .animate-spin-slow {
-          animation: spin-slow 20s linear infinite;
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
         }
       `}</style>
     </section>
   );
-}
+};
+
+export default FeatureDrinks;

@@ -222,8 +222,9 @@ export default function Footer() {
 
             <div>
               <h4 className="text-lg font-semibold mb-4 text-black">
-                {t("deliveryServices")}
+                {t("deliveryPatners")}
               </h4>
+              {/* flex this container for multiple images */}
               <div className="relative">
                 <div
                   className=" h-12 md:h-12 w-[330px] relative"
@@ -288,7 +289,7 @@ export default function Footer() {
                 <div className="space-y-3">
                   <Link
                     href="#"
-                    className="flex items-center bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors w-fit"
+                    className="w-full flex items-center justify-center bg-black text-white py-2 rounded-lg hover:bg-gray-900 transition-colors"
                   >
                     <div className="mr-3">
                       <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
@@ -303,7 +304,7 @@ export default function Footer() {
                   
                   <Link
                     href="#"
-                    className="flex items-center bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors w-fit"
+                    className="w-full flex items-center justify-center bg-black text-white py-2 rounded-lg hover:bg-gray-900 transition-colors"
                   >
                     <div className="mr-3">
                       <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
