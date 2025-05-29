@@ -1,39 +1,36 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { useLanguage } from "@/context/language-context"
+import React, { useState, useEffect, useRef } from "react"
+import { ChevronLeft, ChevronRight, Play, Pause, RotateCcw, Heart, Share2, Download, Eye } from "lucide-react"
+import { categories as productCategories } from "@/data/products"
 
-// Import categories from data
-import { categories } from "@/data/products"
-
-// Convert categories object to array
-const categoryItems = Object.entries(categories).map(([slug, data]) => ({
+// Transform product categories data for the gallery
+const categoryItems = Object.entries(productCategories).map(([slug, data]) => ({
   slug,
   title: data.title,
   description: data.description,
-  image: `/images/categories/${slug}.jpg`,
+  // Use a fallback image or a representative image from the first product in the category
+  image: data.products && data.products.length > 0 && data.products[0].image
+    ? data.products[0].image
+    : '/placeholder.jpg',
+  // No views/likes in products.ts, so use fallback or empty string
 }))
 
-export default function CategoryGallery() {
+export default function CinematicImageGallery() {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [direction, setDirection] = useState(0)
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
-  const autoPlayRef = useRef<NodeJS.Timeout | null>(null)
-  const { t } = useLanguage()
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(true)
+  const [liked, setLiked] = useState(false)
+  const [showInfo, setShowInfo] = useState(true)
+  const [transition, setTransition] = useState(false)
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
   // Handle auto-play
   useEffect(() => {
     if (isAutoPlaying) {
       autoPlayRef.current = setInterval(() => {
-        setDirection(1)
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % categoryItems.length)
-      }, 5000)
+        handleNext()
+      }, 4000)
     }
 
     return () => {
@@ -41,195 +38,258 @@ export default function CategoryGallery() {
         clearInterval(autoPlayRef.current)
       }
     }
-  }, [isAutoPlaying])
+  }, [isAutoPlaying, currentIndex])
 
-  // Pause auto-play on hover
-  const handleMouseEnter = () => setIsAutoPlaying(false)
-  const handleMouseLeave = () => setIsAutoPlaying(true)
+  // Fix: add explicit type for index
+  const handleImageTransition = (index: number) => {
+    setTransition(true)
+    setImageLoaded(false)
+    setTimeout(() => {
+      setCurrentIndex(index)
+      setTransition(false)
+      setTimeout(() => setImageLoaded(true), 100)
+    }, 300)
+  }
 
-  // Navigation handlers
   const handlePrev = () => {
-    setIsAutoPlaying(false)
-    setDirection(-1)
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + categoryItems.length) % categoryItems.length)
+    const prevIndex = (currentIndex - 1 + categoryItems.length) % categoryItems.length
+    handleImageTransition(prevIndex)
   }
 
   const handleNext = () => {
-    setIsAutoPlaying(false)
-    setDirection(1)
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % categoryItems.length)
+    const nextIndex = (currentIndex + 1) % categoryItems.length
+    handleImageTransition(nextIndex)
   }
 
-  // Animation variants
-  const slideVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 1000 : -1000,
-      opacity: 0,
-      scale: 0.85,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.5,
-      },
-    },
-    exit: (direction: number) => ({
-      x: direction > 0 ? -1000 : 1000,
-      opacity: 0,
-      scale: 0.85,
-      transition: {
-        duration: 0.5,
-      },
-    }),
-  }
+  const toggleAutoPlay = () => setIsAutoPlaying(!isAutoPlaying)
+  const toggleLike = () => setLiked(!liked)
+  const toggleInfo = () => setShowInfo(!showInfo)
 
   return (
-    <section className=" px-2 py-16 bg-gradient-to-b from-white to-gray-50  ">
-      {/* In case of error, include container class in the classes  */}
-      <div className=" w-full">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-4">Explore Our Categories</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Discover our premium selection of drinks and accessories, carefully curated for the discerning connoisseur.
-          </p>
-        </div>
+    <div className="relative w-full h-screen bg-black overflow-hidden">
+      {/* Main Image Display - Full Screen */}
+      <div className="absolute inset-0">
+        <div 
+          className={`absolute inset-0 bg-center transition-all duration-700
+            ${imageLoaded ? 'scale-100 opacity-100' : 'scale-110 opacity-60'}
+            ${transition ? 'blur-sm' : 'blur-0'}
+            bg-cover md:bg-contain lg:bg-contain xl:bg-contain
+            md:scale-100 lg:scale-100 xl:scale-100
+          `}
+          style={{
+            backgroundImage: `url(${categoryItems[currentIndex].image})`,
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            // backgroundSize is handled by Tailwind classes above
+          }}
+        />
+        
+        {/* Cinematic Vignette */}
+        <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/60" />
+        
+        {/* Subtle Film Grain Effect */}
+        <div className="absolute inset-0 opacity-20 bg-noise animate-pulse" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.1'/%3E%3C/svg%3E")`,
+        }} />
+      </div>
 
-        <div
-          className="relative w-full h-[500px] md:h-[600px] overflow-hidden rounded-xl shadow-2xl"
-          // className="relative h-full md:h-full overflow-hidden rounded-xl shadow-2xl"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          {/* Main Carousel */}
-          <AnimatePresence initial={false} custom={direction} mode="wait">
-            <motion.div
-              key={currentIndex}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              className="absolute inset-0"
+      {/* Top Control Bar */}
+      <div className={`absolute top-0 left-0 right-0 z-30 p-6 bg-gradient-to-b from-black/80 to-transparent transition-all duration-500 ${
+        showInfo ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+      }`}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-white/80">
+              <Eye className="w-4 h-4" />
+              <span className="text-sm font-medium">{categoryItems[currentIndex].views || '—'} views</span>
+            </div>
+            <div className="w-px h-4 bg-white/30" />
+            <div className="text-white/60 text-sm">
+              {currentIndex + 1} / {categoryItems.length}
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleLike}
+              title="Like"
+              className={`p-2 rounded-full transition-all duration-300 ${
+                liked ? 'bg-red-500 text-white' : 'bg-black/40 text-white/80 hover:bg-black/60'
+              }`}
             >
-              <div className="relative h-full w-full">
-                <Image
-                  src={categoryItems[currentIndex].image || "/placeholder.svg?height=600&width=1200"}
-                  alt={categoryItems[currentIndex].title}
-                  fill
-                  className="object-cover"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-
-                {/* Content */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center max-w-3xl px-6">
-                    <motion.div
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2, duration: 0.5 }}
-                    >
-                      <h3 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                        {categoryItems[currentIndex].title}
-                      </h3>
-                      <p className="text-lg text-white/90 mb-8">{categoryItems[currentIndex].description}</p>
-                      <Link href={`/category/${categoryItems[currentIndex].slug}`}>
-                        <Button size="lg" className="bg-amber-600 hover:bg-amber-700 text-white">
-                          Explore Collection
-                          <ArrowRight className="ml-2 h-5 w-5" />
-                        </Button>
-                      </Link>
-                    </motion.div>
-                  </div>
-                </div>
-
-                {/* Spinning category icon */}
-                <motion.div
-                  className="absolute top-10 right-10 hidden md:block"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-                >
-                  <div className="relative h-32 w-32 rounded-full bg-amber-600/20 backdrop-blur-sm flex items-center justify-center">
-                    <div className="absolute inset-0 rounded-full border-2 border-amber-500/50" />
-                    <div className="text-white font-bold text-xl">
-                      {categoryItems[currentIndex].slug.charAt(0).toUpperCase()}
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Navigation Buttons */}
-          <button
-            onClick={handlePrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full backdrop-blur-sm transition-all z-10"
-            aria-label="Previous category"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </button>
-          <button
-            onClick={handleNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full backdrop-blur-sm transition-all z-10"
-            aria-label="Next category"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </button>
-
-          {/* Indicators */}
-          <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 z-10">
-            {categoryItems.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setDirection(index > currentIndex ? 1 : -1)
-                  setCurrentIndex(index)
-                  setIsAutoPlaying(false)
-                }}
-                className={cn(
-                  "w-3 h-3 rounded-full transition-all",
-                  currentIndex === index ? "bg-amber-500 w-8" : "bg-white/50 hover:bg-white/80",
-                )}
-                aria-label={`Go to category ${index + 1}`}
-              />
-            ))}
+              <Heart className={`w-5 h-5 ${liked ? 'fill-current' : ''}`} />
+            </button>
+            <button className="p-2 bg-black/40 text-white/80 hover:bg-black/60 rounded-full transition-all duration-300" title="Share">
+              <Share2 className="w-5 h-5" />
+            </button>
+            <button className="p-2 bg-black/40 text-white/80 hover:bg-black/60 rounded-full transition-all duration-300" title="Download">
+              <Download className="w-5 h-5" />
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* Category Thumbnails */}
-        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+      {/* Main Navigation - Side Arrows */}
+      <button
+        onClick={handlePrev}
+        title="Previous"
+        className="absolute left-6 top-1/2 transform -translate-y-1/2 z-20 p-4 bg-black/20 backdrop-blur-md text-white/90 hover:bg-black/40 hover:text-white transition-all duration-300 rounded-full border border-white/10 hover:border-white/30 hover:scale-110"
+      >
+        <ChevronLeft className="w-8 h-8" />
+      </button>
+      
+      <button
+        onClick={handleNext}
+        title="Next"
+        className="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 p-4 bg-black/20 backdrop-blur-md text-white/90 hover:bg-black/40 hover:text-white transition-all duration-300 rounded-full border border-white/10 hover:border-white/30 hover:scale-110"
+      >
+        <ChevronRight className="w-8 h-8" />
+      </button>
+
+      {/* Bottom Information Panel */}
+      <div className={`absolute bottom-0 left-0 right-0 z-30 transition-all duration-500 ${
+        showInfo ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+      }`}>
+        <div className="bg-gradient-to-t from-black/90 via-black/70 to-transparent p-8 pt-16">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6">
+              {/* Content */}
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
+                  <span className="text-amber-400 text-sm font-mono uppercase tracking-wider">
+                    Premium Collection
+                  </span>
+                </div>
+                <h1 className="text-4xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+                  {categoryItems[currentIndex].title}
+                </h1>
+                <p className="text-gray-300 text-lg lg:text-xl max-w-2xl leading-relaxed mb-6">
+                  {categoryItems[currentIndex].description}
+                </p>
+                
+                <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-2">
+                    <Heart className={`w-5 h-5 ${liked ? 'text-red-400 fill-current' : 'text-gray-400'}`} />
+                    <span className="text-gray-300">{/* No likes in data, fallback */}—</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Eye className="w-5 h-5 text-gray-400" />
+                    <span className="text-gray-300">{/* No views in data, fallback */}—</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Controls */}
+              <div className="flex flex-col items-end gap-4">
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={toggleAutoPlay}
+                    title={isAutoPlaying ? 'Pause' : 'Play'}
+                    className={`p-3 rounded-full transition-all duration-300 border ${
+                      isAutoPlaying 
+                        ? 'bg-amber-500 text-black border-amber-500' 
+                        : 'bg-black/40 text-white/80 border-white/20 hover:bg-black/60'
+                    }`}
+                  >
+                    {isAutoPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+                  </button>
+                  <button
+                    onClick={toggleInfo}
+                    title="Toggle Info"
+                    className="p-3 bg-black/40 text-white/80 hover:bg-black/60 rounded-full transition-all duration-300 border border-white/20"
+                  >
+                    <RotateCcw className="w-5 h-5" />
+                  </button>
+                </div>
+                
+                {/* Image Counter */}
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-white">
+                    {String(currentIndex + 1).padStart(2, '0')}
+                  </div>
+                  <div className="text-sm text-gray-400">
+                    of {String(categoryItems.length).padStart(2, '0')}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Thumbnail Strip - Hidden by Default, Shows on Hover */}
+      <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 z-20 opacity-0 hover:opacity-100 transition-opacity duration-300">
+        <div className="flex items-center gap-3 p-4 bg-black/60 backdrop-blur-lg rounded-2xl border border-white/10">
           {categoryItems.map((category, index) => (
-            <motion.div
+            <button
               key={category.slug}
-              whileHover={{ y: -5, scale: 1.05 }}
-              className={cn(
-                "relative rounded-lg w-[2] overflow-hidden cursor-pointer transition-all",
-                currentIndex === index ? "ring-4 ring-amber-500" : "",
-              )}
-              onClick={() => {
-                setDirection(index > currentIndex ? 1 : -1)
-                setCurrentIndex(index)
-                setIsAutoPlaying(false)
-              }}
+              onClick={() => handleImageTransition(index)}
+              title={category.title}
+              className={`relative w-16 h-10 rounded-lg overflow-hidden transition-all duration-300 border-2 ${
+                currentIndex === index 
+                  ? 'border-amber-400 scale-110 shadow-lg shadow-amber-500/50' 
+                  : 'border-white/20 hover:border-white/40 hover:scale-105'
+              }`}
             >
-              <div className="relative aspect-square">
-                <Image
-                  src={category.image || "/placeholder.svg?height=200&width=200"}
-                  alt={category.title}
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-black/30 hover:bg-black/10 transition-colors" />
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                <p className="text-white text-xs font-medium truncate">{category.title}</p>
-              </div>
-            </motion.div>
+              <div 
+                className="w-full h-full bg-cover bg-center"
+                style={{ backgroundImage: `url(${category.image})` }}
+              />
+              {currentIndex === index && (
+                <div className="absolute inset-0 bg-amber-400/20" />
+              )}
+            </button>
           ))}
         </div>
       </div>
-    </section>
+
+      {/* Progress Bar */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/40 z-10">
+        <div 
+          className="h-full bg-gradient-to-r from-amber-400 to-orange-500 transition-all duration-300"
+          style={{ width: `${((currentIndex + 1) / categoryItems.length) * 100}%` }}
+        />
+      </div>
+
+      {/* Keyboard Hints - Subtle */}
+      <div className="absolute top-1/2 left-8 transform -translate-y-1/2 z-10 opacity-30 hover:opacity-100 transition-opacity duration-300">
+        <div className="text-white/60 text-xs space-y-1">
+          <div>← → Navigate</div>
+          <div>Space Play/Pause</div>
+          <div>I Info Toggle</div>
+        </div>
+      </div>
+
+      {/* Loading Indicator */}
+      {!imageLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center z-40 bg-black/50">
+          <div className="w-12 h-12 border-3 border-amber-400/30 border-t-amber-400 rounded-full animate-spin" />
+        </div>
+      )}
+
+      <style jsx>{`
+        .bg-gradient-radial {
+          background: radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0.8) 100%);
+        }
+        
+        @keyframes grain {
+          0%, 100% { transform: translate(0, 0) }
+          10% { transform: translate(-5%, -10%) }
+          20% { transform: translate(-15%, 5%) }
+          30% { transform: translate(7%, -25%) }
+          40% { transform: translate(-5%, 25%) }
+          50% { transform: translate(-15%, 10%) }
+          60% { transform: translate(15%, 0%) }
+          70% { transform: translate(0%, 15%) }
+          80% { transform: translate(3%, 35%) }
+          90% { transform: translate(-10%, 10%) }
+        }
+        
+        .bg-noise {
+          animation: grain 8s steps(10) infinite;
+        }
+      `}</style>
+    </div>
   )
 }
