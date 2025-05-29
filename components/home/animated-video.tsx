@@ -171,11 +171,11 @@ export default function AnimatedVideo() {
           variants={containerVariants}
           initial="hidden"
           animate={controls}
-          className="relative max-w-full mx-auto rounded-xl overflow-hidden shadow-2xl"
+          className=" h-[17rem] md:h-full relative max-w-full mx-auto rounded-xl overflow-hidden shadow-2xl"
           ref={videoContainerRef}
         >
           {/* YouTube Video */}
-          <div className="aspect-video bg-black relative ">
+          <div className="aspect-video bg-black relative h-full w-full">
             <div className="w-full h-full">
               <iframe
                 ref={iframeRef}
@@ -206,8 +206,8 @@ export default function AnimatedVideo() {
           </div>
 
           {/* Video Caption */}
-          <div className="bg-amber-900 p-4 text-center">
-            <h3 className="font-medium">The Art of Crafting Premium Spirits</h3>
+          <div className="hidden md:block bg-amber-900 p-4 text-center">
+            <h3 className=" text-white font-bold">The Art of Crafting Premium Spirits</h3>
             <p className="text-sm text-amber-200">Discover the passion and expertise behind every bottle</p>
           </div>
         </motion.div>
@@ -223,7 +223,7 @@ export default function AnimatedVideo() {
             <div className="bg-amber-600 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-black"
+                className="h-8 w-8 text-white"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -244,7 +244,7 @@ export default function AnimatedVideo() {
             <div className="bg-amber-600 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-black"
+                className="h-8 w-8 text-white"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -265,7 +265,7 @@ export default function AnimatedVideo() {
             <div className="bg-amber-600 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-black"
+                className="h-8 w-8 text-white"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
