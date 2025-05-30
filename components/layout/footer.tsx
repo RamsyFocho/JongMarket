@@ -220,8 +220,8 @@ export default function Footer() {
               </div>
             </div>
 
-            <div>
-              <h4 className="text-xl font-semibold mb-4 text-black border-t border-gray-800 pt-4">
+            <div className="border-t border-gray-800 pt-4 md:border-none md:pt-0">
+              <h4 className="text-xl font-semibold mb-4 text-black " >
                 {t("deliveryPatners")}
               </h4>
               {/* flex this container for multiple images */}
