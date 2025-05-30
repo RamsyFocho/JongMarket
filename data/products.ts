@@ -316,7 +316,7 @@ export const products = [
     price: 399.99,
     badges: ["new"],
     rating: 4.9,
-    image: "/images/products/chateau_margaux.jpg",
+    image: "/images/products/wine/chateau_margaux.jpg",
     slug: "chateau-margaux-2015",
     inStock: true,
     stockCount: 10,
@@ -330,6 +330,81 @@ export const products = [
       grapeVariety: "Cabernet Sauvignon Blend",
     },
   },
+
+
+  {
+    id: 1006,
+    name: "Moscato",
+    brand: "Moscato",
+    category: "Wine",
+    price: 11.75,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/wine/moscato.jpg",
+    slug: "moscato",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Moscato is a style of sweet, white, or pink wine made from Muscat grapes, known for its fruity notes, low alcohol content, and a slight fizz. It's often enjoyed as a dessert wine or as a light aperitif. ",
+    details: {
+      origin: "Italy",
+      region: "northwestern Italy",
+      vintage: "2022",
+      size: "750ml",
+      grapeVariety: "muscat grapes",
+    },
+  },
+
+
+
+  {
+    id: 1007,
+    name: "Franzini Moscato",
+    brand: "Moscato",
+    category: "Wine",
+    price: 11.42,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/wine/franzini.jpg",
+    slug: "moscato",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Moscato is a style of sweet, white, or pink wine made from Muscat grapes, known for its fruity notes, low alcohol content, and a slight fizz. It's often enjoyed as a dessert wine or as a light aperitif. ",
+    details: {
+      origin: "France",
+      region: "Bordeaux",
+      vintage: "2015",
+      size: "750ml",
+      grapeVariety: "Cabernet Sauvignon Blend",
+    },
+  },
+
+
+  {
+    id: 1008,
+    name: "GH Mumm",
+    brand: "Champagne",
+    category: "champagne",
+    price: 103.34,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/champagne/gh-mum.jpg",
+    slug: "moscato",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "G.H. Mumm & Cie, a prestigious Champagne house, was founded in Reims, France, in 1827. It is owned by Pernod Ricard. Known for its iconic Cordon Rouge cuvée and commitment to quality, G.H. Mumm is a leading global Champagne producer, often associated with celebrations and high-end occasions.",
+    details: {
+      origin: "France",
+      region: "Reims, France",
+      vintage: "2015",
+      size: "750ml",
+      grapeVariety: "RSRV Blanc de Blancs and RSRV Blanc de Noirs",
+    },
+  },
+
+
   // Beer
   {
     id: 41,
