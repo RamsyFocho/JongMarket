@@ -6,7 +6,7 @@ const BrandsSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
 
-  // Sample brand data with higher quality placeholder images
+  // Sample brand data with real image paths
   const brands = [
     { id: 1, name: "Coca Cola", logo: "/images/brands/coca-logo.jpg", category: "Soft Drinks" },
     { id: 2, name: "Heineken", logo: "/images/brands/heineken-logo.jpg", category: "Beer" },
@@ -22,15 +22,16 @@ const BrandsSection = () => {
     { id: 12, name: "Belvedere", logo: "/images/brands/belved.jpg", category: "Vodka" }
   ];
 
-  // Responsive items per slide - 4x4 grid focus
+  // Responsive items per slide - optimized for single row display
   const getItemsPerSlide = () => {
     if (typeof window !== 'undefined') {
       if (window.innerWidth < 640) return 4; // mobile: 2x2 grid
-      if (window.innerWidth < 768) return 6; // tablet portrait: 2x3 grid
-      if (window.innerWidth < 1024) return 8; // tablet landscape: 2x4 grid
-      return 16; // desktop: 4x4 grid
+      if (window.innerWidth < 768) return 3; // sm: 3 in a row
+      if (window.innerWidth < 1024) return 4; // md: 4 in a row
+      if (window.innerWidth < 1280) return 5; // lg: 5 in a row
+      return 6; // xl: 6 in a row
     }
-    return 16;
+    return 6;
   };
 
   const [itemsPerSlide, setItemsPerSlide] = useState(getItemsPerSlide());
@@ -39,13 +40,18 @@ const BrandsSection = () => {
   // Handle responsive updates
   useEffect(() => {
     const handleResize = () => {
-      setItemsPerSlide(getItemsPerSlide());
-      setCurrentSlide(0); // Reset to first slide on resize
+      const newItemsPerSlide = getItemsPerSlide();
+      setItemsPerSlide(newItemsPerSlide);
+      // Adjust current slide to prevent showing empty slides
+      const newTotalSlides = Math.ceil(brands.length / newItemsPerSlide);
+      if (currentSlide >= newTotalSlides) {
+        setCurrentSlide(0);
+      }
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [brands.length, currentSlide]);
 
   // Auto-play functionality
   useEffect(() => {
@@ -53,7 +59,7 @@ const BrandsSection = () => {
     
     const interval = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % totalSlides);
-    }, 5000);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [totalSlides, isAutoPlay]);
@@ -74,7 +80,7 @@ const BrandsSection = () => {
   };
 
   return (
-    <section className="relative w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 py-12 md:py-16 lg:py-24 overflow-hidden">
+    <section className="relative w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 py-12 md:py-16 lg:py-20 overflow-hidden">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-[0.02]">
         <div 
@@ -102,12 +108,12 @@ const BrandsSection = () => {
 
         {/* Brands Carousel */}
         <div className="relative">
-          {/* Navigation Buttons - Hidden on mobile */}
+          {/* Navigation Buttons */}
           {totalSlides > 1 && (
             <>
               <button
                 onClick={prevSlide}
-                className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 lg:w-12 lg:h-12 bg-white/95 backdrop-blur-sm hover:bg-white rounded-full shadow-lg border border-gray-200/50 items-center justify-center transition-all duration-300 hover:scale-105 hover:shadow-xl group -translate-x-2 lg:-translate-x-4"
+                className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 lg:w-12 lg:h-12 bg-white/95 backdrop-blur-sm hover:bg-white rounded-full shadow-lg border border-gray-200/50 items-center justify-center transition-all duration-300 hover:scale-105 hover:shadow-xl group -translate-x-3 lg:-translate-x-6"
                 aria-label="Previous brands"
               >
                 <ChevronLeft className="w-4 h-4 lg:w-5 lg:h-5 text-gray-600 group-hover:text-gray-900 transition-colors" />
@@ -115,7 +121,7 @@ const BrandsSection = () => {
               
               <button
                 onClick={nextSlide}
-                className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 lg:w-12 lg:h-12 bg-white/95 backdrop-blur-sm hover:bg-white rounded-full shadow-lg border border-gray-200/50 items-center justify-center transition-all duration-300 hover:scale-105 hover:shadow-xl group translate-x-2 lg:translate-x-4"
+                className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 lg:w-12 lg:h-12 bg-white/95 backdrop-blur-sm hover:bg-white rounded-full shadow-lg border border-gray-200/50 items-center justify-center transition-all duration-300 hover:scale-105 hover:shadow-xl group translate-x-3 lg:translate-x-6"
                 aria-label="Next brands"
               >
                 <ChevronRight className="w-4 h-4 lg:w-5 lg:h-5 text-gray-600 group-hover:text-gray-900 transition-colors" />
@@ -124,49 +130,53 @@ const BrandsSection = () => {
           )}
 
           {/* Brands Container */}
-          <div className="overflow-hidden px-2 md:px-8 lg:px-12">
+          <div className="overflow-hidden px-2 sm:px-8 lg:px-12">
             <div 
               className="flex transition-transform duration-700 ease-out"
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
               {Array.from({ length: totalSlides }, (_, slideIndex) => (
                 <div key={slideIndex} className="w-full flex-shrink-0">
-                  <div className={`grid gap-3 md:gap-4 lg:gap-6 ${
-                    itemsPerSlide === 4 ? 'grid-cols-2' :    // mobile: 2x2
-                    itemsPerSlide === 6 ? 'grid-cols-3' :    // tablet portrait: 2x3  
-                    itemsPerSlide === 8 ? 'grid-cols-4' :    // tablet landscape: 2x4
-                    'grid-cols-4'                            // desktop: 4x4
-                  }`}>
+                  {/* Mobile: 2x2 grid, MD+: Single row with equal spacing */}
+                  <div className={
+                    itemsPerSlide === 4 && window?.innerWidth < 640
+                      ? 'grid grid-cols-2 gap-4' // mobile: 2x2 grid
+                      : 'flex justify-center items-stretch gap-3 md:gap-4 lg:gap-6' // single row
+                  }>
                     {brands
                       .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
                       .map((brand, index) => (
                         <div
                           key={brand.id}
-                          className="group"
+                          className={`group ${
+                            itemsPerSlide === 4 && window?.innerWidth < 640
+                              ? 'w-full' // mobile: full width in grid
+                              : 'flex-1 max-w-xs' // single row: flexible width with max constraint
+                          }`}
                           style={{
-                            animationDelay: `${index * 100}ms`
+                            animationDelay: `${index * 150}ms`
                           }}
                         >
                           {/* Brand Card */}
-                          <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-5 lg:p-8 border border-gray-200/60 shadow-sm hover:shadow-xl transition-all duration-500 hover:scale-[1.03] hover:-translate-y-2 hover:border-gray-300/60">
-                            {/* Brand Logo Container - Larger for 4x4 grid */}
-                            <div className="aspect-[3/2] flex items-center justify-center mb-4 md:mb-5 relative overflow-hidden rounded-xl bg-gray-50/80 border border-gray-100">
+                          <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 border border-gray-200/60 shadow-sm hover:shadow-xl transition-all duration-500 hover:scale-[1.03] hover:-translate-y-2 hover:border-gray-300/60 h-full flex flex-col">
+                            {/* Brand Logo Container */}
+                            <div className="aspect-[4/3] w-full flex items-center justify-center mb-3 md:mb-4 relative overflow-hidden rounded-lg bg-gray-50/80 border border-gray-100">
                               <img
                                 src={brand.logo}
                                 alt={`${brand.name} logo`}
-                                className="w-full h-full object-contain p-3 md:p-4 lg:p-6 filter grayscale-0 group-hover:scale-110 transition-all duration-500"
+                                className="w-full h-full object-contain p-2 md:p-3 lg:p-4 group-hover:scale-105 transition-all duration-500"
                                 loading="lazy"
                                 onError={(e) => {
-                                  e.target.src = `https://via.placeholder.com/300x200/F3F4F6/6B7280?text=${encodeURIComponent(brand.name)}`;
+                                  e.target.src = `https://via.placeholder.com/300x225/F3F4F6/6B7280?text=${encodeURIComponent(brand.name)}`;
                                 }}
                               />
                               
-                              {/* Enhanced hover overlay */}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                              {/* Hover overlay */}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
                             </div>
                             
-                            {/* Brand Info - Enhanced for larger cards */}
-                            <div className="text-center">
+                            {/* Brand Info */}
+                            <div className="text-center flex-grow flex flex-col justify-center">
                               <h3 className="font-semibold text-gray-900 text-sm md:text-base lg:text-lg mb-1 md:mb-2 group-hover:text-amber-600 transition-colors duration-300 leading-tight">
                                 {brand.name}
                               </h3>
@@ -175,8 +185,8 @@ const BrandsSection = () => {
                               </p>
                             </div>
 
-                            {/* Enhanced premium indicator */}
-                            <div className="absolute top-3 right-3 w-2 h-2 bg-amber-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-sm"></div>
+                            {/* Premium indicator */}
+                            <div className="absolute top-2 right-2 w-1.5 h-1.5 md:w-2 md:h-2 bg-amber-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-sm"></div>
                           </div>
                         </div>
                       ))}
@@ -209,7 +219,7 @@ const BrandsSection = () => {
         <div className="flex justify-center mt-4 md:mt-6">
           <button
             onClick={() => setIsAutoPlay(!isAutoPlay)}
-            className="text-xs text-gray-500 hover:text-gray-700 transition-colors duration-200 px-3 py-1 rounded-full bg-white/60 backdrop-blur-sm border border-gray-200/50"
+            className="text-xs text-gray-500 hover:text-gray-700 transition-colors duration-200 px-3 py-1 rounded-full bg-white/60 backdrop-blur-sm border border-gray-200/50 hover:bg-white/80"
           >
             {isAutoPlay ? 'Pause' : 'Play'} Auto-scroll
           </button>
