@@ -285,7 +285,7 @@ export default function ProductClientPage({
             transition={{ duration: 0.5 }}
             className="space-y-4"
           >
-            <div className="relative aspect-square h-80 md:h-96 rounded-lg overflow-hidden bg-white shadow-md">
+            <div className="relative aspect-square h-80 md:h-96 rounded-lg overflow-hidden bg-white shadow-md flex items-center justify-center">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeImage}
@@ -293,13 +293,13 @@ export default function ProductClientPage({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="h-full w-full"
+                  className="h-full w-full flex items-center justify-center"
                 >
                   <MemoizedProductImage
                     src={productImages[activeImage]}
                     alt={`${product.name} - ${product.category} - Premium quality`}
                     priority={true}
-                    className="object-contain p-4 md:p-8"
+                    className="object-cover w-full h-full"
                   />
                 </motion.div>
               </AnimatePresence>

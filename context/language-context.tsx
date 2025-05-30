@@ -71,7 +71,7 @@ const translations = {
     termsConditions: "Terms & Conditions",
     privacyPolicy: "Privacy Policy",
     paymentMethods: "Payment Methods",
-    deliveryServices: "Delivery Services",
+    deliveryPatners: "Delivery Patners",
     ageWarning: "Warning: This website is only for individuals 18 years of age and older.",
 
     // Checkout
@@ -165,7 +165,7 @@ const translations = {
     termsConditions: "Conditions Générales",
     privacyPolicy: "Politique de Confidentialité",
     paymentMethods: "Méthodes de Paiement",
-    deliveryServices: "Services de Livraison",
+    deliveryPatners: "Partenaire de Livraison",
     ageWarning: "Attention: Ce site est réservé aux personnes de 18 ans et plus.",
 
     // Checkout
