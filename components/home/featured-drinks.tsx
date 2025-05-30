@@ -388,7 +388,11 @@ const handleToggleWishlist = (drink: any) => {
         </div>
         {/* Call to Action */}
         <div className="text-center mt-12">
-          <button className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white px-12 py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105" title="View all drinks">
+          <button
+            className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white px-12 py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            title="View all drinks"
+            onClick={() => router.push('/products')}
+          >
             View All Drinks
           </button>
         </div>
@@ -417,3 +421,5 @@ const handleToggleWishlist = (drink: any) => {
 };
 
 export default FeatureDrinks;
+
+// NOTE: For toasts to show, ensure <Toaster /> is rendered in your app root (e.g. in layout.tsx)
