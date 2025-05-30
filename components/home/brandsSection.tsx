@@ -22,7 +22,7 @@ const BrandsSection = () => {
     { id: 12, name: "Belvedere", logo: "/images/brands/belved.jpg", category: "Vodka" }
   ];
 
-  // Responsive items per slide - optimized for single row display
+  // Responsive items per slide - optimize   d for single row display
   const getItemsPerSlide = () => {
     if (typeof window !== 'undefined') {
       if (window.innerWidth < 640) return 4; // mobile: 2x2 grid
