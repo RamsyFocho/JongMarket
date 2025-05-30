@@ -221,19 +221,19 @@ export default function Footer() {
             </div>
 
             <div>
-              <h4 className="text-lg font-semibold mb-4 text-black">
+              <h4 className="text-xl font-semibold mb-4 text-black border-t border-gray-800 pt-4">
                 {t("deliveryPatners")}
               </h4>
               {/* flex this container for multiple images */}
               <div className="relative">
                 <div
-                  className=" h-12 md:h-12 w-[330px] relative"
+                  className=" h-[17rem] md:h-[17rem] w-[330px] relative "
                 >
                   <Image
-                    src="/images/payment/shipping-services.png"
+                    src="/images/payment/deliveryPatners.png"
                     alt={"Shipping Services"}
                     fill
-                    className="object-cover md:object-contain p-1 relative"
+                    className="object-cover md:object-cover p-1 relative w-full"
                   />
                 </div>
               </div>
