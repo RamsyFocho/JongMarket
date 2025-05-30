@@ -220,7 +220,7 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="border-t border-gray-800 pt-4 md:border-none md:pt-0">
+            <div className="border-t border-gray-800 pt-4 md:border-t md:border-transparent md:pt-0">
               <h4 className="text-xl font-semibold mb-4 text-black " >
                 {t("deliveryPatners")}
               </h4>
