@@ -1,26 +1,12 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { brands } from '@/data/brands';
+import Link from 'next/link';
 
 const BrandsSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
-
-  // Sample brand data with real image paths
-  const brands = [
-    { id: 1, name: "Coca Cola", logo: "/images/brands/coca-logo.jpg", category: "Soft Drinks" },
-    { id: 2, name: "Heineken", logo: "/images/brands/heineken-logo.jpg", category: "Beer" },
-    { id: 3, name: "Jack Daniels", logo: "/images/brands/jack-daniels.jpg", category: "Whiskey" },
-    { id: 4, name: "Absolut", logo: "/images/brands/absolut.jpg", category: "Vodka" },
-    { id: 5, name: "Bacardi", logo: "/images/brands/bacardi.jpg", category: "Rum" },
-    { id: 6, name: "Johnnie Walker", logo: "/images/brands/jhonny-walker.jpg", category: "Whiskey" },
-    { id: 7, name: "Grey Goose", logo: "/images/brands/grey-groose.jpg", category: "Vodka" },
-    { id: 8, name: "Corona", logo: "/images/brands/corona.jpg", category: "Beer" },
-    { id: 9, name: "Dom Pérignon", logo: "/images/brands/perignon.jpg", category: "Champagne" },
-    { id: 10, name: "Martini", logo: "/images/brands/martini.jpg", category: "Vermouth" },
-    { id: 11, name: "Chivas Regal", logo: "/images/brands/regal.jpg", category: "Whiskey" },
-    { id: 12, name: "Belvedere", logo: "/images/brands/belved.jpg", category: "Vodka" }
-  ];
 
   // Responsive items per slide - optimize   d for single row display
   const getItemsPerSlide = () => {
@@ -146,16 +132,15 @@ const BrandsSection = () => {
                     {brands
                       .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
                       .map((brand, index) => (
-                        <div
+                        <Link
                           key={brand.id}
+                          href={`/brands/${brand.name.toLowerCase().replace(/\s+/g, '-')}`}
                           className={`group ${
-                            itemsPerSlide === 4 && window?.innerWidth < 640
-                              ? 'w-full' // mobile: full width in grid
-                              : 'flex-1 max-w-xs' // single row: flexible width with max constraint
+                            itemsPerSlide === 4 && typeof window !== 'undefined' && window.innerWidth < 640
+                              ? 'w-full'
+                              : 'flex-1 max-w-xs'
                           }`}
-                          style={{
-                            animationDelay: `${index * 150}ms`
-                          }}
+                          style={{ animationDelay: `${index * 150}ms` }}
                         >
                           {/* Brand Card */}
                           <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 border border-gray-200/60 shadow-sm hover:shadow-xl transition-all duration-500 hover:scale-[1.03] hover:-translate-y-2 hover:border-gray-300/60 h-full flex flex-col">
@@ -181,14 +166,14 @@ const BrandsSection = () => {
                                 {brand.name}
                               </h3>
                               <p className="text-xs md:text-sm text-gray-500 opacity-70 group-hover:opacity-100 transition-opacity duration-300">
-                                {brand.category}
+                                {brand.categories && brand.categories.length > 0 ? brand.categories[0] : ''}
                               </p>
                             </div>
 
                             {/* Premium indicator */}
                             <div className="absolute top-2 right-2 w-1.5 h-1.5 md:w-2 md:h-2 bg-amber-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-sm"></div>
                           </div>
-                        </div>
+                        </Link>
                       ))}
                   </div>
                 </div>

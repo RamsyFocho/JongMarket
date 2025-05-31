@@ -1,3 +1,5 @@
+import { brands } from '@/data/brands';
+
 // This file contains all products data for the application
 export const products = [
   // Whiskey
@@ -134,7 +136,7 @@ export const products = [
   {
     id: 6,
     name: "Black Label",
-    brand: "Black Label",
+    brand: "Johnnie Walker",
     category: "Whiskey",
     price: 35.99,
     badges: [],
@@ -156,7 +158,7 @@ export const products = [
   {
     id: 7,
     name: "Green Label",
-    brand: "Green Label",
+    brand: "Johnnie Walker",
     category: "Whiskey",
     price: 75,
     badges: [],
@@ -178,7 +180,7 @@ export const products = [
   {
     id: 8,
     name: "Gold Label",
-    brand: "Gold Label",
+    brand: "Johnnie Walker",
     category: "Whiskey",
     price: 84,
     badges: [],
@@ -200,7 +202,7 @@ export const products = [
   {
     id: 9,
     name: "Red Label",
-    brand: "Red Label",
+    brand: "Johnnie Walker",
     category: "Whiskey",
     price: 16.67,
     badges: [],
@@ -222,7 +224,7 @@ export const products = [
   {
     id: 10,
     name: "Blue Label",
-    brand: "Blue Label",
+    brand: "Johnnie Walker",
     category: "Whiskey",
     price: 84,
     badges: [],
@@ -381,8 +383,7 @@ export const products = [
   },
 
 
-  {
-    id: 1008,
+  {    id: 1008,
     name: "GH Mumm",
     brand: "Champagne",
     category: "champagne",
@@ -1136,3 +1137,32 @@ export const promotions = [
     extraInfo: "Fresh arrivals!"
   },
 ];
+
+// --- Data normalization: ensure all products have a brand and all brands have correct categories ---
+products.forEach(product => {
+  if (!product.brand) {
+    // If product has no brand, create a new brand entry
+    const newBrand = {
+      id: brands.length + 1,
+      name: product.name,
+      logo: '/images/brands/placeholder-logo.png',
+      categories: [product.category]
+    };
+    brands.push(newBrand);
+    product.brand = newBrand.name;
+  } else {
+    // Ensure brand exists in brands list and add category if missing
+    let brandEntry = brands.find(b => b.name.toLowerCase() === product.brand.toLowerCase());
+    if (!brandEntry) {
+      brandEntry = {
+        id: brands.length + 1,
+        name: product.brand,
+        logo: '/images/brands/placeholder-logo.png',
+        categories: [product.category]
+      };
+      brands.push(brandEntry);
+    } else if (!brandEntry.categories.includes(product.category)) {
+      brandEntry.categories.push(product.category);
+    }
+  }
+});

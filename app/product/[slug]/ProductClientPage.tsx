@@ -83,7 +83,7 @@ const MemoizedRelatedProduct = React.memo(({
           <MemoizedProductImage
             src={product.image}
             alt={product.name}
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="object-contain transition-transform duration-500 group-hover:scale-105"
           />
         </div>
       </Link>
@@ -299,7 +299,7 @@ export default function ProductClientPage({
                     src={productImages[activeImage]}
                     alt={`${product.name} - ${product.category} - Premium quality`}
                     priority={true}
-                    className="object-cover w-full h-full"
+                    className="object-contain w-full h-full p-6"
                   />
                 </motion.div>
               </AnimatePresence>
@@ -320,7 +320,7 @@ export default function ProductClientPage({
                   <MemoizedProductImage
                     src={image}
                     alt={`${product.name} - Image ${index + 1}`}
-                    className="object-cover"
+                    className="object-contain"
                   />
                 </button>
               ))}
@@ -490,7 +490,7 @@ export default function ProductClientPage({
                   <MemoizedProductImage
                     src="/placeholder.svg?height=600&width=800"
                     alt={`${product.name} lifestyle image - Premium quality ${product.category}`}
-                    className="object-cover"
+                    className="object-contain"
                   />
                 </div>
                 <div>

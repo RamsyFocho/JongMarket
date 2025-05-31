@@ -7,6 +7,7 @@ const Hero = dynamic(() => import("@/components/home/hero"));
 const Sidebar = dynamic(() => import("@/components/layout/sidebar"));
 const TrendingDrinks = dynamic(() => import("@/components/home/trending-drinks"));
 const FeaturedDrinks = dynamic(() => import("@/components/home/featured-drinks"));
+const FeaturedWine = dynamic(() => import("@/components/home/featured-wine"));
 const FeaturedCategories = dynamic(() => import("@/components/home/featured-categories"));
 const SpecialPromotions = dynamic(() => import("@/components/home/special-promotions"));
 const CategoryGallery = dynamic(() => import("@/components/home/category-gallery"));
@@ -71,6 +72,7 @@ export default function HomePage() {
         <MoreInfo />
         <BeerShowOut/>
         <DrinkAccessories/>
+        <FeaturedWine/>
         {/* <Newsletter /> */}
         <BrandsSection/>
       </Suspense>

@@ -13,6 +13,7 @@ import { useLanguage } from "@/context/language-context"
 import WishlistButton from "@/components/product/wishlist-button"
 import { useCart } from "@/context/cart-context"
 import { useToast } from "@/components/ui/use-toast"
+import { getBrandsForCategory } from '@/lib/getBrandsForCategory';
 
 export default function CategoryClientPage({ params }: { params: { slug: string } }) {
   const { slug } = params
@@ -55,6 +56,9 @@ export default function CategoryClientPage({ params }: { params: { slug: string 
 
   // Find max price in this category
   const maxPrice = Math.max(...category.products.map((product) => product.price))
+
+  // Get all brands for this category
+  const brands = getBrandsForCategory(category.title || slug)
 
   return (
     <>
@@ -110,7 +114,7 @@ export default function CategoryClientPage({ params }: { params: { slug: string 
             src={`/images/categories/${slug}.jpg` || "/placeholder.svg?height=400&width=1200"}
             alt={`${category.title} - Premium collection at Jong Market`}
             fill
-            className="object-cover"
+            className="object-contain"
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent flex items-center">
@@ -120,6 +124,21 @@ export default function CategoryClientPage({ params }: { params: { slug: string 
             </div>
           </div>
         </div>
+
+        {/* Brands for this category */}
+        {brands.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold mb-3">Brands in this category</h2>
+            <div className="flex flex-wrap gap-4">
+              {brands.map(brand => (
+                <Link key={brand.id} href={`/brands/${brand.name.toLowerCase().replace(/\s+/g, '-')}`} className="flex items-center gap-2 bg-white rounded-lg border px-3 py-2 shadow hover:shadow-md transition">
+                  <img src={brand.logo} alt={brand.name} className="w-8 h-8 object-contain rounded" />
+                  <span className="font-medium text-gray-800">{brand.name}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar Filters */}
@@ -209,7 +228,7 @@ export default function CategoryClientPage({ params }: { params: { slug: string 
                             src={product.image || "/placeholder.svg"}
                             alt={`${product.name} - ${category.title} - Jong Market`}
                             fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="object-contain transition-transform duration-500 group-hover:scale-105"
                             itemProp="image"
                           />
                           {!product.inStock && (
