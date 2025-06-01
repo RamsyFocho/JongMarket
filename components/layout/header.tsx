@@ -20,6 +20,7 @@ import { useScrollDirection } from "@/hooks/use-scroll-direction";
 import MobileMenu from "@/components/layout/mobile-menu";
 import { categories } from "@/data/products";
 import { products } from "@/data/products";
+import { brands } from '@/data/brands';
 import { formatCurrency } from "@/lib/format-currency";
 import { ChevronDown } from "lucide-react";
 import AnimatedShopByBrand from "@/components/layout/AnimatedShopByBrand";
@@ -32,6 +33,14 @@ const categoryItems = Object.entries(categories).map(([slug, data]) => ({
 // Use the type of a product from products array
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 type Product = (typeof ProductsArrayType)[0];
+
+// Helper: Get brands for a category slug
+const getBrandsForCategory = (categorySlug: string) => {
+  // Find brands that have this category (case-insensitive)
+  return brands.filter(brand =>
+    brand.categories.some(cat => cat.toLowerCase().replace(/\s+/g, '-') === categorySlug.toLowerCase())
+  );
+};
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -218,8 +227,7 @@ export default function Header() {
         (headerRef.current as HTMLElement).parentNode!.insertBefore(
           spacer,
           (headerRef.current as HTMLElement).nextSibling
-        );
-      }
+        );      };
     }
 
     // Update height
@@ -630,66 +638,42 @@ export default function Header() {
                       </Link>
 
                       {/* Products Dropdown */}
-                      <div className="absolute left-0 top-full z-50 w-[400px] bg-white shadow-lg rounded-b-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top scale-y-0 group-hover:scale-y-100">
-                        <div className="p-4 border-2 ">
+                      <div
+                        className="absolute left-0 top-full z-50 w-[400px] bg-white shadow-lg rounded-b-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top scale-y-0 group-hover:scale-y-100 focus-within:opacity-100 focus-within:visible focus-within:scale-y-100"
+                      >
+                        <div className="p-4 border-2 " role="menu">
                           <h3 className="font-medium text-gray-800 mb-3 border-b pb-2 border-green-600">
                             {category.title}
                           </h3>
                           <div className="grid grid-cols-2 gap-3">
-                            {products
-                              .filter(
-                                (product) =>
-                                  product.category.toLowerCase() ===
-                                  category.slug.toLowerCase()
-                              )
-                              .slice(0, 4)
-                              .map((product) => (
-                                <Link
-                                  key={product.id}
-                                  href={`/product/${product.slug}`}
-                                  className="flex items-start hover:bg-amber-50 p-2 rounded-md transition-colors"
-                                >
-                                  <div className="relative h-14 w-14 rounded overflow-hidden flex-shrink-0">
-                                    <Image
-                                      src={product.image || "/placeholder.svg"}
-                                      alt={product.name}
-                                      fill
-                                      className="object-cover"
-                                    />
-                                  </div>
-                                  <div className="ml-2 flex-1 min-w-0">
-                                    <h4 className="text-xs font-medium text-gray-800 line-clamp-2">
-                                      {product.name}
-                                    </h4>
-                                    <div className="flex items-center mt-1">
-                                      <div className="flex text-amber-500">
-                                        {[...Array(5)].map((_, i) => (
-                                          <Star
-                                            key={i}
-                                            className="h-2 w-2"
-                                            fill={
-                                              i < Math.floor(product.rating)
-                                                ? "currentColor"
-                                                : "none"
-                                            }
-                                          />
-                                        ))}
-                                      </div>
-                                      <span className="text-xs text-gray-500 ml-1">
-                                        ({product.rating})
-                                      </span>
-                                    </div>
-                                    <div className="text-xs font-medium text-amber-600 mt-1">
-                                      {formatCurrency(product.price)}
-                                    </div>
-                                  </div>
-                                </Link>
-                              ))}
+                            {getBrandsForCategory(category.slug).slice(0, 6).map((brand) => (
+                              <Link
+                                key={brand.id}
+                                href={`/brands/${brand.name.toLowerCase().replace(/\s+/g, '-')}`}
+                                className="flex items-center hover:bg-amber-50 p-2 rounded-md transition-colors focus:bg-amber-100 focus:outline-none"
+                                tabIndex={0}
+                                role="menuitem"
+                              >
+                                <div className="relative h-10 w-10 rounded overflow-hidden flex-shrink-0 bg-gray-100 border">
+                                  <Image
+                                    src={brand.logo || "/placeholder-logo.png"}
+                                    alt={brand.name}
+                                    fill
+                                    className="object-contain"
+                                  />
+                                </div>
+                                <span className="ml-2 text-sm text-gray-800 truncate font-semibold">
+                                  {brand.name}
+                                </span>
+                              </Link>
+                            ))}
                           </div>
                           <div className="mt-3 pt-2 border-t text-right">
                             <Link
                               href={`/category/${category.slug}`}
-                              className="text-sm font-medium text-amber-600 hover:text-amber-800"
+                              className="text-sm font-medium text-amber-600 hover:text-amber-800 focus:underline focus:outline-none"
+                              tabIndex={0}
+                              role="menuitem"
                             >
                               View All {category.title} →
                             </Link>
