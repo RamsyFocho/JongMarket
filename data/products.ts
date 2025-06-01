@@ -1138,31 +1138,4 @@ export const promotions = [
   },
 ];
 
-// --- Data normalization: ensure all products have a brand and all brands have correct categories ---
-products.forEach(product => {
-  if (!product.brand) {
-    // If product has no brand, create a new brand entry
-    const newBrand = {
-      id: brands.length + 1,
-      name: product.name,
-      logo: '/images/brands/placeholder-logo.png',
-      categories: [product.category]
-    };
-    brands.push(newBrand);
-    product.brand = newBrand.name;
-  } else {
-    // Ensure brand exists in brands list and add category if missing
-    let brandEntry = brands.find(b => b.name.toLowerCase() === product.brand.toLowerCase());
-    if (!brandEntry) {
-      brandEntry = {
-        id: brands.length + 1,
-        name: product.brand,
-        logo: '/images/brands/placeholder-logo.png',
-        categories: [product.category]
-      };
-      brands.push(brandEntry);
-    } else if (!brandEntry.categories.includes(product.category)) {
-      brandEntry.categories.push(product.category);
-    }
-  }
-});
+
