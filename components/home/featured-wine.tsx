@@ -59,12 +59,12 @@ export default function FeaturedWine() {
     <section className="bg-gradient-to-b from-amber-50 to-yellow-50 py-8 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-6 text-center">
+        <div className="mb-6 ">
           <h2 className="text-2xl font-bold text-amber-900 mb-2">
-            Vins Sélectionnés
+            SELECTED WINES
           </h2>
           <p className="text-amber-700 text-sm">
-            Découvrez notre collection premium
+            Discover our best and finest wine
           </p>
         </div>
 
