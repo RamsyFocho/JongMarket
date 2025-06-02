@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { notFound } from "next/navigation"
@@ -32,13 +32,11 @@ export default function CategoryClientPage({ params }: { params: { slug: string 
   const [filteredProducts, setFilteredProducts] = useState(productsForCategory)
   const [priceRange, setPriceRange] = useState([0, maxPrice])
   const [sortOption, setSortOption] = useState("featured")
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const [isAutoSliding, setIsAutoSliding] = useState(false)
+  const [currentTab, setCurrentTab] = useState(0)
   const { t } = useLanguage()
   const { addToCart } = useCart()
   const { toast } = useToast()
-  const brandSliderRef = useRef<HTMLDivElement | null>(null)
-  const autoSlideRef = useRef<NodeJS.Timeout | null>(null)
+  const brandContainerRef = useRef<HTMLDivElement | null>(null)
 
   // SEO: Update page title when component mounts
   useEffect(() => {
@@ -67,62 +65,58 @@ export default function CategoryClientPage({ params }: { params: { slug: string 
   // Get all brands for this category
   const brandsForCategory = getBrandsForCategory(slug)
 
-  // Auto-slide functionality
+  // Dynamic tab calculation based on screen size - single row only
+  const getItemsPerTab = useCallback(() => {
+    if (typeof window === 'undefined') return 5; // SSR fallback
+    
+    const width = window.innerWidth;
+    if (width < 640) return 3; // Mobile: 3 items in a row
+    if (width < 768) return 4; // Small tablet: 4 items in a row
+    if (width < 1024) return 5; // Tablet: 5 items in a row
+    return 6; // Desktop: 6 items in a row
+  }, []);
+
+  const [itemsPerTab, setItemsPerTab] = useState(getItemsPerTab());
+
+  // Update items per tab on window resize
   useEffect(() => {
-    if (brandsForCategory.length > 0 && isAutoSliding) {
-      const itemsPerView = getItemsPerView()
-      const maxSlides = Math.max(0, brandsForCategory.length - itemsPerView)
-      
-      if (maxSlides > 0) {
-        autoSlideRef.current = setInterval(() => {
-          setCurrentSlide(prev => (prev >= maxSlides ? 0 : prev + 1))
-        }, 3000)
+    const handleResize = () => {
+      const newItemsPerTab = getItemsPerTab();
+      if (newItemsPerTab !== itemsPerTab) {
+        setItemsPerTab(newItemsPerTab);
+        setCurrentTab(0); // Reset to first tab when layout changes
       }
-    }
+    };
 
-    return () => {
-      if (autoSlideRef.current) {
-        clearInterval(autoSlideRef.current)
-      }
-    }
-  }, [brandsForCategory.length, isAutoSliding])
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [getItemsPerTab, itemsPerTab]);
 
-  // Check if auto-slide should be enabled based on screen size and content
+  // Calculate tabs based on brands and items per tab
+  const brandTabs = [];
+  if (brandsForCategory.length > 0) {
+    for (let i = 0; i < brandsForCategory.length; i += itemsPerTab) {
+      brandTabs.push(brandsForCategory.slice(i, i + itemsPerTab));
+    }
+  }
+
+  const totalTabs = brandTabs.length;
+
+  // Auto-advance tabs if there are multiple tabs
   useEffect(() => {
-    const checkAutoSlide = () => {
-      if (typeof window !== 'undefined' && brandSliderRef.current) {
-        const containerWidth = brandSliderRef.current.offsetWidth
-        const itemWidth = 120 // Approximate width of each brand item
-        const itemsPerView = Math.floor(containerWidth / itemWidth)
-        const shouldAutoSlide = window.innerWidth < 768 || brandsForCategory.length > itemsPerView
-        setIsAutoSliding(shouldAutoSlide)
-      }
-    }
+    if (totalTabs <= 1) return;
 
-    checkAutoSlide()
-    window.addEventListener('resize', checkAutoSlide)
-    return () => window.removeEventListener('resize', checkAutoSlide)
-  }, [brandsForCategory.length])
+    const interval = setInterval(() => {
+      setCurrentTab(prev => (prev + 1) % totalTabs);
+    }, 4000); // Change tab every 4 seconds for better UX
 
-  const getItemsPerView = () => {
-    if (typeof window === 'undefined') return 4
-    if (window.innerWidth < 640) return 2
-    if (window.innerWidth < 768) return 3
-    if (window.innerWidth < 1024) return 4
-    return Math.floor(window.innerWidth / 120)
-  }
+    return () => clearInterval(interval);
+  }, [totalTabs]);
 
-  const nextSlide = () => {
-    const itemsPerView = getItemsPerView()
-    const maxSlides = Math.max(0, brandsForCategory.length - itemsPerView)
-    setCurrentSlide(prev => (prev >= maxSlides ? 0 : prev + 1))
-  }
-
-  const prevSlide = () => {
-    const itemsPerView = getItemsPerView()
-    const maxSlides = Math.max(0, brandsForCategory.length - itemsPerView)
-    setCurrentSlide(prev => (prev <= 0 ? maxSlides : prev - 1))
-  }
+  // Get flex layout for single row display
+  const getFlexLayout = () => {
+    return 'flex justify-center items-center gap-4 md:gap-6 lg:gap-8';
+  };
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -139,82 +133,115 @@ export default function CategoryClientPage({ params }: { params: { slug: string 
         <span className="text-gray-700 font-medium">{category.title}</span>
       </div>
 
-      {/* Brands Horizontal Slider */}
+      {/* Dynamic Brand Tabs */}
       {brandsForCategory.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Featured Brands</h2>
-          <div className="relative" ref={brandSliderRef}>
-            <div className="overflow-hidden">
-              <div 
-                className="flex transition-transform duration-500 ease-in-out gap-4"
-                style={{ 
-                  transform: `translateX(-${currentSlide * (100 / getItemsPerView())}%)`,
-                  width: `${(brandsForCategory.length / getItemsPerView()) * 100}%`
-                }}
-              >
-                {brandsForCategory.map(brand => (
-                  <div 
-                    key={brand.id} 
-                    className="flex-shrink-0 px-2"
-                    style={{ width: `${100 / brandsForCategory.length}%` }}
-                  >
-                    <Link 
-                      href={`/brands/${brand.name.toLowerCase().replace(/\s+/g, '-')}`} 
-                      className="flex flex-col items-center group block"
-                    >
-                      <div className="relative w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden border-2 border-amber-200 bg-white group-hover:border-amber-500 transition-all duration-300 group-hover:shadow-lg">
-                        <Image 
-                          src={brand.logo || '/placeholder-logo.png'} 
-                          alt={brand.name} 
-                          fill 
-                          className="object-contain p-2" 
-                        />
-                      </div>
-                      <span className="mt-2 text-xs md:text-sm text-center text-gray-800 group-hover:text-amber-700 font-medium truncate max-w-[80px] md:max-w-[100px]">
-                        {brand.name}
-                      </span>
-                    </Link>
-                  </div>
-                ))}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-gray-800">Featured Brands</h2>
+            {totalTabs > 1 && (
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-500">
+                  {currentTab + 1} of {totalTabs}
+                </span>
+                <div className="flex space-x-1">
+                  {Array.from({ length: totalTabs }).map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentTab(index)}
+                      className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                        currentTab === index ? 'bg-amber-600' : 'bg-gray-300 hover:bg-gray-400'
+                      }`}
+                      aria-label={`Go to brand tab ${index + 1}`}
+                    />
+                  ))}
+                </div>
               </div>
+            )}
+          </div>
+
+          <div className="relative" ref={brandContainerRef}>
+            {/* Tab Content */}
+            <div className="overflow-hidden">
+              <motion.div
+                key={currentTab}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                className={getFlexLayout()}
+              >
+                {brandTabs[currentTab]?.map(brand => (
+                  <Link 
+                    key={brand.id}
+                    href={`/brands/${brand.name.toLowerCase().replace(/\s+/g, '-')}`} 
+                    className="flex flex-col items-center group flex-shrink-0"
+                  >
+                    <div className="relative w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden border-2 border-amber-200 bg-white group-hover:border-amber-500 transition-all duration-300 group-hover:shadow-lg group-hover:scale-105">
+                      <Image 
+                        src={brand.logo || '/placeholder-logo.png'} 
+                        alt={brand.name} 
+                        fill 
+                        className="object-contain p-2" 
+                      />
+                    </div>
+                    <span className="mt-2 text-xs sm:text-sm md:text-base text-center text-gray-800 group-hover:text-amber-700 font-medium truncate max-w-[60px] sm:max-w-[80px] md:max-w-[100px] lg:max-w-[120px] transition-colors duration-200">
+                      {brand.name}
+                    </span>
+                  </Link>
+                ))}
+                
+                {/* Fill empty spaces if current tab has fewer items for visual balance */}
+                {brandTabs[currentTab] && brandTabs[currentTab].length < itemsPerTab && (
+                  <>
+                    {Array.from({ length: itemsPerTab - brandTabs[currentTab].length }).map((_, index) => (
+                      <div key={`spacer-${index}`} className="flex-shrink-0 w-16 sm:w-18 md:w-20 lg:w-24 opacity-0" />
+                    ))}
+                  </>
+                )}
+              </motion.div>
             </div>
 
-            {/* Navigation Arrows - only show if auto-sliding or overflowing */}
-            {isAutoSliding && brandsForCategory.length > getItemsPerView() && (
+            {/* Navigation Arrows - only show if multiple tabs */}
+            {totalTabs > 1 && (
               <>
                 <button
-                  onClick={prevSlide}
+                  onClick={() => setCurrentTab(prev => prev === 0 ? totalTabs - 1 : prev - 1)}
                   className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition-all duration-200 z-10 border border-gray-200 hover:border-amber-300"
-                  aria-label="Previous brands"
+                  aria-label="Previous brand tab"
                 >
                   <ChevronLeft className="h-4 w-4 text-gray-600" />
                 </button>
                 <button
-                  onClick={nextSlide}
+                  onClick={() => setCurrentTab(prev => (prev + 1) % totalTabs)}
                   className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition-all duration-200 z-10 border border-gray-200 hover:border-amber-300"
-                  aria-label="Next brands"
+                  aria-label="Next brand tab"
                 >
                   <ChevronRightIcon className="h-4 w-4 text-gray-600" />
                 </button>
               </>
             )}
+          </div>
 
-            {/* Slide Indicators */}
-            {isAutoSliding && brandsForCategory.length > getItemsPerView() && (
-              <div className="flex justify-center mt-4 space-x-2">
-                {Array.from({ length: Math.max(0, brandsForCategory.length - getItemsPerView()) + 1 }).map((_, index) => (
+          {/* Tab Indicator Bar */}
+          {totalTabs > 1 && (
+            <div className="mt-4 flex justify-center">
+              <div className="flex space-x-2">
+                {Array.from({ length: totalTabs }).map((_, index) => (
                   <button
                     key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    className={`w-2 h-2 rounded-full transition-colors duration-200 ${
-                      currentSlide === index ? 'bg-amber-600' : 'bg-gray-300'
+                    onClick={() => setCurrentTab(index)}
+                    className={`px-3 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
+                      currentTab === index 
+                        ? 'bg-amber-600 text-white' 
+                        : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                     }`}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
+                  >
+                    {index + 1}
+                  </button>
                 ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
 
