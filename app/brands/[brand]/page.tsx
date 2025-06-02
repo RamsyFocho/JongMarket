@@ -3,7 +3,7 @@ import { products } from '@/data/products';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/format-currency';
 
-export default function BrandPage({ params }: { params: { brand: string } }) {
+export default async function BrandPage({ params }: { params: { brand: string } }) {
   const brandName = decodeURIComponent(params.brand);
   const brand = brands.find(b => b.name.toLowerCase().replace(/\s+/g, '-') === brandName.toLowerCase());
   if (!brand) {
