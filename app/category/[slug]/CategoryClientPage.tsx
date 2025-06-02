@@ -17,22 +17,28 @@ import { getBrandsForCategory } from '@/lib/getBrandsForCategory';
 
 export default function CategoryClientPage({ params }: { params: { slug: string } }) {
   const { slug } = params
-  const category = categories[slug]
+  const category = (categories as any)[slug];
 
   if (!category) {
     notFound()
   }
 
-  const [filteredProducts, setFilteredProducts] = useState(category.products)
-  const [priceRange, setPriceRange] = useState([0, 500])
+  // Ensure productsForCategory is always an array
+  const productsForCategory = Array.isArray(category?.products) ? category.products : [];
+
+  // Find max price in this category robustly
+  const maxPrice = productsForCategory.length > 0 ? Math.max(...productsForCategory.map((product: { price: any }) => product.price)) : 500;
+
+  const [filteredProducts, setFilteredProducts] = useState(productsForCategory)
+  const [priceRange, setPriceRange] = useState([0, maxPrice])
   const [sortOption, setSortOption] = useState("featured")
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAutoSliding, setIsAutoSliding] = useState(false)
   const { t } = useLanguage()
   const { addToCart } = useCart()
   const { toast } = useToast()
-  const brandSliderRef = useRef(null)
-  const autoSlideRef = useRef(null)
+  const brandSliderRef = useRef<HTMLDivElement | null>(null)
+  const autoSlideRef = useRef<NodeJS.Timeout | null>(null)
 
   // SEO: Update page title when component mounts
   useEffect(() => {
@@ -41,7 +47,7 @@ export default function CategoryClientPage({ params }: { params: { slug: string 
 
   // Apply filters and sorting
   useEffect(() => {
-    let result = [...category.products]
+    let result = [...productsForCategory]
 
     // Filter by price
     result = result.filter((product) => product.price >= priceRange[0] && product.price <= priceRange[1])
@@ -56,10 +62,7 @@ export default function CategoryClientPage({ params }: { params: { slug: string 
     }
 
     setFilteredProducts(result)
-  }, [category.products, priceRange, sortOption])
-
-  // Find max price in this category
-  const maxPrice = Math.max(...category.products.map((product) => product.price))
+  }, [productsForCategory, priceRange, sortOption])
 
   // Get all brands for this category
   const brandsForCategory = getBrandsForCategory(slug)
@@ -143,7 +146,7 @@ export default function CategoryClientPage({ params }: { params: { slug: string 
           <div className="relative" ref={brandSliderRef}>
             <div className="overflow-hidden">
               <div 
-                className="flex transition-transform duration-500 ease-in-out"
+                className="flex transition-transform duration-500 ease-in-out gap-4"
                 style={{ 
                   transform: `translateX(-${currentSlide * (100 / getItemsPerView())}%)`,
                   width: `${(brandsForCategory.length / getItemsPerView()) * 100}%`

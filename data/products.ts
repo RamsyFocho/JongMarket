@@ -921,7 +921,7 @@ export const categories = {
     title: "hot-drinks",
     description:
       "Warm up with our selection of premium hot drinks, including artisanal coffees, fine teas, and specialty chocolate blends from around the world.",
-    products: products.filter((p) => p.category === "Hot Drinks"),
+    products: products.filter((p) => p.category === "hot-drinks"),
   },
   accessories: {
     title: "Drink Accessories",
