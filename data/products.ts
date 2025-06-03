@@ -572,9 +572,9 @@ export const products = [
     price: 22.99,
     badges: ["sold-out"],
     rating: 4.6,
-    image: "/images/products/mexican-hot-chocolate-kit.jpg",
+    image: "/images/products/hot-drinks/mexican-hot-chocolate-kit.jpg",
     slug: "mexican-hot-chocolate-kit",
-    inStock: false, // Out of stock example
+    inStock: true, // Out of stock example
     stockCount: 0,
     description:
       "This authentic Mexican hot chocolate kit includes traditional stone-ground chocolate tablets infused with cinnamon and a hint of chili. The kit comes with a hand-carved wooden molinillo (whisk) for creating the perfect frothy texture.",
@@ -625,6 +625,48 @@ export const products = [
     details: {
       origin: "United Kingdom",
       style: "London Dry Gin",
+      abv: "37.5%",
+      size: "750ml",
+      availability: "Widely available in Cameroon"
+    }
+  },
+
+  {
+    id: 1010,
+    name: "Hot chocolate",
+    brand: "hot chocolate",
+    category: "hot-drinks",
+    price: 13.75,
+    badges: ["new"],
+    rating: 4.7,
+    image: "/images/products/hot-drinks/hot-chocolate.jpg",
+    slug: "hot-chocolate",
+    inStock: true,
+    stockCount: 35,
+    description:
+      "Hot chocolate is a warm, chocolate-flavored drink made by melting solid chocolate or mixing cocoa powder with milk or water and a sweetener. It's often enjoyed with toppings like whipped cream or marshmallows.",
+    details: {
+      origin: "Mesoamerica",
+      spices: "Hot chocolate can be made with shaved or melted chocolate bars, chocolate chips, or cocoa powder.",
+      size: "200g",
+    },
+  },
+  {
+    id: 1009,
+    name: "Lemon Grass Tea",
+    brand: "Lemon Grass",
+    category: "hot-drinks",
+    price: 14.75,
+    badges: ["sale"],
+    rating: 4.6,
+    image: "/images/products/hot-drinks/lemon-grass.jpg",
+    slug: "lemon-grass",
+    inStock: true,
+    stockCount: 100,
+    description: "The world's best-selling London Dry gin. A distinctively refreshing taste from the finest juniper berries. Very popular in Cameroon for its quality and accessibility.",
+    details: {
+      origin: "Malaysia",
+      style: "Medicinal",
       abv: "37.5%",
       size: "750ml",
       availability: "Widely available in Cameroon"
