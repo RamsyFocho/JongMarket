@@ -34,6 +34,11 @@ export const metadata: Metadata = {
     default: "Jong Market | Premium Drinks & Accessories",
     template: "%s | Jong Market",
   },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
   description:
     "Discover our curated selection of premium whiskey, wine, beer, champagne and accessories. Fast delivery and exceptional quality guaranteed.",
   keywords: "drinks, whiskey, wine, beer, champagne, accessories, online store, premium drinks, Cameroon",
@@ -85,7 +90,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={`${inter.variable} ${playfair.variable}`}>
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body>
         <Toaster />
         <LanguageProvider>
@@ -109,4 +114,3 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   )
 }
-   

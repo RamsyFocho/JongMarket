@@ -1,129 +1,283 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
-export default function LoadingScreen() {
+export default function JongMarketLoader({ 
+  isVisible = true, 
+  minLoadTime = 1000,
+  onLoadComplete,
+  loadingText = "Loading premium experience...",
+  showProgress = true
+}) {
   const [isLoading, setIsLoading] = useState(true)
+  const [progress, setProgress] = useState(0)
+  const [loadingPhase, setLoadingPhase] = useState("initializing")
 
+  // Simulate realistic loading phases
   useEffect(() => {
-    // Simulate loading time
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 2500)
+    if (!isVisible) return
 
-    return () => clearTimeout(timer)
-  }, [])
+    const phases = [
+      { phase: "initializing", duration: 300, progressEnd: 20 },
+      { phase: "loading", duration: 800, progressEnd: 60 },
+      { phase: "processing", duration: 500, progressEnd: 85 },
+      { phase: "finalizing", duration: 400, progressEnd: 100 }
+    ]
+
+    let currentTime = 0
+    let phaseIndex = 0
+
+    const progressTimer = setInterval(() => {
+      const currentPhase = phases[phaseIndex]
+      if (!currentPhase) return
+
+      currentTime += 50
+      const phaseProgress = Math.min(currentTime / currentPhase.duration, 1)
+      const startProgress = phaseIndex > 0 ? phases[phaseIndex - 1].progressEnd : 0
+      const newProgress = startProgress + (currentPhase.progressEnd - startProgress) * phaseProgress
+
+      setProgress(newProgress)
+      setLoadingPhase(currentPhase.phase)
+
+      if (phaseProgress >= 1) {
+        phaseIndex++
+        currentTime = 0
+        
+        if (phaseIndex >= phases.length) {
+          clearInterval(progressTimer)
+          
+          // Ensure minimum load time for smooth UX
+          setTimeout(() => {
+            setIsLoading(false)
+            onLoadComplete?.()
+          }, Math.max(0, minLoadTime - Date.now()))
+        }
+      }
+    }, 50)
+
+    return () => clearInterval(progressTimer)
+  }, [isVisible, minLoadTime, onLoadComplete])
+
+  const logoVariants = {
+    initial: { opacity: 0, scale: 0.8, y: 20 },
+    animate: { 
+      opacity: 1, 
+      scale: 1, 
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
+    },
+    pulse: {
+      scale: [1, 1.05, 1],
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  }
+
+  const bottleVariants = {
+    initial: { opacity: 0, rotate: -10 },
+    animate: { 
+      opacity: 1, 
+      rotate: 0,
+      transition: { delay: 0.3, duration: 0.5 }
+    },
+    float: {
+      y: [-2, 2, -2],
+      transition: {
+        duration: 3,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  }
+
+  const getPhaseText = useCallback(() => {
+    switch (loadingPhase) {
+      case "initializing": return "Initializing JongMarket..."
+      case "loading": return "Loading premium selection..."
+      case "processing": return "Processing your request..."
+      case "finalizing": return "Almost ready..."
+      default: return loadingText
+    }
+  }, [loadingPhase, loadingText])
 
   return (
     <AnimatePresence>
-      {isLoading && (
+      {isVisible && isLoading && (
         <motion.div
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-gradient-to-b from-amber-950 to-black"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ 
+            opacity: 0,
+            scale: 0.95,
+            transition: { duration: 0.4, ease: "easeInOut" }
+          }}
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-gray-100 backdrop-blur-sm"
         >
-          <div className="text-center relative">
-            {/* Bottle silhouette */}
+          {/* Background pattern */}
+          <div className="absolute inset-0 opacity-[0.02]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgb(0,0,0)_1px,transparent_0)] bg-[length:24px_24px]" />
+          </div>
+
+          <div className="relative flex flex-col items-center justify-center text-center max-w-md mx-auto px-6">
+            {/* Main logo container */}
             <motion.div
-              className="relative mx-auto mb-6 w-24 h-48"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5 }}
+              variants={logoVariants}
+              initial="initial"
+              animate={["animate", "pulse"]}
+              className="relative mb-8"
             >
-              {/* Bottle outline */}
-              <svg
-                viewBox="0 0 100 200"
-                className="absolute inset-0 w-full h-full"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M35 0H65V20C65 20 75 25 75 35V45L85 60V190C85 195.523 80.5228 200 75 200H25C19.4772 200 15 195.523 15 190V60L25 45V35C25 25 35 20 35 20V0Z"
-                  stroke="#D4A547"
-                  strokeWidth="2"
-                />
-                <path d="M35 20C35 20 40 25 40 30V40H60V30C60 25 65 20 65 20" stroke="#D4A547" strokeWidth="2" />
-              </svg>
-
-              {/* Liquid filling animation */}
+              {/* Logo background glow */}
               <motion.div
-                className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-amber-600 to-amber-500 rounded-b-lg mx-2"
-                initial={{ height: 0 }}
-                animate={{ height: "85%" }}
-                transition={{ duration: 2, ease: "easeInOut" }}
-              />
-
-              {/* Bottle shine effect */}
-              <motion.div
-                className="absolute top-1/4 left-1/4 w-1/2 h-1/2 bg-white/10 rounded-full blur-md"
+                className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-gray-700/20 rounded-2xl blur-xl scale-110"
                 animate={{
-                  opacity: [0.1, 0.3, 0.1],
-                  scale: [1, 1.1, 1],
+                  opacity: [0.3, 0.6, 0.3],
                 }}
                 transition={{
                   duration: 2,
-                  repeat: Number.POSITIVE_INFINITY,
-                  repeatType: "reverse",
+                  repeat: Infinity,
+                  ease: "easeInOut"
                 }}
               />
 
-              {/* Bubbles */}
+              {/* Animated bottle icon */}
               <motion.div
-                className="absolute bottom-4 left-4 w-2 h-2 bg-white/30 rounded-full"
-                animate={{ y: [-20, 0], opacity: [0, 1, 0] }}
-                transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY, repeatDelay: 0.2 }}
-              />
-              <motion.div
-                className="absolute bottom-8 right-6 w-1.5 h-1.5 bg-white/30 rounded-full"
-                animate={{ y: [-15, 0], opacity: [0, 1, 0] }}
-                transition={{ duration: 1.2, repeat: Number.POSITIVE_INFINITY, repeatDelay: 0.5 }}
-              />
-              <motion.div
-                className="absolute bottom-16 left-6 w-1 h-1 bg-white/30 rounded-full"
-                animate={{ y: [-10, 0], opacity: [0, 1, 0] }}
-                transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, repeatDelay: 0.7 }}
-              />
+                variants={bottleVariants}
+                initial="initial"
+                animate={["animate", "float"]}
+                className="absolute -top-12 left-1/2 transform -translate-x-1/2 z-10"
+              >
+                <svg width="24" height="40" viewBox="0 0 24 40" className="text-gray-700">
+                  <path
+                    d="M8 0H16V4C16 4 18 5 18 7V9L20 12V36C20 37.1 19.1 38 18 38H6C4.9 38 4 37.1 4 36V12L6 9V7C6 5 8 4 8 4V0Z"
+                    fill="currentColor"
+                    opacity="0.8"
+                  />
+                  <motion.path
+                    d="M6 14H18V36C18 37.1 17.1 38 16 38H8C6.9 38 6 37.1 6 36V14Z"
+                    fill="#ef4444"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: progress / 100 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </svg>
+              </motion.div>
+
+              {/* Main logo */}
+              <div className="relative bg-white rounded-xl shadow-2xl p-8 border border-gray-100">
+                <div className="text-4xl font-bold">
+                  <span className="text-red-500">Jong</span>
+                  <span className="text-gray-700">Market</span>
+                </div>
+                <div className="text-red-500 text-xs font-medium mt-1">.com</div>
+              </div>
+
+              {/* Animated rings */}
+              {[1, 2, 3].map((index) => (
+                <motion.div
+                  key={index}
+                  className="absolute inset-0 border-2 border-red-500/30 rounded-xl"
+                  animate={{
+                    scale: [1, 1.1 + index * 0.1, 1],
+                    opacity: [0.5, 0, 0.5],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: index * 0.2,
+                    ease: "easeOut"
+                  }}
+                />
+              ))}
             </motion.div>
 
-            {/* Logo and text */}
+            {/* Loading text */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
+              transition={{ delay: 0.5 }}
+              className="text-center mb-6"
             >
-              <h2 className="text-2xl font-bold text-amber-500 mb-1">
-                Jong<span className="text-amber-400">Market</span>
-              </h2>
-              <p className="text-amber-300/80 text-sm">Premium Drinks & Spirits</p>
+              <h3 className="text-lg font-semibold text-gray-800 mb-1">
+                Premium Drinks & Spirits
+              </h3>
+              <motion.p 
+                key={loadingPhase}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-sm text-gray-600"
+              >
+                {getPhaseText()}
+              </motion.p>
             </motion.div>
 
-            {/* Loading indicator */}
+            {/* Progress bar */}
+            {showProgress && (
+              <motion.div
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: "100%" }}
+                transition={{ delay: 0.7 }}
+                className="w-full max-w-xs"
+              >
+                <div className="flex justify-between text-xs text-gray-500 mb-2">
+                  <span>{Math.round(progress)}%</span>
+                  <span className="capitalize">{loadingPhase}</span>
+                </div>
+                <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-red-500 to-red-600 rounded-full"
+                    animate={{ width: `${progress}%` }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                  />
+                </div>
+              </motion.div>
+            )}
+
+            {/* Animated dots */}
             <motion.div
-              className="mt-8 flex justify-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
+              className="flex space-x-1 mt-6"
             >
-              <div className="flex space-x-2">
-                {[0, 1, 2].map((dot) => (
-                  <motion.div
-                    key={dot}
-                    className="w-2 h-2 bg-amber-500 rounded-full"
-                    animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
-                    transition={{
-                      duration: 1,
-                      repeat: Number.POSITIVE_INFINITY,
-                      delay: dot * 0.2,
-                    }}
-                  />
-                ))}
-              </div>
+              {[0, 1, 2].map((dot) => (
+                <motion.div
+                  key={dot}
+                  className="w-2 h-2 bg-red-500 rounded-full"
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    opacity: [0.4, 1, 0.4],
+                  }}
+                  transition={{
+                    duration: 1.2,
+                    repeat: Infinity,
+                    delay: dot * 0.15,
+                    ease: "easeInOut"
+                  }}
+                />
+              ))}
             </motion.div>
           </div>
+
+          {/* Corner branding */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+            className="absolute bottom-6 right-6 text-xs text-gray-400 font-medium"
+          >
+            Powered by JongMarket
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
   )
 }
+
+// Usage examples for different scenarios:
+// Basic usage: <JongMarketLoader isVisible={isLoading} onLoadComplete={() => setIsLoading(false)} />
+// Page transition: <JongMarketLoader isVisible={isPageLoading} minLoadTime={800} loadingText="Preparing..." onLoadComplete={() => router.push('/products')} />
+// API request: <JongMarketLoader isVisible={isApiLoading} showProgress={false} loadingText="Fetching..." onLoadComplete={() => setApiLoading(false)} />

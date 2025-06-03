@@ -245,20 +245,20 @@ export default function Footer() {
               {/* Social Media Section */}
               <div>
                 <h4 className="text-lg font-semibold mb-4 text-white">
-                  SUIVEZ-NOUS AUSSI SUR :
+                  FOLLOW US ALSO ON:
                 </h4>
                 <div className="flex space-x-4">
                   <Link
                     href="#"
-                    className="bg-amber-500 text-white p-2 rounded-full hover:bg-amber-600 transition-colors"
+                    className="bg-green-500 text-white p-2 rounded-full hover:bg-green-600 transition-colors"
                   >
                     <Phone className="h-5 w-5" />
                   </Link>
                   <Link
                     href="#"
-                    className="bg-amber-500 text-white p-2 rounded-full hover:bg-amber-600 transition-colors"
+                    className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors"
                   >
-                    <Facebook className="h-5 w-5" />
+                    <Facebook className="h-5 w-5 " />
                   </Link>
                   <Link
                     href="#"
@@ -268,13 +268,13 @@ export default function Footer() {
                   </Link>
                   <Link
                     href="#"
-                    className="bg-amber-500 text-white p-2 rounded-full hover:bg-amber-600 transition-colors"
+                    className="bg-pink-500 text-white p-2 rounded-full hover:bg-amber-600 transition-colors"
                   >
                     <Instagram className="h-5 w-5" />
                   </Link>
                   <Link
                     href="#"
-                    className="bg-amber-500 text-white p-2 rounded-full hover:bg-amber-600 transition-colors"
+                    className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
                   >
                     <Youtube className="h-5 w-5" />
                   </Link>
@@ -284,7 +284,7 @@ export default function Footer() {
               {/* App Download Section */}
               <div>
                 <h4 className="text-lg font-semibold mb-4 text-white">
-                  TÉLÉCHARGEZ NOTRE APPLICATION SUR :
+                  DOWNLOAD OUR APP ON :
                 </h4>
                 <div className="space-y-3">
                   <Link
