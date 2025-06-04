@@ -21,6 +21,20 @@ export default async function BrandPage({ params }: { params: { brand: string } 
   });
   return (
     <div className="max-w-5xl mx-auto py-10 px-4">
+      {/* Breadcrumb navigation */}
+      <nav className="text-sm mb-6" aria-label="Breadcrumb">
+        <ol className="list-none p-0 inline-flex text-gray-500">
+          <li className="flex items-center">
+            <Link href="/" className="hover:text-amber-700">Home</Link>
+            <span className="mx-2">/</span>
+          </li>
+          <li className="flex items-center">
+            <Link href="/brands" className="hover:text-amber-700">Brands</Link>
+            <span className="mx-2">/</span>
+          </li>
+          <li className="text-amber-900 font-semibold" aria-current="page">{brand.name}</li>
+        </ol>
+      </nav>
       <div className="flex items-center gap-4 mb-8">
         <img src={brand.logo} alt={brand.name} className="w-20 h-20 object-contain rounded-lg border bg-white shadow" />
         <div>
