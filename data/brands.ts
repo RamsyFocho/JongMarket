@@ -38,5 +38,6 @@ export const brands = [
   { id: 36, name: "VintnerPro", logo: "/images/brands/placeholder-logo.png", categories: ["Accessories"] },
   { id: 37, name: "Riedel", logo: "/images/brands/riedel-logo.jpg", categories: ["Accessories"] },
   { id: 38, name: "WineTech", logo: "/images/brands/placeholder-logo.png", categories: ["Accessories"] },
-  { id: 39, name: "ChillRocks", logo: "/images/brands/chill-logo.jpg", categories: ["Accessories"] }
+  { id: 39, name: "ChillRocks", logo: "/images/brands/chill-logo.jpg", categories: ["Accessories"] },
+  // { id: 41, name: "Hero", logo: "/images/brands/hero-logo.jpg", categories: ["Beer"] }
 ];
