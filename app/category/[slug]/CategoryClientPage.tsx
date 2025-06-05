@@ -168,7 +168,8 @@ export default function CategoryClientPage({ params }: { params: { slug: string 
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
-                className={getFlexLayout()}
+                className={getFlexLayout() + ' min-h-0'}
+                style={{ minHeight: 0 }}
               >
                 {brandTabs[currentTab]?.map(brand => (
                   <Link 
@@ -189,15 +190,7 @@ export default function CategoryClientPage({ params }: { params: { slug: string 
                     </span>
                   </Link>
                 ))}
-                
-                {/* Fill empty spaces if current tab has fewer items for visual balance */}
-                {brandTabs[currentTab] && brandTabs[currentTab].length < itemsPerTab && (
-                  <>
-                    {Array.from({ length: itemsPerTab - brandTabs[currentTab].length }).map((_, index) => (
-                      <div key={`spacer-${index}`} className="flex-shrink-0 w-16 sm:w-18 md:w-20 lg:w-24 opacity-0" />
-                    ))}
-                  </>
-                )}
+                {/* Remove spacers for a tighter, centered row */}
               </motion.div>
             </div>
 
