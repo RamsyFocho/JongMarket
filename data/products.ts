@@ -44,6 +44,11 @@ export const products = [
       },
     ],
     relatedProducts: [7, 9, 10],
+    relatedImages: [
+      "/images/products/whiskey/macallan-red.webp",
+      "/images/products/whiskey/Macallan-12-Year-Old-3.jpg",
+      "/images/products/whiskey/Macallan-12-Year-Old-4.jpg",
+    ],
   },
   {
     id: 2,
@@ -66,6 +71,11 @@ export const products = [
       size: "750ml",
       age: "16 Years",
     },
+    relatedImages: [
+      "/images/products/whiskey/lagavulin-16-year-old-2.jpg",
+      "/images/products/whiskey/lagavulin-16-year-old-3.jpg",
+      "/images/products/whiskey/lagavulin-16-year-old-4.jpg",
+    ],
   },
   {
     id: 3,
@@ -88,6 +98,11 @@ export const products = [
       size: "750ml",
       type: "Bourbon",
     },
+    relatedImages: [
+      "/images/products/whiskey/Chivas Regal 12 Year Old - Gift Box _ The Whisky….jpg",
+      "/images/products/whiskey/Chivas Regal 12 Year Old - Gift Box _ The Whisky….jpg",
+      "/images/products/whiskey/Chivas Regal 12 Year Old - Gift Box _ The Whisky….jpg",
+    ],
   },
   {
     id: 4,
@@ -110,6 +125,11 @@ export const products = [
       size: "750ml",
       age: "12 Years",
     },
+    relatedImages: [
+      "/images/products/whiskey/jackDaniel-2.jpg",
+      "/images/products/whiskey/jackDaniel-3.jpg",
+      "/images/products/whiskey/jackDaniel-4.jpg",
+    ],
   },
   {
     id: 5,
@@ -132,6 +152,11 @@ export const products = [
       size: "200g",
       brewing: "Simmer with water and milk",
     },
+    relatedImages: [
+      "/images/products/MonkeyShoulder-2.jpg",
+      "/images/products/MonkeyShoulder-3.jpg",
+      "/images/products/MonkeyShoulder-4.jpg",
+    ],
   },
   {
     id: 6,
@@ -154,6 +179,11 @@ export const products = [
         size: "750ml",
         type: "Bourbon",
       },
+    relatedImages: [
+      "/images/products/whiskey/blackLabel-2.jpg",
+      "/images/products/whiskey/blackLabel-3.jpg",
+      "/images/products/whiskey/blackLabel-4.jpg",
+    ],
   },
   {
     id: 7,
@@ -176,6 +206,11 @@ export const products = [
       size: "200g",
       brewing: "Simmer with water and milk",
     },
+    relatedImages: [
+      "/images/products/whiskey/GreenLabel-2.jpg",
+      "/images/products/whiskey/GreenLabel-3.jpg",
+      "/images/products/whiskey/GreenLabel-4.jpg",
+    ],
   },
   {
     id: 8,
@@ -198,6 +233,11 @@ export const products = [
         size: "750ml",
         type: "Bourbon",
       },
+    relatedImages: [
+      "/images/products/whiskey/GoldLabel-2.jpg",
+      "/images/products/whiskey/GoldLabel-3.jpg",
+      "/images/products/whiskey/GoldLabel-4.jpg",
+    ],
   },
   {
     id: 9,
@@ -220,6 +260,11 @@ export const products = [
         size: "750ml",
         type: "Bourbon",
       },
+    relatedImages: [
+      "/images/products/whiskey/Johnnie Walker Red Label-2.jpg",
+      "/images/products/whiskey/Johnnie Walker Red Label-3.jpg",
+      "/images/products/whiskey/Johnnie Walker Red Label-4.jpg",
+    ],
   },
   {
     id: 10,
@@ -242,6 +287,11 @@ export const products = [
         size: "750ml",
         type: "Bourbon",
       },
+    relatedImages: [
+      "/images/products/whiskey/blueLabel-2.jpg",
+      "/images/products/whiskey/blueLabel-3.jpg",
+      "/images/products/whiskey/blueLabel-4.jpg",
+    ],
   },
   {
     id: 11,
@@ -264,6 +314,11 @@ export const products = [
         size: "750ml",
         type: "Bourbon",
       },
+    relatedImages: [
+      "/images/products/whiskey/BALLANTINE'S 12 YEAR OLD True Music Reeps One….jpg",
+      "/images/products/whiskey/BALLANTINE'S 12 YEAR OLD True Music Reeps One….jpg",
+      "/images/products/whiskey/BALLANTINE'S 12 YEAR OLD True Music Reeps One….jpg",
+    ],
   },
   {
     id: 12,
@@ -286,6 +341,11 @@ export const products = [
         size: "750ml",
         type: "Bourbon",
       },
+    relatedImages: [
+      "/images/products/whiskey/Glenrothes Select Reserve (£32)-2.jpg",
+      "/images/products/whiskey/Glenrothes Select Reserve (£32)-3.jpg",
+      "/images/products/whiskey/Glenrothes Select Reserve (£32)-4.jpg",
+    ],
   },
   {
     id: 13,
@@ -308,6 +368,11 @@ export const products = [
         size: "750ml",
         type: "Bourbon",
       },
+    relatedImages: [
+      "/images/products/whiskey/Glenfiddich 15 Year Solera-2.jpg",
+      "/images/products/whiskey/Glenfiddich 15 Year Solera-3.jpg",
+      "/images/products/whiskey/Glenfiddich 15 Year Solera-4.jpg",
+    ],
   },
   // Wine
   {
@@ -428,6 +493,11 @@ export const products = [
       size: "330ml",
       brewery: "Brouwerij Westvleteren",
     },
+    relatedImages: [
+      "/images/products/westvleteren-12-2.jpg",
+      "/images/products/westvleteren-12-3.jpg",
+      "/images/products/westvleteren-12-4.jpg",
+    ],
   },
 
   {
@@ -450,6 +520,11 @@ export const products = [
       size: "33cl",
       brewery: "Intafact Beverages Limited",
     },
+    relatedImages: [
+      "/images/products/beer/hero-2.jpg",
+      "/images/products/beer/hero-3.jpg",
+      "/images/products/beer/hero-4.jpg",
+    ],
   },
 
   {
@@ -472,6 +547,11 @@ export const products = [
       size: "33cl",
       brewery: "Intafact Beverages Limited",
     },
+    relatedImages: [
+      "/images/products/beer/bottled-hero-2.jpg",
+      "/images/products/beer/bottled-hero-3.jpg",
+      "/images/products/beer/bottled-hero-4.jpg",
+    ],
   },
   {
     id: 1013,
@@ -492,6 +572,11 @@ export const products = [
       abv: "0.0%",
       size: "33cl",
     },
+    relatedImages: [
+      "/images/products/beer/bavaria-2.jpg",
+      "/images/products/beer/bavaria-3.jpg",
+      "/images/products/beer/bavaria-4.jpg",
+    ],
   },
 
   {
@@ -513,6 +598,11 @@ export const products = [
       abv: "4.5%",
       size: "330ml",
     },
+    relatedImages: [
+      "/images/products/beer/corona-2.jpg",
+      "/images/products/beer/corona-3.jpg",
+      "/images/products/beer/corona-4.jpg",
+    ],
   },
 {
   id: 42,
@@ -535,6 +625,11 @@ export const products = [
     size: "330ml",
     brewery: "Heineken N.V.",
   },
+  relatedImages: [
+    "/images/products/beer/heineken-2.jpg",
+    "/images/products/beer/heineken-3.jpg",
+    "/images/products/beer/heineken-4.jpg",
+  ],
 },
 // Champagne
   {

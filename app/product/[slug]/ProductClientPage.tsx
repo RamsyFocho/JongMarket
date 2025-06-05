@@ -186,12 +186,10 @@ export default function ProductClientPage({
   // const product = useMemo(() => getCachedProduct(slug), [slug]);
   const product = products.find((p) => p.slug === slug);
   // Memoized product images
-  const productImages = useMemo(() => [
-    product?.image,
-    "/placeholder.svg?height=500&width=500&text=Image+2",
-    "/placeholder.svg?height=500&width=500&text=Image+3",
-    "/placeholder.svg?height=500&width=500&text=Image+4",
-  ], [product?.image]);
+  const productImages = useMemo(() => {
+    const images = [product?.image, ...(product?.relatedImages || [])];
+    return images.slice(0, 4);
+  }, [product?.image, product?.relatedImages]);
   
   // Memoized related products
   const relatedProducts = useMemo(() => 
