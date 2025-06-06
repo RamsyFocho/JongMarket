@@ -3,7 +3,8 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { categories } from "@/data/products";
 
-const Hero = dynamic(() => import("@/components/home/hero"));
+// const Hero = dynamic(() => import("@/components/home/hero"));
+const HHero = dynamic(() => import("@/components/home/HHero"));
 const Sidebar = dynamic(() => import("@/components/layout/sidebar"));
 const TrendingDrinks = dynamic(() => import("@/components/home/trending-drinks"));
 const FeaturedDrinks = dynamic(() => import("@/components/home/featured-drinks"));
@@ -20,7 +21,7 @@ const BrandsSection = dynamic(() => import("@/components/home/brandsSection"));
 export default function HomePage() {
   return (
     <div>
-      <div className="w-full mx-auto px-4 py-4">
+      <div className="w-full md:mx-auto md:px-4 py-4 ">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar - Responsive and Professional */}
           <aside className="hidden lg:block md:w-64 lg:w-72 xl:w-80 flex-shrink-0">
@@ -31,7 +32,7 @@ export default function HomePage() {
           {/* Main Content */}
           <main className="flex-1  min-w-0">
             {/* Mobile-only category navigation */}
-            <div className="md:hidden overflow-x-auto pb-4 mb-6 -mx-4 px-4 ">
+            <div className="md:hidden overflow-x-auto pb-4  -mx-4 px-4 ">
               <div className="flex space-x-3">
                 {Object.entries(categories).map(([slug, data]) => (
                   <Link
@@ -45,7 +46,7 @@ export default function HomePage() {
               </div>
             </div>
             <Suspense fallback={<div>Loading hero...</div>}>
-              <Hero />
+              <HHero />
             </Suspense>
             <Suspense fallback={<div>Loading trending drinks...</div>}>
               <TrendingDrinks/>

@@ -1,163 +1,95 @@
-'use client';
+"use client";
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import ProductCard from '@/components/Card/ProductCard';
+import { products } from '@/data/products';
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { products } from '@/data/products'; // Import your products data
-import { useWishlist } from '@/context/wishlist-context';
-import { useToast } from '@/components/ui/use-toast';
-import { formatCurrency } from '@/lib/format-currency';
 
-// Filter wine products from the main products data
-const featuredWines = products.filter(
-  (p) => p.category?.toLowerCase().includes('wine') || p.category?.toLowerCase().includes('vin')
-);
+const wineProducts = products.filter((p) => p.category.toLowerCase() === 'wine');
 
-export default function FeaturedWine() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoSliding, setIsAutoSliding] = useState(true);
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
-  const { toast } = useToast();
-
-  // Calculate total slides (2 items per slide)
-  const totalSlides = Math.ceil(featuredWines.length / 2);
-
-  // Auto-slide functionality
+const FeaturedWine = () => {
+  const [currentTab, setCurrentTab] = useState(0);
+  const [productsPerTab, setProductsPerTab] = useState(4);
+  
+  // Update products per tab based on screen size
   useEffect(() => {
-    if (!isAutoSliding) return;
+    const updateProductsPerTab = () => {
+      setProductsPerTab(window.innerWidth >= 1024 ? 4 : 2);
+      setCurrentTab(0); // Reset to first tab when screen size changes
+    };
 
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) =>
-        prevIndex === totalSlides - 1 ? 0 : prevIndex + 1
-      );
-    }, 4000); // Slide every 4 seconds
+    // Set initial value
+    updateProductsPerTab();
 
-    return () => clearInterval(interval);
-  }, [isAutoSliding, totalSlides]);
+    // Add resize listener
+    window.addEventListener('resize', updateProductsPerTab);
+    return () => window.removeEventListener('resize', updateProductsPerTab);
+  }, []);
 
-  const handleTouchStart = () => {
-    setIsAutoSliding(false);
+  // Calculate total tabs needed
+  const totalTabs = Math.ceil(wineProducts.length / productsPerTab);
+  
+  // Get products for current tab
+  const getCurrentTabProducts = () => {
+    const startIndex = currentTab * productsPerTab;
+    const endIndex = startIndex + productsPerTab;
+    return wineProducts.slice(startIndex, endIndex);
   };
 
-  const handleTouchEnd = () => {
-    // Resume auto-sliding after 5 seconds of no interaction
-    setTimeout(() => setIsAutoSliding(true), 5000);
+  const handlePrevious = () => {
+    setCurrentTab(prev => prev > 0 ? prev - 1 : totalTabs - 1);
   };
 
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index);
-    setIsAutoSliding(false);
-    setTimeout(() => setIsAutoSliding(true), 5000);
+  const handleNext = () => {
+    setCurrentTab(prev => prev < totalTabs - 1 ? prev + 1 : 0);
   };
-
-  // Group wines into pairs for 2-per-row display
-  const wineRows = [];
-  for (let i = 0; i < featuredWines.length; i += 2) {
-    wineRows.push(featuredWines.slice(i, i + 2));
-  }
 
   return (
-    <section className="bg-gradient-to-b from-amber-50 to-yellow-50 py-8 px-4">
+    <section className="w-full py-8 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-6 ">
-          <h2 className="text-2xl font-bold text-amber-900 mb-2">
-            SELECTED WINES
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">
+            EXQUISITE WINES
           </h2>
-          <p className="text-amber-700 text-sm">
-            Discover our best and finest wine
-          </p>
+          <div className="flex gap-2">
+            <button 
+              onClick={handlePrevious}
+              className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5 text-gray-600" />
+            </button>
+            <button 
+              onClick={handleNext}
+              className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+            >
+              <ChevronRight className="w-5 h-5 text-gray-600" />
+            </button>
+          </div>
         </div>
 
-        {/* Wines Grid - responsive card layout */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-5 lg:gap-6">
-          {featuredWines.map((wine) => (
-            <div
-              key={wine.id}
-              className="bg-white rounded-lg border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col items-center h-full relative group"
-            >
-              {/* Wishlist Heart Icon */}
-              <button
-                className={`absolute top-2 right-2 z-10 p-1 rounded-full bg-white/80 hover:bg-amber-100 transition-colors ${isInWishlist(wine.id) ? 'text-red-500' : 'text-amber-500'}`}
-                aria-label="Ajouter aux favoris"
-                type="button"
-                tabIndex={0}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  if (isInWishlist(wine.id)) {
-                    removeFromWishlist(wine.id);
-                    toast({
-                      title: 'Removed from wishlist',
-                      description: `${wine.name} has been removed from your wishlist.`,
-                    });
-                  } else {
-                    addToWishlist({
-                      id: wine.id,
-                      name: wine.name,
-                      price: wine.price,
-                      image: wine.image,
-                      slug: wine.slug,
-                      category: wine.category,
-                      rating: wine.rating,
-                    });
-                    toast({
-                      title: 'Added to wishlist',
-                      description: `${wine.name} has been added to your wishlist.`,
-                    });
-                  }
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill={isInWishlist(wine.id) ? 'currentColor' : 'none'}
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-5 h-5 group-hover:scale-110 transition-transform"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16.5 3.75a5.25 5.25 0 00-4.5 2.472A5.25 5.25 0 007.5 3.75 5.25 5.25 0 003 9c0 7.25 9 11.25 9 11.25s9-4 9-11.25a5.25 5.25 0 00-5.25-5.25z"
-                  />
-                </svg>
-              </button>
-              {/* Wine Image Container - card style, clickable */}
-              <a href={`/product/${wine.slug}`} className="flex w-full flex-col items-center justify-center pt-3 focus:outline-none">
-                <div className="relative w-full h-60 sm:h-72 md:h-84 flex items-center justify-center mx-auto rounded-lg bg-gray-50 overflow-hidden">
-                  {wine.image ? (
-                    <Image
-                      src={wine.image}
-                      alt={wine.name}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 300px"
-                      className="object-contain"
-                      priority={false}
-                    />
-                  ) : (
-                    <div className="w-full h-48 bg-gray-100 rounded"></div>
-                  )}
-                </div>
-                {/* Wine Info */}
-                <div className="p-2 w-full flex flex-col items-center">
-                  <h3 className="text-xs md:text-sm font-semibold text-amber-900 mb-1 text-center line-clamp-2 leading-tight">
-                    {wine.name}
-                  </h3>
-                  <p className="text-[11px] md:text-xs text-yellow-600 font-medium mb-1 text-center">
-                    {wine.category}
-                  </p>
-                  {/* Price only */}
-                  <div className="flex items-center justify-center w-full mt-1">
-                    <span className="text-base md:text-lg font-bold text-amber-900">
-                      {formatCurrency(wine.price, 'FCFA')}
-                    </span>
-                  </div>
-                </div>
-              </a>
-            </div>
+        {/* Product Grid - Single row with dynamic tab content */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {getCurrentTabProducts().map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+
+        {/* Tab indicators */}
+        <div className="flex justify-center mt-6 gap-2">
+          {Array.from({ length: totalTabs }, (_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentTab(index)}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                currentTab === index ? 'bg-gray-800' : 'bg-gray-300'
+              }`}
+            />
           ))}
         </div>
       </div>
     </section>
   );
-}
+};
+
+export default FeaturedWine;

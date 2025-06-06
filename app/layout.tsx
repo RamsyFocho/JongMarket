@@ -102,7 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <AgeVerification/>
                 <div className="block min-h-screen w-full overflow-x-hidden">
                   <Header />
-                  <main className="flex-1 w-full max-w-full px-2 mt-16 md:mt-24 lg:mt-32 xl:mt-40">{children}</main>
+                  <main className="flex-1 w-full max-w-full mt-16 md:mt-24 lg:mt-32 xl:mt-40">{children}</main>
                   <Footer />
                   <ScrollToTop />
                 </div>

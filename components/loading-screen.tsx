@@ -269,7 +269,7 @@ export default function JongMarketLoader({
             transition={{ delay: 1 }}
             className="absolute bottom-6 right-6 text-xs text-gray-400 font-medium"
           >
-            Powered by JongMarket
+            Powered by JongMarket - Built by BitsValley
           </motion.div>
         </motion.div>
       )}
