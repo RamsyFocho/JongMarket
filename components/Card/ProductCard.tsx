@@ -6,6 +6,7 @@ import StarRating from './StarRating';
 import { formatCurrency } from '@/lib/format-currency';
 import { useCart } from '@/context/cart-context';
 import { useWishlist } from '@/context/wishlist-context';
+import { useToast } from '@/hooks/use-toast';
 
 interface Product {
   id: number;
@@ -28,6 +29,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { toast } = useToast();
 
   React.useEffect(() => {
     setIsWishlisted(isInWishlist(product.id));
@@ -54,12 +56,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       quantity: 1,
       slug: product.slug,
     });
+    toast({
+      title: 'Added to cart',
+      description: `${product.name} has been added to your cart.`,
+    });
   };
 
   const toggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     if (isWishlisted) {
       removeFromWishlist(product.id);
+      toast({
+        title: 'Removed from wishlist',
+        description: `${product.name} has been removed from your wishlist.`,
+      });
     } else {
       addToWishlist({
         id: product.id,
@@ -69,6 +79,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         slug: product.slug,
         category: product.category,
         rating: product.rating,
+      });
+      toast({
+        title: 'Added to wishlist',
+        description: `${product.name} has been added to your wishlist.`,
       });
     }
     setIsWishlisted(!isWishlisted);

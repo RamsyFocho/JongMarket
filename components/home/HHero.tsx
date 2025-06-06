@@ -1,7 +1,8 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation, Autoplay, EffectFade } from "swiper/modules";
+import Link from 'next/link';
 
 // Import Swiper styles
 import "swiper/css";
@@ -23,6 +24,7 @@ const HHero = () => {
       subtitle:
         "Discover our premium selection of rare and aged whiskeys from around the world",
       cta: "Explore Whiskeys",
+      url: "/category/whiskey",
       imageUrl:
         "https://readdy.ai/api/search-image?query=Premium%20aged%20whiskey%20bottles%20displayed%20elegantly%20on%20dark%20wooden%20shelf%20with%20soft%20golden%20lighting%2C%20crystal%20glasses%20with%20ice%2C%20luxury%20bar%20setting%20with%20blurred%20background%2C%20professional%20product%20photography%20with%20dramatic%20lighting&width=1920&height=1080&seq=1&orientation=landscape",
     },
@@ -32,6 +34,7 @@ const HHero = () => {
       subtitle:
         "Handcrafted spirits made with passion and tradition by master distillers",
       cta: "Shop Craft Spirits",
+      url: "/category/spirits",
       imageUrl:
         "https://readdy.ai/api/search-image?query=Artisanal%20craft%20gin%20and%20vodka%20bottles%20arranged%20on%20rustic%20wooden%20table%20with%20botanical%20ingredients%2C%20copper%20distilling%20equipment%20in%20background%2C%20soft%20moody%20lighting%20with%20golden%20accents%2C%20professional%20product%20photography%20with%20shallow%20depth%20of%20field&width=1920&height=1080&seq=2&orientation=landscape",
     },
@@ -41,6 +44,7 @@ const HHero = () => {
       subtitle:
         "Exquisite wines from prestigious vineyards, perfect for connoisseurs and special occasions",
       cta: "View Wine Selection",
+      url: "/category/wine",
       imageUrl:
         "https://readdy.ai/api/search-image?query=Luxury%20wine%20bottles%20and%20glasses%20in%20elegant%20cellar%20setting%2C%20vintage%20red%20wines%20displayed%20with%20soft%20dramatic%20lighting%2C%20wine%20barrels%20in%20background%2C%20professional%20product%20photography%20with%20rich%20colors%20and%20contrast%2C%20sophisticated%20atmosphere&width=1920&height=1080&seq=3&orientation=landscape",
     },
@@ -50,14 +54,15 @@ const HHero = () => {
       subtitle:
         "Rare and limited release spirits that define exceptional taste and craftsmanship",
       cta: "Discover Limited Editions",
+      url: "/products",
       imageUrl:
         "https://readdy.ai/api/search-image?query=Exclusive%20limited%20edition%20liquor%20bottles%20with%20luxury%20packaging%20and%20gold%20details%2C%20displayed%20on%20black%20marble%20counter%20with%20subtle%20spotlighting%2C%20elegant%20environment%20with%20blurred%20bar%20background%2C%20professional%20product%20photography%20with%20dramatic%20lighting&width=1920&height=1080&seq=4&orientation=landscape",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      <header className="absolute top-0 left-0 right-0 z-10 bg-transparent">
+    <div className="bg-white">
+      {/* <header className="absolute top-0 left-0 right-0 z-10 bg-transparent">
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           <div className="text-white font-bold text-2xl">LUXE SPIRITS</div>
           <nav className="hidden md:flex space-x-8">
@@ -86,7 +91,7 @@ const HHero = () => {
             </button>
           </div>
         </div>
-      </header>
+      </header> */}
 
       <section
         className={`hero-section relative h-[80vh] w-full overflow-hidden transition-opacity duration-1000 ${
@@ -136,6 +141,7 @@ const HHero = () => {
                     >
                       {slide.subtitle}
                     </p>
+                    <Link href={slide.url}>
                     <button
                       className="px-8 py-3 bg-transparent hover:bg-[#C4A484] text-white border-2 border-[#C4A484] transition-all duration-300 text-base md:text-lg font-medium opacity-0 animate-fadeIn cursor-pointer !rounded-button whitespace-nowrap"
                       style={{
@@ -145,6 +151,7 @@ const HHero = () => {
                     >
                       {slide.cta}
                     </button>
+                    </Link>
                   </div>
                 </div>
               </div>
