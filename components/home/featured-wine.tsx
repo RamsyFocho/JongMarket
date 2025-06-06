@@ -5,7 +5,13 @@ import ProductCard from '@/components/Card/ProductCard';
 import { products } from '@/data/products';
 
 
-const beerProducts = products.filter((p) => p.category.toLowerCase() === 'wine');
+const wineProducts = products
+  .filter((p: any) => p.category && p.category.toLowerCase() === 'wine')
+  .map((p: any) => ({
+    ...p,
+    badges: Array.isArray(p.badges) ? p.badges : [],
+    isInStock: typeof p.inStock === 'boolean' ? p.inStock : true,
+  }));
 
 const FeaturedWine = () => {
   const [currentTab, setCurrentTab] = useState(0);
@@ -28,13 +34,13 @@ const FeaturedWine = () => {
   }, []);
 
   // Calculate total tabs needed
-  const totalTabs = Math.ceil(beerProducts.length / productsPerTab);
+  const totalTabs = Math.ceil(wineProducts.length / productsPerTab);
   
   // Get products for current tab
   const getCurrentTabProducts = () => {
     const startIndex = currentTab * productsPerTab;
     const endIndex = startIndex + productsPerTab;
-    return beerProducts.slice(startIndex, endIndex);
+    return wineProducts.slice(startIndex, endIndex);
   };
 
   const handlePrevious = () => {
@@ -72,7 +78,7 @@ const FeaturedWine = () => {
 
   return (
     <section className="w-full py-8 px-4 bg-white">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[fit] mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">
@@ -96,8 +102,8 @@ const FeaturedWine = () => {
 
         {/* Product Grid - Single row with dynamic tab content */}
         <div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-hidden"
-          style={{ minHeight: 320 }}
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-hidden border-2 border-red-500"
+          style={{ minHeight: 420 }}
         >
           <div
             className={`absolute inset-0 w-full h-full transition-transform duration-400 will-change-transform ${
