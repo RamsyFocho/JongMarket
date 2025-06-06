@@ -44,6 +44,15 @@ const FeaturedWine = () => {
     setCurrentTab(prev => prev < totalTabs - 1 ? prev + 1 : 0);
   };
 
+  // Auto-slide effect for tabs
+  useEffect(() => {
+    if (totalTabs <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentTab((prev) => (prev < totalTabs - 1 ? prev + 1 : 0));
+    }, 4000); // 4 seconds per tab
+    return () => clearInterval(interval);
+  }, [totalTabs]);
+
   return (
     <section className="w-full py-8 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
