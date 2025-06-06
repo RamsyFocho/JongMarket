@@ -5,11 +5,12 @@ import ProductCard from '@/components/Card/ProductCard';
 import { products } from '@/data/products';
 
 
-const wineProducts = products.filter((p) => p.category.toLowerCase() === 'wine');
+const beerProducts = products.filter((p) => p.category.toLowerCase() === 'wine');
 
 const FeaturedWine = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const [productsPerTab, setProductsPerTab] = useState(4);
+  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
   
   // Update products per tab based on screen size
   useEffect(() => {
@@ -27,31 +28,47 @@ const FeaturedWine = () => {
   }, []);
 
   // Calculate total tabs needed
-  const totalTabs = Math.ceil(wineProducts.length / productsPerTab);
+  const totalTabs = Math.ceil(beerProducts.length / productsPerTab);
   
   // Get products for current tab
   const getCurrentTabProducts = () => {
     const startIndex = currentTab * productsPerTab;
     const endIndex = startIndex + productsPerTab;
-    return wineProducts.slice(startIndex, endIndex);
+    return beerProducts.slice(startIndex, endIndex);
   };
 
   const handlePrevious = () => {
+    setSlideDirection('left');
     setCurrentTab(prev => prev > 0 ? prev - 1 : totalTabs - 1);
   };
 
   const handleNext = () => {
+    setSlideDirection('right');
     setCurrentTab(prev => prev < totalTabs - 1 ? prev + 1 : 0);
   };
 
-  // Auto-slide effect for tabs
+  // Auto-slide effect for tabs with slide
   useEffect(() => {
     if (totalTabs <= 1) return;
     const interval = setInterval(() => {
+      setSlideDirection('right');
       setCurrentTab((prev) => (prev < totalTabs - 1 ? prev + 1 : 0));
-    }, 4000); // 4 seconds per tab
+    }, 4000);
     return () => clearInterval(interval);
   }, [totalTabs]);
+
+  // Slide animation state
+  const [animating, setAnimating] = useState(false);
+  useEffect(() => {
+    if (!animating) return;
+    const timer = setTimeout(() => setAnimating(false), 800); // match new animation duration
+    return () => clearTimeout(timer);
+  }, [animating]);
+
+  // Trigger animation on tab change
+  useEffect(() => {
+    setAnimating(true);
+  }, [currentTab]);
 
   return (
     <section className="w-full py-8 px-4 bg-white">
@@ -78,10 +95,26 @@ const FeaturedWine = () => {
         </div>
 
         {/* Product Grid - Single row with dynamic tab content */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {getCurrentTabProducts().map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+        <div
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-hidden"
+          style={{ minHeight: 320 }}
+        >
+          <div
+            className={`absolute inset-0 w-full h-full transition-transform duration-400 will-change-transform ${
+              animating
+                ? slideDirection === 'right'
+                  ? 'translate-x-[-100%] animate-slide-in-right'
+                  : 'translate-x-[100%] animate-slide-in-left'
+                : 'translate-x-0'
+            }`}
+            style={{ pointerEvents: animating ? 'none' : 'auto' }}
+          >
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {getCurrentTabProducts().map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Tab indicators */}
@@ -97,6 +130,23 @@ const FeaturedWine = () => {
           ))}
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes slide-in-right {
+          from { transform: translateX(100%); }
+          to { transform: translateX(0); }
+        }
+        @keyframes slide-in-left {
+          from { transform: translateX(-100%); }
+          to { transform: translateX(0); }
+        }
+        .animate-slide-in-right {
+          animation: slide-in-right 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        .animate-slide-in-left {
+          animation: slide-in-left 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+      `}</style>
     </section>
   );
 };
