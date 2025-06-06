@@ -398,6 +398,108 @@ export const products = [
     },
   },
 
+  {
+    id: 1015,
+    name: "Baileys",
+    brand: "Baileys",
+    category: "Wine",
+    price: 25.00,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/wine/baileys.jpg",
+    slug: "baileys",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Baileys Original Irish Cream is a popular cream liqueur known for its smooth, velvety texture and rich, creamy flavor. It's made from a blend of Irish whiskey, Irish dairy cream, cocoa, and vanilla. Baileys is often enjoyed on its own, over ice, or added to coffee and cocktails. ",
+    details: {
+      origin: "Ireland",
+      size: "750ml",
+      Flavor: "Rich, creamy, with notes of chocolate and vanilla",
+    },
+  },
+
+  {
+    id: 1016,
+    name: "Perlino",
+    brand: "Perlino",
+    category: "Wine",
+    price: 11.04,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/wine/perlino.jpg",
+    slug: "perlino",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Perlino is a well-known brand of Italian sparkling wines, particularly known for their quality and unique fermentation process. Their Prosecco Extra Dry, for instance, is characterized by a straw yellow color, fine and persistent bubbles, a round mouthfeel, and fruity aromas. Perlino also produces other sparkling wines and vermouths, and their wines are often described as fresh, aromatic, and complex.  ",
+    details: {
+      origin: "Italy",
+      size: "750ml",
+    },
+  },
+
+  {
+    id: 1017,
+    name: "Porto Marquez",
+    brand: "Porto Marquez",
+    category: "Wine",
+    price: 15.34,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/wine/marquez.jpg",
+    slug: "marquez",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Porto Cruz is a well-known Port wine brand, originating from the Douro Valley in Portugal. It is known for its Tawny and Ruby Port wines, characterized by a rich, fruity, and balanced taste.  ",
+    details: {
+      origin: "Porto",
+      size: "750ml",
+    },
+  },
+
+
+  {
+    id: 1018,
+    name: "Port Cruz",
+    brand: "Port Cruz",
+    category: "Wine",
+    price: 16.50,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/wine/cruz.jpg",
+    slug: "cruz",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Porto Marquez wines, specifically the Fine Tawny, are a style of Portuguese port wine, known for its rich, sweet, and complex flavors. They are fortified wines, meaning a grape spirit is added during fermentation, stopping it and preserving the natural sweetness. Porto Marquez Tawny Port is often characterized by notes of dried fruits, plums, berries, and chocolate, with a velvety texture and a smooth finish. The origin of Porto Marquez is the Douro Valley in Portugal, where the grapes are grown and the wine is produced. ",
+    details: {
+      origin: "Douro Valley in Portugal",
+      size: "750ml",
+      Flavor: "Tawny Port, including Porto Marquez, is known for its balance of sweetness and acidity, with notes of dried fruits like figs and raisins, caramel, and toasted almonds. "
+    },
+  },
+
+  {
+    id: 1019,
+    name: "Martini",
+    brand: "Martini",
+    category: "Wine",
+    price: 16.50,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/wine/martini.jpg",
+    slug: "martini",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Martini wines are known for their quality, refinement, and connection to the Italian tradition of wine and aperitivo. They produce a range of wines, including sparkling wines like Asti and Brut, as well as vermouths like Martini Rosso and Bianco. The brand's history is deeply rooted in Pessione, Italy, where it was founded in 1863 by Alessandro Martini, Luigi Rossi, and Teofilo Sola.  ",
+    details: {
+      origin: "Italy",
+      size: "750ml",
+    },
+  },
 
   {
     id: 1006,
@@ -548,7 +650,7 @@ export const products = [
       brewery: "Intafact Beverages Limited",
     },
     relatedImages: [
-      "/images/products/beer/bottled-hero-2.jpg",
+      "/images/products/beer/hero-1.jpg",
       "/images/products/beer/bottled-hero-3.jpg",
       "/images/products/beer/bottled-hero-4.jpg",
     ],
