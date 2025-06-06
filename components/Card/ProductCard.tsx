@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Heart, ShoppingCart } from 'lucide-react';
-import Link from 'next/link';
+import React, { useState } from "react";
+import { Heart, ShoppingCart } from "lucide-react";
+import Link from "next/link";
 
-import StarRating from './StarRating';
-import { formatCurrency } from '@/lib/format-currency';
-import { useCart } from '@/context/cart-context';
-import { useWishlist } from '@/context/wishlist-context';
-import { useToast } from '@/hooks/use-toast';
+import StarRating from "./StarRating";
+import { formatCurrency } from "@/lib/format-currency";
+import { useCart } from "@/context/cart-context";
+import { useWishlist } from "@/context/wishlist-context";
+import { toast } from "react-toastify";
 
 interface Product {
   id: number;
@@ -29,7 +29,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
-  const { toast } = useToast();
 
   React.useEffect(() => {
     setIsWishlisted(isInWishlist(product.id));
@@ -37,12 +36,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const getBadgeStyles = (badge: string) => {
     switch (badge) {
-      case 'NEW':
-        return 'bg-orange-500 text-white';
-      case 'SALE':
-        return 'bg-red-600 text-white';
+      case "NEW":
+        return "bg-orange-500 text-white";
+      case "SALE":
+        return "bg-red-600 text-white";
       default:
-        return 'bg-gray-500 text-white';
+        return "bg-gray-500 text-white";
     }
   };
 
@@ -56,20 +55,25 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       quantity: 1,
       slug: product.slug,
     });
-    toast({
-      title: 'Added to cart',
-      description: `${product.name} has been added to your cart.`,
-    });
+    toast(
+      <div>
+        <strong>Added to Cart</strong>
+        <div>{product.name} has been added to your cart.</div>
+      </div>
+    );
   };
 
   const toggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     if (isWishlisted) {
       removeFromWishlist(product.id);
-      toast({
-        title: 'Removed from wishlist',
-        description: `${product.name} has been removed from your wishlist.`,
-      });
+      
+      toast(
+        <div>
+          <strong>Removed from wishlist</strong>
+          <div>{product.name} has been removed from your wishlist.</div>
+        </div>
+      );
     } else {
       addToWishlist({
         id: product.id,
@@ -79,11 +83,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         slug: product.slug,
         category: product.category,
         rating: product.rating,
-      });
-      toast({
-        title: 'Added to wishlist',
-        description: `${product.name} has been added to your wishlist.`,
-      });
+      });      
+      toast(
+        <div>
+          <strong>Added to wishlist</strong>
+          <div>{product.name} has been added to your wishlist.</div>
+        </div>
+      );
     }
     setIsWishlisted(!isWishlisted);
   };
@@ -95,7 +101,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {product.badges.map((badge, index) => (
           <span
             key={index}
-            className={`px-2 py-1 text-xs font-bold rounded ${getBadgeStyles(badge)}`}
+            className={`px-2 py-1 text-xs font-bold rounded ${getBadgeStyles(
+              badge
+            )}`}
           >
             {badge}
           </span>
@@ -129,12 +137,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               </button>
               <button
                 type="button"
-                title={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                title={
+                  isWishlisted ? "Remove from wishlist" : "Add to wishlist"
+                }
                 onClick={toggleWishlist}
                 className="p-2 bg-white rounded-sm shadow-md hover:bg-gray-50 transition-colors"
               >
                 <Heart
-                  className={`w-4 h-4 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
+                  className={`w-4 h-4 ${
+                    isWishlisted ? "fill-red-500 text-red-500" : "text-gray-400"
+                  }`}
                 />
               </button>
             </div>

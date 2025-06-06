@@ -6,14 +6,14 @@ import { WishlistProvider } from "@/context/wishlist-context"
 import { LanguageProvider } from "@/context/language-context"
 import Header from "@/components/layout/header"
 import Footer from "@/components/layout/footer"
-import { Toaster } from "@/components/ui/toaster"
+// import { Toaster } from "@/components/ui/toaster"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import OrganizationSchema from "@/components/seo/organization-schema"
 import "./globals.css"
 import LoadingScreen from "@/components/loading-screen"
 import AgeVerification from "@/components/age-verification"
 import ScrollToTop from "@/components/ui/scroll-to-top"
-
+  import { ToastContainer } from 'react-toastify';
 // Load fonts properly using next/font
 const inter = Inter({
   subsets: ["latin"],
@@ -92,7 +92,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body>
-        <Toaster />
+        <ToastContainer />
         <LanguageProvider>
           <WishlistProvider>
             <CartProvider>
