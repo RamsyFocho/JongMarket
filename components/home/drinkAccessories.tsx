@@ -1,68 +1,77 @@
-"use client"
-import { useState, useEffect, useRef } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { motion } from "framer-motion"
-import { Star, ChevronLeft, ChevronRight, Heart, ShoppingCart } from "lucide-react"
-import { products, formatCurrency } from "@/data/products"
-import { useLanguage } from "@/context/language-context"
-import { useCart } from "@/context/cart-context"
-import { useWishlist } from "@/context/wishlist-context"
-import { useToast } from "@/hooks/use-toast"
-import { Button } from "@/components/ui/button"
+"use client";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import {
+  Star,
+  ChevronLeft,
+  ChevronRight,
+  Heart,
+  ShoppingCart,
+} from "lucide-react";
+import { products, formatCurrency } from "@/data/products";
+import { useLanguage } from "@/context/language-context";
+import { useCart } from "@/context/cart-context";
+import { useWishlist } from "@/context/wishlist-context";
+import { toast } from "react-toastify";
+import { Button } from "@/components/ui/button";
 
 // Get drink accessories from products data
-const drinkAccessories = products.filter((p) => p.category === "Accessories")
+const drinkAccessories = products.filter((p) => p.category === "Accessories");
 
 export default function DrinkAccessories() {
-  const { t } = useLanguage()
-  const [currentTab, setCurrentTab] = useState(0)
+  const { t } = useLanguage();
+  const [currentTab, setCurrentTab] = useState(0);
   // SSR-safe: always start with 3 (desktop) columns
-  const [itemsPerTab, setItemsPerTab] = useState(3)
-  const [isClient, setIsClient] = useState(false)
-  const hasSetInitial = useRef(false)
-  const { addToCart } = useCart()
-  const { toast } = useToast()
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
+  const [itemsPerTab, setItemsPerTab] = useState(3);
+  const [isClient, setIsClient] = useState(false);
+  const hasSetInitial = useRef(false);
+  const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
   useEffect(() => {
-    setIsClient(true)
+    setIsClient(true);
     // Only run responsive logic after hydration
     const updateItemsPerTab = () => {
       if (window.innerWidth < 1024) {
-        setItemsPerTab(window.innerWidth < 768 ? 1 : 2)
+        setItemsPerTab(window.innerWidth < 768 ? 1 : 2);
       } else {
-        setItemsPerTab(3)
+        setItemsPerTab(3);
       }
-    }
-    updateItemsPerTab()
-    window.addEventListener('resize', updateItemsPerTab)
-    return () => window.removeEventListener('resize', updateItemsPerTab)
-  }, [])
+    };
+    updateItemsPerTab();
+    window.addEventListener("resize", updateItemsPerTab);
+    return () => window.removeEventListener("resize", updateItemsPerTab);
+  }, []);
 
   // Group products into tabs
   const totalTabs = Math.ceil(drinkAccessories.length / itemsPerTab);
   const currentProducts = drinkAccessories.slice(
     currentTab * itemsPerTab,
     (currentTab + 1) * itemsPerTab
-  )
+  );
 
   // Wishlist toggle handler
   const handleWishlist = (product: any) => {
     if (isInWishlist(product.id)) {
-      removeFromWishlist(product.id)
-      toast({
-        title: t('removedFromWishlist') || 'Removed from wishlist',
-        description: `${product.name} ${t('removedFromWishlistDesc') || 'has been removed from your wishlist.'}`,
-      })
+      removeFromWishlist(product.id);
+      toast(
+        <div>
+          <strong>Removed from wishlist</strong>
+          <div>{product.name} has been removed from your wishlist.</div>
+        </div>
+      );
     } else {
-      addToWishlist(product)
-      toast({
-        title: t('AddedToWishlist') || 'Added to wishlist',
-        description: `${product.name} ${t('has been added to your wishlist') || 'has been added to your wishlist.'}`,
-      })
+      addToWishlist(product);
+      toast(
+        <div>
+          <strong>Added to wishlist</strong>
+          <div>{product.name} has been added to your wishlist.</div>
+        </div>
+      );
     }
-  }
+  };
 
   // Add to cart with toast
   const handleAddToCart = (product: any) => {
@@ -72,19 +81,21 @@ export default function DrinkAccessories() {
       price: product.price,
       image: product.image,
       quantity: 1,
-    })
-    toast({
-      title: t('AddedToCart') || 'Added to cart',
-      description: `${product.name} ${t('addedToCartDesc') || 'has been added to your cart.'}`,
-    })
-  }
+    });
+    toast(
+      <div>
+        <strong>Added to Cart</strong>
+        <div>{product.name} has been added to your cart.</div>
+      </div>
+    );
+  };
 
   const goToPreviousTab = () => {
-    setCurrentTab(prev => (prev > 0 ? prev - 1 : totalTabs - 1))
-  }
+    setCurrentTab((prev) => (prev > 0 ? prev - 1 : totalTabs - 1));
+  };
   const goToNextTab = () => {
-    setCurrentTab(prev => (prev < totalTabs - 1 ? prev + 1 : 0))
-  }
+    setCurrentTab((prev) => (prev < totalTabs - 1 ? prev + 1 : 0));
+  };
 
   return (
     <section className="py-12 bg-gray-50">
@@ -92,7 +103,7 @@ export default function DrinkAccessories() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">
-            {t('drinkAccessories') || 'DRINK ACCESSORIES'}
+            {t("drinkAccessories") || "DRINK ACCESSORIES"}
           </h2>
           <div className="flex gap-2">
             <button
@@ -118,9 +129,13 @@ export default function DrinkAccessories() {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.4, ease: 'easeInOut' }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
             className={`grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`}
-            style={isClient ? { gridTemplateColumns: `repeat(${itemsPerTab}, 1fr)` } : {}}
+            style={
+              isClient
+                ? { gridTemplateColumns: `repeat(${itemsPerTab}, 1fr)` }
+                : {}
+            }
           >
             {currentProducts.map((product: any, index: number) => (
               <motion.div
@@ -136,10 +151,18 @@ export default function DrinkAccessories() {
                   <button
                     onClick={() => handleWishlist(product)}
                     className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 z-10"
-                    title={isInWishlist(product.id) ? 'Remove from wishlist' : 'Add to wishlist'}
+                    title={
+                      isInWishlist(product.id)
+                        ? "Remove from wishlist"
+                        : "Add to wishlist"
+                    }
                   >
                     <Heart
-                      className={`h-4 w-4 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-500'}`}
+                      className={`h-4 w-4 ${
+                        isInWishlist(product.id)
+                          ? "fill-red-500 text-red-500"
+                          : "text-gray-400 hover:text-red-500"
+                      }`}
                     />
                   </button>
                   {/* Product Badges */}
@@ -172,7 +195,7 @@ export default function DrinkAccessories() {
                       className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium bg-amber-600 hover:bg-amber-700 rounded transition-colors duration-200"
                     >
                       <ShoppingCart className="h-4 w-4" />
-                      {t('addToCart') || 'ADD TO CART'}
+                      {t("addToCart") || "ADD TO CART"}
                     </Button>
                     <Link href={`/product/${product.slug}`} className="flex-1">
                       <Button
@@ -180,7 +203,7 @@ export default function DrinkAccessories() {
                         className="w-full flex items-center justify-center py-2 text-sm font-medium border-white hover:bg-white text-black rounded transition-colors duration-200"
                         title="View details"
                       >
-                        {t('viewDetails') || 'View Details'}
+                        {t("viewDetails") || "View Details"}
                       </Button>
                     </Link>
                   </div>
@@ -198,12 +221,21 @@ export default function DrinkAccessories() {
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`h-3 w-3 ${i < Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`}
+                          className={`h-3 w-3 ${
+                            i < Math.floor(product.rating)
+                              ? "fill-yellow-400 text-yellow-400"
+                              : "text-gray-200"
+                          }`}
                         />
                       ))}
                     </div>
                     <span className="text-xs text-gray-500">
-                      {Array.isArray(product.rating) ? product.rating.length : product.rating ? product.rating : 0} reviews
+                      {Array.isArray(product.rating)
+                        ? product.rating.length
+                        : product.rating
+                        ? product.rating
+                        : 0}{" "}
+                      reviews
                     </span>
                   </div>
                   {/* Price */}
@@ -226,8 +258,8 @@ export default function DrinkAccessories() {
                 onClick={() => setCurrentTab(index)}
                 className={`h-2 w-8 rounded-full transition-all duration-300 ${
                   index === currentTab
-                    ? 'bg-gray-800 w-12'
-                    : 'bg-gray-300 hover:bg-gray-400'
+                    ? "bg-gray-800 w-12"
+                    : "bg-gray-300 hover:bg-gray-400"
                 }`}
                 aria-label={`Go to tab ${index + 1}`}
               />
@@ -236,5 +268,5 @@ export default function DrinkAccessories() {
         )}
       </div>
     </section>
-  )
+  );
 }
