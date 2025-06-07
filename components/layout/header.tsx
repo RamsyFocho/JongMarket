@@ -453,23 +453,23 @@ export default function Header() {
 
         {/* Main Header */}
         {/* <div className="border-b border-gray-200 py-2 h-[6rem]"> */}
-        <div className="border-b border-gray-200 h-[3.3rem]">
+        <div className=" h-[5.5rem] border-b border-gray-200">
           <div className="container mx-auto px-4 h-full">
             <div className="flex items-center justify-between overflow-hidden h-full">
               {/* Logo - redesigned for desktop */}
               <Link href="/" className="flex items-center">
                 <div
                   className={cn(
-                    "relative flex items-center justify-center  bg-white p-2 transition-all duration-300",
-                    compactHeader ? "h-11 w-60" : "h-11 w-60"
+                    "relative flex items-center justify-center bg-white p-2 transition-all duration-300",
+                    compactHeader ? "h-20 w-60" : "h-20 w-60"
                   )}
                 >
                   <Image
                     src="/images/logo/jongmarket.jpg"
                     alt="JongMarket Logo"
                     fill
-                    // className="object-contain object-center border-2 border-green-500"
-                    className="transform scale-x-50 scale-y-150 "
+                    className="object-cover object-center"
+                    // className="transform scale-x-50 scale-y-150 "
                     priority
                     sizes="240px"
                   />
