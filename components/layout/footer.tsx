@@ -58,11 +58,11 @@ export default function Footer() {
             </div>
           </div>
 
-          <div>
+          <div className="flex flex-col items-center">
             <h4 className="text-lg font-semibold mb-4 text-black">
               {t("categories")}
             </h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2 text-center">
               <li>
                 <Link
                   href="/category/whiskey"
@@ -114,11 +114,11 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div>
+          <div className="flex flex-col items-center">
             <h4 className="text-lg font-semibold mb-4 text-black">
               {t("customerService")}
             </h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2 text-center">
               <li>
                 <Link
                   href="/contact"
@@ -162,11 +162,11 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div>
+          <div className="flex flex-col items-center">
             <h4 className="text-lg font-semibold mb-4 text-black">
               {t("contact")}
             </h4>
-            <address className="not-italic text-black-300 space-y-2">
+            <address className="not-italic text-black-300 space-y-2 text-center">
               <p>
                 Avenue des Banques, Douala Cameroon Bonamoussadi Immeuble K
                 Homes
