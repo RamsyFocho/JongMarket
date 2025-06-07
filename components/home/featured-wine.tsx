@@ -102,9 +102,10 @@ const FeaturedWine = () => {
 
         {/* Product Grid - Single row with dynamic tab content */}
         <div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-hidden border-2 border-red-500"
-          style={{ minHeight: 420 }}
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-hidden border-2 border-red-500 min-h-[280px] md:min-h-[450px]"
+          // style={{ minHeight: 450 }}
         >
+        
           <div
             className={`absolute inset-0 w-full h-full transition-transform duration-400 will-change-transform ${
               animating
