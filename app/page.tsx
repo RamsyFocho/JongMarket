@@ -6,16 +6,28 @@ import { categories } from "@/data/products";
 // const Hero = dynamic(() => import("@/components/home/hero"));
 const HHero = dynamic(() => import("@/components/home/HHero"));
 const Sidebar = dynamic(() => import("@/components/layout/sidebar"));
-const TrendingDrinks = dynamic(() => import("@/components/home/trending-drinks"));
-const FeaturedDrinks = dynamic(() => import("@/components/home/featured-drinks"));
+const TrendingDrinks = dynamic(
+  () => import("@/components/home/trending-drinks")
+);
+const FeaturedDrinks = dynamic(
+  () => import("@/components/home/featured-drinks")
+);
 const FeaturedWine = dynamic(() => import("@/components/home/featured-wine"));
-const FeaturedCategories = dynamic(() => import("@/components/home/featured-categories"));
-const SpecialPromotions = dynamic(() => import("@/components/home/special-promotions"));
-const CategoryGallery = dynamic(() => import("@/components/home/category-gallery"));
+const FeaturedCategories = dynamic(
+  () => import("@/components/home/featured-categories")
+);
+const SpecialPromotions = dynamic(
+  () => import("@/components/home/special-promotions")
+);
+const CategoryGallery = dynamic(
+  () => import("@/components/home/category-gallery")
+);
 const AnimatedVideo = dynamic(() => import("@/components/home/animated-video"));
 const MoreInfo = dynamic(() => import("@/components/home/moreInfo"));
 const BeerShowOut = dynamic(() => import("@/components/home/beerShowOut"));
-const DrinkAccessories = dynamic(() => import("@/components/home/drinkAccessories"));
+const DrinkAccessories = dynamic(
+  () => import("@/components/home/drinkAccessories")
+);
 const BrandsSection = dynamic(() => import("@/components/home/brandsSection"));
 
 export default function HomePage() {
@@ -49,10 +61,16 @@ export default function HomePage() {
               <HHero />
             </Suspense>
             <Suspense fallback={<div>Loading trending drinks...</div>}>
-              <TrendingDrinks/>
+              <TrendingDrinks />
             </Suspense>
             <Suspense fallback={<div>Loading featured drinks...</div>}>
-              <FeaturedDrinks/>
+              <FeaturedDrinks />
+            </Suspense>
+            <Suspense fallback={<div>Loading featured beers...</div>}>
+              <BeerShowOut />
+            </Suspense>
+            <Suspense fallback={<div>Loading featured wine...</div>}>
+              <FeaturedWine />
             </Suspense>
             <Suspense fallback={<div>Loading featured categories...</div>}>
               <FeaturedCategories />
@@ -60,22 +78,21 @@ export default function HomePage() {
             <Suspense fallback={<div>Loading special promotions...</div>}>
               <SpecialPromotions />
             </Suspense>
-            <Suspense fallback={<div>Loading category gallery...</div>}>
-              <CategoryGallery />
-            </Suspense>
+
             <Suspense fallback={<div>Loading animated video...</div>}>
               <AnimatedVideo />
             </Suspense>
           </main>
         </div>
       </div>
+      <Suspense fallback={<div>Loading category gallery...</div>}>
+        <CategoryGallery />
+      </Suspense>
       <Suspense fallback={null}>
         <MoreInfo />
-        <BeerShowOut/>
-        <DrinkAccessories/>
-        <FeaturedWine/>
+        <DrinkAccessories />
         {/* <Newsletter /> */}
-        <BrandsSection/>
+        <BrandsSection />
       </Suspense>
     </div>
   );
