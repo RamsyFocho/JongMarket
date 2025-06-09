@@ -7,7 +7,7 @@ import { products } from '@/data/products';
 
 
 const accessoryItems = products
-  .filter((p: any) => p.category && p.category.toLowerCase() === 'Accessories')
+  .filter((p: any) => p.category && p.category.toLowerCase() === 'accessories')
   .map((p: any) => ({
     ...p,
     badges: Array.isArray(p.badges) ? p.badges : [],
