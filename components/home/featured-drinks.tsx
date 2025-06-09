@@ -1,20 +1,27 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import ProductCard from '@/components/Card/ProductCard';
-import { products } from '@/data/products';
-
+import React, { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import ProductCard from "@/components/Card/ProductCard";
+import { products } from "@/data/products";
 
 // Get 10 featured drinks (with 'featured', 'new', or 'sale' badges)
-  const featuredDrinks = products
-    .filter(p => Array.isArray(p.badges) && (p.badges.includes('featured') || p.badges.includes('new') || p.badges.includes('sale')))
-    .slice(0, 10);
+const featuredDrinks = products
+  .filter(
+    (p) =>
+      Array.isArray(p.badges) &&
+      (p.badges.includes("featured") ||
+        p.badges.includes("new") ||
+        p.badges.includes("sale"))
+  )
+  .slice(0, 10);
 
 const FeatureDrinks = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const [productsPerTab, setProductsPerTab] = useState(4);
-  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
-  
+  const [slideDirection, setSlideDirection] = useState<"left" | "right">(
+    "right"
+  );
+
   // Update products per tab based on screen size
   useEffect(() => {
     const updateProductsPerTab = () => {
@@ -26,13 +33,13 @@ const FeatureDrinks = () => {
     updateProductsPerTab();
 
     // Add resize listener
-    window.addEventListener('resize', updateProductsPerTab);
-    return () => window.removeEventListener('resize', updateProductsPerTab);
+    window.addEventListener("resize", updateProductsPerTab);
+    return () => window.removeEventListener("resize", updateProductsPerTab);
   }, []);
 
   // Calculate total tabs needed
   const totalTabs = Math.ceil(featuredDrinks.length / productsPerTab);
-  
+
   // Get products for current tab
   const getCurrentTabProducts = () => {
     const startIndex = currentTab * productsPerTab;
@@ -41,20 +48,20 @@ const FeatureDrinks = () => {
   };
 
   const handlePrevious = () => {
-    setSlideDirection('left');
-    setCurrentTab(prev => prev > 0 ? prev - 1 : totalTabs - 1);
+    setSlideDirection("left");
+    setCurrentTab((prev) => (prev > 0 ? prev - 1 : totalTabs - 1));
   };
 
   const handleNext = () => {
-    setSlideDirection('right');
-    setCurrentTab(prev => prev < totalTabs - 1 ? prev + 1 : 0);
+    setSlideDirection("right");
+    setCurrentTab((prev) => (prev < totalTabs - 1 ? prev + 1 : 0));
   };
 
   // Auto-slide effect for tabs with slide
   useEffect(() => {
     if (totalTabs <= 1) return;
     const interval = setInterval(() => {
-      setSlideDirection('right');
+      setSlideDirection("right");
       setCurrentTab((prev) => (prev < totalTabs - 1 ? prev + 1 : 0));
     }, 4000);
     return () => clearInterval(interval);
@@ -78,17 +85,22 @@ const FeatureDrinks = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">
+          <h2
+            className="text-2xl font-bold text-gray-900 uppercase tracking-wide"
+            style={{
+              fontFamily: "'Playfair Display', serif",
+            }}
+          >
             Feature drinks
           </h2>
           <div className="flex gap-2">
-            <button 
+            <button
               onClick={handlePrevious}
               className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
             >
               <ChevronLeft className="w-5 h-5 text-gray-600" />
             </button>
-            <button 
+            <button
               onClick={handleNext}
               className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
             >
@@ -105,12 +117,12 @@ const FeatureDrinks = () => {
           <div
             className={`absolute inset-0 w-full h-full transition-transform duration-400 will-change-transform ${
               animating
-                ? slideDirection === 'right'
-                  ? 'translate-x-[-100%] animate-slide-in-right'
-                  : 'translate-x-[100%] animate-slide-in-left'
-                : 'translate-x-0'
+                ? slideDirection === "right"
+                  ? "translate-x-[-100%] animate-slide-in-right"
+                  : "translate-x-[100%] animate-slide-in-left"
+                : "translate-x-0"
             }`}
-            style={{ pointerEvents: animating ? 'none' : 'auto' }}
+            style={{ pointerEvents: animating ? "none" : "auto" }}
           >
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {getCurrentTabProducts().map((product) => (
@@ -127,7 +139,7 @@ const FeatureDrinks = () => {
               key={index}
               onClick={() => setCurrentTab(index)}
               className={`w-2 h-2 rounded-full transition-colors ${
-                currentTab === index ? 'bg-gray-800' : 'bg-gray-300'
+                currentTab === index ? "bg-gray-800" : "bg-gray-300"
               }`}
             />
           ))}
@@ -136,12 +148,20 @@ const FeatureDrinks = () => {
 
       <style jsx>{`
         @keyframes slide-in-right {
-          from { transform: translateX(100%); }
-          to { transform: translateX(0); }
+          from {
+            transform: translateX(100%);
+          }
+          to {
+            transform: translateX(0);
+          }
         }
         @keyframes slide-in-left {
-          from { transform: translateX(-100%); }
-          to { transform: translateX(0); }
+          from {
+            transform: translateX(-100%);
+          }
+          to {
+            transform: translateX(0);
+          }
         }
         .animate-slide-in-right {
           animation: slide-in-right 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;

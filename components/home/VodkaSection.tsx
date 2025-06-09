@@ -81,7 +81,11 @@ const VodkaSection = () => {
       <div className="max-w-[fit] mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">
+          <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-wide"
+          style={{
+              fontFamily: "'Playfair Display', serif",
+            }}
+          >
             Best Vodka 🥃
           </h2>
           <div className="flex gap-2">
