@@ -5,7 +5,7 @@ import ProductCard from '@/components/Card/ProductCard';
 import { products } from '@/data/products';
 
 
-const wineProducts = products
+const vodkaProducts = products
   .filter((p: any) => p.category && p.category.toLowerCase() === 'vodka')
   .map((p: any) => ({
     ...p,
@@ -34,13 +34,13 @@ const VodkaSection = () => {
   }, []);
 
   // Calculate total tabs needed
-  const totalTabs = Math.ceil(wineProducts.length / productsPerTab);
+  const totalTabs = Math.ceil(vodkaProducts.length / productsPerTab);
   
   // Get products for current tab
   const getCurrentTabProducts = () => {
     const startIndex = currentTab * productsPerTab;
     const endIndex = startIndex + productsPerTab;
-    return wineProducts.slice(startIndex, endIndex);
+    return vodkaProducts.slice(startIndex, endIndex);
   };
 
   const handlePrevious = () => {

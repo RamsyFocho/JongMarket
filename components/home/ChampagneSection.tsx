@@ -5,15 +5,15 @@ import ProductCard from '@/components/Card/ProductCard';
 import { products } from '@/data/products';
 
 
-const ginProducts = products
-  .filter((p: any) => p.category && p.category.toLowerCase() === 'gin')
+const champagneProducts = products
+  .filter((p: any) => p.category && p.category.toLowerCase() === 'champagne')
   .map((p: any) => ({
     ...p,
     badges: Array.isArray(p.badges) ? p.badges : [],
     isInStock: typeof p.inStock === 'boolean' ? p.inStock : true,
   }));
 
-const GinSection = () => {
+const ChampagneSection = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const [productsPerTab, setProductsPerTab] = useState(4);
   const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
@@ -34,13 +34,13 @@ const GinSection = () => {
   }, []);
 
   // Calculate total tabs needed
-  const totalTabs = Math.ceil(ginProducts.length / productsPerTab);
+  const totalTabs = Math.ceil(champagneProducts.length / productsPerTab);
   
   // Get products for current tab
   const getCurrentTabProducts = () => {
     const startIndex = currentTab * productsPerTab;
     const endIndex = startIndex + productsPerTab;
-    return ginProducts.slice(startIndex, endIndex);
+    return champagneProducts.slice(startIndex, endIndex);
   };
 
   const handlePrevious = () => {
@@ -82,7 +82,7 @@ const GinSection = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">
-            Hottest Gin🥵
+            Pop your Champagne🍾
           </h2>
           <div className="flex gap-2">
             <button 
@@ -158,4 +158,4 @@ const GinSection = () => {
   );
 };
 
-export default GinSection;
+export default ChampagneSection;
