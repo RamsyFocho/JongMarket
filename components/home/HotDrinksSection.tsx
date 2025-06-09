@@ -5,19 +5,15 @@ import ProductCard from '@/components/Card/ProductCard';
 import { products } from '@/data/products';
 
 
+const hotDrinks = products
+  .filter((p: any) => p.category && p.category.toLowerCase() === 'hot-drinks')
+  .map((p: any) => ({
+    ...p,
+    badges: Array.isArray(p.badges) ? p.badges : [],
+    isInStock: typeof p.inStock === 'boolean' ? p.inStock : true,
+  }));
 
-const getTrendingProducts = () => {
-  return [...products]
-    .sort((a, b) => {
-      if (b.rating === a.rating) {
-        return (b.reviews?.length || 0) - (a.reviews?.length || 0);
-      }
-      return b.rating - a.rating;
-    })
-    .slice(0, 12);
-};
-
-const TrendingDrinks = () => {
+const HotDrinksSection = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const [productsPerTab, setProductsPerTab] = useState(4);
   const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
@@ -38,13 +34,13 @@ const TrendingDrinks = () => {
   }, []);
 
   // Calculate total tabs needed
-  const totalTabs = Math.ceil(getTrendingProducts().length / productsPerTab);
+  const totalTabs = Math.ceil(hotDrinks.length / productsPerTab);
   
   // Get products for current tab
   const getCurrentTabProducts = () => {
     const startIndex = currentTab * productsPerTab;
     const endIndex = startIndex + productsPerTab;
-    return getTrendingProducts().slice(startIndex, endIndex);
+    return hotDrinks.slice(startIndex, endIndex);
   };
 
   const handlePrevious = () => {
@@ -90,7 +86,7 @@ const TrendingDrinks = () => {
               fontFamily: "'Playfair Display', serif",
             }}
           >
-            Trending Drinks📈
+            Warm Up Your Day🍵
           </h2>
           <div className="flex gap-2">
             <button 
@@ -166,4 +162,4 @@ const TrendingDrinks = () => {
   );
 };
 
-export default TrendingDrinks;
+export default HotDrinksSection;
