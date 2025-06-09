@@ -17,6 +17,7 @@ const VodkaSection = dynamic(() => import("@/components/home/VodkaSection"));
 const GinSection = dynamic(() => import("@/components/home/GinSection"));
 const ChampagneSection = dynamic(() => import("@/components/home/ChampagneSection"));
 const SpiritSection = dynamic(() => import("@/components/home/SpiritSection"));
+const WhiskeySection = dynamic(() => import("@/components/home/WhiskeySection"));
 const FeaturedCategories = dynamic(
   () => import("@/components/home/featured-categories")
 );
@@ -69,6 +70,9 @@ export default function HomePage() {
             </Suspense>
             <Suspense fallback={<div>Loading featured drinks...</div>}>
               <FeaturedDrinks />
+            </Suspense>
+            <Suspense fallback={<div>Loading featured Chmpagne...</div>}>
+              <WhiskeySection />
             </Suspense>
             <Suspense fallback={<div>Loading featured beers...</div>}>
               <BeerShowOut />
