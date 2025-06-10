@@ -146,7 +146,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 className="flex-1 bg-black text-white py-2 px-4 rounded-sm hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center gap-2 text-sm font-medium"
               >
                 <ShoppingCart className="w-4 h-4" />
-                Add to Cart
+                <span className="hidden md:block">Add to Cart</span>
               </button>
               <button
                 type="button"

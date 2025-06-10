@@ -1,240 +1,166 @@
-"use client"
-import { useState, useEffect, useRef } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { motion } from "framer-motion"
-import { Star, ChevronLeft, ChevronRight, Heart, ShoppingCart } from "lucide-react"
-import { products, formatCurrency } from "@/data/products"
-import { useLanguage } from "@/context/language-context"
-import { useCart } from "@/context/cart-context"
-import { useWishlist } from "@/context/wishlist-context"
-import { useToast } from "@/hooks/use-toast"
-import { Button } from "@/components/ui/button"
 
-// Get drink accessories from products data
-const drinkAccessories = products.filter((p) => p.category === "Accessories")
+"use client";
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import ProductCard from '@/components/Card/ProductCard';
+import { products } from '@/data/products';
 
-export default function DrinkAccessories() {
-  const { t } = useLanguage()
-  const [currentTab, setCurrentTab] = useState(0)
-  // SSR-safe: always start with 3 (desktop) columns
-  const [itemsPerTab, setItemsPerTab] = useState(3)
-  const [isClient, setIsClient] = useState(false)
-  const hasSetInitial = useRef(false)
-  const { addToCart } = useCart()
-  const { toast } = useToast()
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
 
+const accessoryItems = products
+  .filter((p: any) => p.category && p.category.toLowerCase() === 'accessories')
+  .map((p: any) => ({
+    ...p,
+    badges: Array.isArray(p.badges) ? p.badges : [],
+    isInStock: typeof p.inStock === 'boolean' ? p.inStock : true,
+  }));
+
+const DrinkAccessories = () => {
+  const [currentTab, setCurrentTab] = useState(0);
+  const [productsPerTab, setProductsPerTab] = useState(4);
+  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
+  
+  // Update products per tab based on screen size
   useEffect(() => {
-    setIsClient(true)
-    // Only run responsive logic after hydration
-    const updateItemsPerTab = () => {
-      if (window.innerWidth < 1024) {
-        setItemsPerTab(window.innerWidth < 768 ? 1 : 2)
-      } else {
-        setItemsPerTab(3)
-      }
-    }
-    updateItemsPerTab()
-    window.addEventListener('resize', updateItemsPerTab)
-    return () => window.removeEventListener('resize', updateItemsPerTab)
-  }, [])
+    const updateProductsPerTab = () => {
+      setProductsPerTab(window.innerWidth >= 1024 ? 4 : 2);
+      setCurrentTab(0); // Reset to first tab when screen size changes
+    };
 
-  // Group products into tabs
-  const totalTabs = Math.ceil(drinkAccessories.length / itemsPerTab);
-  const currentProducts = drinkAccessories.slice(
-    currentTab * itemsPerTab,
-    (currentTab + 1) * itemsPerTab
-  )
+    // Set initial value
+    updateProductsPerTab();
 
-  // Wishlist toggle handler
-  const handleWishlist = (product: any) => {
-    if (isInWishlist(product.id)) {
-      removeFromWishlist(product.id)
-      toast({
-        title: t('removedFromWishlist') || 'Removed from wishlist',
-        description: `${product.name} ${t('removedFromWishlistDesc') || 'has been removed from your wishlist.'}`,
-      })
-    } else {
-      addToWishlist(product)
-      toast({
-        title: t('AddedToWishlist') || 'Added to wishlist',
-        description: `${product.name} ${t('has been added to your wishlist') || 'has been added to your wishlist.'}`,
-      })
-    }
-  }
+    // Add resize listener
+    window.addEventListener('resize', updateProductsPerTab);
+    return () => window.removeEventListener('resize', updateProductsPerTab);
+  }, []);
 
-  // Add to cart with toast
-  const handleAddToCart = (product: any) => {
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      quantity: 1,
-    })
-    toast({
-      title: t('AddedToCart') || 'Added to cart',
-      description: `${product.name} ${t('addedToCartDesc') || 'has been added to your cart.'}`,
-    })
-  }
+  // Calculate total tabs needed
+  const totalTabs = Math.ceil(accessoryItems.length / productsPerTab);
+  
+  // Get products for current tab
+  const getCurrentTabProducts = () => {
+    const startIndex = currentTab * productsPerTab;
+    const endIndex = startIndex + productsPerTab;
+    return accessoryItems.slice(startIndex, endIndex);
+  };
 
-  const goToPreviousTab = () => {
-    setCurrentTab(prev => (prev > 0 ? prev - 1 : totalTabs - 1))
-  }
-  const goToNextTab = () => {
-    setCurrentTab(prev => (prev < totalTabs - 1 ? prev + 1 : 0))
-  }
+  const handlePrevious = () => {
+    setSlideDirection('left');
+    setCurrentTab(prev => prev > 0 ? prev - 1 : totalTabs - 1);
+  };
+
+  const handleNext = () => {
+    setSlideDirection('right');
+    setCurrentTab(prev => prev < totalTabs - 1 ? prev + 1 : 0);
+  };
+
+  // Auto-slide effect for tabs with slide
+  useEffect(() => {
+    if (totalTabs <= 1) return;
+    const interval = setInterval(() => {
+      setSlideDirection('right');
+      setCurrentTab((prev) => (prev < totalTabs - 1 ? prev + 1 : 0));
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [totalTabs]);
+
+  // Slide animation state
+  const [animating, setAnimating] = useState(false);
+  useEffect(() => {
+    if (!animating) return;
+    const timer = setTimeout(() => setAnimating(false), 800); // match new animation duration
+    return () => clearTimeout(timer);
+  }, [animating]);
+
+  // Trigger animation on tab change
+  useEffect(() => {
+    setAnimating(true);
+  }, [currentTab]);
 
   return (
-    <section className="py-12 bg-gray-50">
-      <div className="max-w-full mx-auto px-4">
+    <section className="w-full py-8 px-4 bg-white">
+      <div className="max-w-[fit] mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">
-            {t('drinkAccessories') || 'DRINK ACCESSORIES'}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-wide"
+          style={{
+              fontFamily: "'Playfair Display', serif",
+            }}
+          >
+            Accessorize Your Bar
           </h2>
           <div className="flex gap-2">
-            <button
-              onClick={goToPreviousTab}
-              className="p-2 rounded-full border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-100 text-gray-600 transition-all duration-200"
-              aria-label="Previous tab"
+            <button 
+              onClick={handlePrevious}
+              className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="w-5 h-5 text-gray-600" />
             </button>
-            <button
-              onClick={goToNextTab}
-              className="p-2 rounded-full border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-100 text-gray-600 transition-all duration-200"
-              aria-label="Next tab"
+            <button 
+              onClick={handleNext}
+              className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
             >
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRight className="w-5 h-5 text-gray-600" />
             </button>
           </div>
         </div>
-        {/* Products Grid */}
-        <div className="relative">
-          <motion.div
-            key={currentTab}
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.4, ease: 'easeInOut' }}
-            className={`grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`}
-            style={isClient ? { gridTemplateColumns: `repeat(${itemsPerTab}, 1fr)` } : {}}
+
+        {/* Product Grid - Single row with dynamic tab content */}
+        <div
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-hidden min-h-[280px] md:min-h-[350px]"
+          // style={{ minHeight: 450 }}
+        >
+        
+          <div
+            className={`absolute inset-0 w-full h-full transition-transform duration-400 will-change-transform ${
+              animating
+                ? slideDirection === 'right'
+                  ? 'translate-x-[-100%] animate-slide-in-right'
+                  : 'translate-x-[100%] animate-slide-in-left'
+                : 'translate-x-0'
+            }`}
+            style={{ pointerEvents: animating ? 'none' : 'auto' }}
           >
-            {currentProducts.map((product: any, index: number) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 group border border-gray-100"
-              >
-                {/* Product Image Container */}
-                <div className="relative overflow-hidden rounded-t-lg">
-                  {/* Wishlist Button */}
-                  <button
-                    onClick={() => handleWishlist(product)}
-                    className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 z-10"
-                    title={isInWishlist(product.id) ? 'Remove from wishlist' : 'Add to wishlist'}
-                  >
-                    <Heart
-                      className={`h-4 w-4 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-500'}`}
-                    />
-                  </button>
-                  {/* Product Badges */}
-                  {product.badges && product.badges.length > 0 && (
-                    <div className="absolute top-3 left-3 flex flex-col gap-1 z-10">
-                      {product.badges.map((badge: string) => (
-                        <span
-                          key={badge}
-                          className="inline-block bg-amber-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full shadow"
-                        >
-                          {badge.toUpperCase()}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                  {/* Product Image */}
-                  <div className="h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 bg-white"
-                    />
-                  </div>
-                  {/* Add to Cart & View Details Split */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-80 text-white p-3 flex gap-2 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                    <Button
-                      onClick={() => handleAddToCart(product)}
-                      title="Add to cart"
-                      className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium bg-amber-600 hover:bg-amber-700 rounded transition-colors duration-200"
-                    >
-                      <ShoppingCart className="h-4 w-4" />
-                      {t('addToCart') || 'ADD TO CART'}
-                    </Button>
-                    <Link href={`/product/${product.slug}`} className="flex-1">
-                      <Button
-                        variant="outline"
-                        className="w-full flex items-center justify-center py-2 text-sm font-medium border-white hover:bg-white text-black rounded transition-colors duration-200"
-                        title="View details"
-                      >
-                        {t('viewDetails') || 'View Details'}
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-                {/* Product Info */}
-                <div className="p-4">
-                  <Link href={`/product/${product.slug}`}>
-                    <h3 className="font-medium text-gray-900 text-sm mb-2 h-10 leading-5 overflow-hidden hover:text-amber-600 transition-colors">
-                      {product.name}
-                    </h3>
-                  </Link>
-                  {/* Rating */}
-                  <div className="flex items-center gap-1 mb-3">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-3 w-3 ${i < Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-xs text-gray-500">
-                      {Array.isArray(product.rating) ? product.rating.length : product.rating ? product.rating : 0} reviews
-                    </span>
-                  </div>
-                  {/* Price */}
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-lg text-gray-900">
-                      {formatCurrency(product.price)}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-        {/* Tab Indicators */}
-        {totalTabs > 1 && (
-          <div className="flex justify-center mt-8 gap-2">
-            {Array.from({ length: totalTabs }).map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentTab(index)}
-                className={`h-2 w-8 rounded-full transition-all duration-300 ${
-                  index === currentTab
-                    ? 'bg-gray-800 w-12'
-                    : 'bg-gray-300 hover:bg-gray-400'
-                }`}
-                aria-label={`Go to tab ${index + 1}`}
-              />
-            ))}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {getCurrentTabProducts().map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
           </div>
-        )}
+        </div>
+
+        {/* Tab indicators */}
+        <div className="flex justify-center mt-6 gap-2">
+          {Array.from({ length: totalTabs }, (_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentTab(index)}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                currentTab === index ? 'bg-gray-800' : 'bg-gray-300'
+              }`}
+            />
+          ))}
+        </div>
       </div>
+
+      <style jsx>{`
+        @keyframes slide-in-right {
+          from { transform: translateX(100%); }
+          to { transform: translateX(0); }
+        }
+        @keyframes slide-in-left {
+          from { transform: translateX(-100%); }
+          to { transform: translateX(0); }
+        }
+        .animate-slide-in-right {
+          animation: slide-in-right 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        .animate-slide-in-left {
+          animation: slide-in-left 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+      `}</style>
     </section>
-  )
-}
+  );
+};
+
+export default DrinkAccessories;

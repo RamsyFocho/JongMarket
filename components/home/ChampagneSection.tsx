@@ -4,18 +4,15 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import ProductCard from "@/components/Card/ProductCard";
 import { products } from "@/data/products";
 
-// Get 10 featured drinks (with 'featured', 'new', or 'sale' badges)
-const featuredDrinks = products
-  .filter(
-    (p) =>
-      Array.isArray(p.badges) &&
-      (p.badges.includes("featured") ||
-        p.badges.includes("new") ||
-        p.badges.includes("sale"))
-  )
-  .slice(0, 10);
+const champagneProducts = products
+  .filter((p: any) => p.category && p.category.toLowerCase() === "champagne")
+  .map((p: any) => ({
+    ...p,
+    badges: Array.isArray(p.badges) ? p.badges : [],
+    isInStock: typeof p.inStock === "boolean" ? p.inStock : true,
+  }));
 
-const FeatureDrinks = () => {
+const ChampagneSection = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const [productsPerTab, setProductsPerTab] = useState(4);
   const [slideDirection, setSlideDirection] = useState<"left" | "right">(
@@ -38,13 +35,13 @@ const FeatureDrinks = () => {
   }, []);
 
   // Calculate total tabs needed
-  const totalTabs = Math.ceil(featuredDrinks.length / productsPerTab);
+  const totalTabs = Math.ceil(champagneProducts.length / productsPerTab);
 
   // Get products for current tab
   const getCurrentTabProducts = () => {
     const startIndex = currentTab * productsPerTab;
     const endIndex = startIndex + productsPerTab;
-    return featuredDrinks.slice(startIndex, endIndex);
+    return champagneProducts.slice(startIndex, endIndex);
   };
 
   const handlePrevious = () => {
@@ -82,7 +79,7 @@ const FeatureDrinks = () => {
 
   return (
     <section className="w-full py-8 px-4 bg-white">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[fit] mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2
@@ -91,7 +88,7 @@ const FeatureDrinks = () => {
               fontFamily: "'Playfair Display', serif",
             }}
           >
-            Feature drinks
+            Pop your Champagne🍾
           </h2>
           <div className="flex gap-2">
             <button
@@ -111,8 +108,8 @@ const FeatureDrinks = () => {
 
         {/* Product Grid - Single row with dynamic tab content */}
         <div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-hidden min-h-[290px] md:min-h-[350px]"
-          // style={{ minHeight: 420 }}
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-hidden min-h-[280px] md:min-h-[350px]"
+          // style={{ minHeight: 450 }}
         >
           <div
             className={`absolute inset-0 w-full h-full transition-transform duration-400 will-change-transform ${
@@ -174,4 +171,4 @@ const FeatureDrinks = () => {
   );
 };
 
-export default FeatureDrinks;
+export default ChampagneSection;
