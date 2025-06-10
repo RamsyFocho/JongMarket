@@ -18,7 +18,7 @@ export const brands = [
   { id: 16, name: "Ballantine’s", logo: "/images/brands/placeholder-logo.png", categories: ["Whiskey"] },
   { id: 17, name: "Glenrothes", logo: "/images/brands/placeholder-logo.png", categories: ["Whiskey"] },
   { id: 18, name: "Glenfiddich", logo: "/images/brands/placeholder-logo.png", categories: ["Whiskey"] },
-  { id: 19, name: "Château Margaux", logo: "/images/brands/placeholder-logo.png", categories: ["Wine"] },
+  { id: 19, name: "Château Margaux", logo: "/images/brands/chateux.jpg", categories: ["Wine"] },
   { id: 20, name: "Moscato", logo: "/images/brands/moscato.jpg", categories: ["Wine"] },
   { id: 21, name: "Champagne", logo: "/images/brands/placeholder-logo.png", categories: ["Champagne"] },
   { id: 22, name: "Westvleteren", logo: "/images/brands/west-logo.jpg", categories: ["Beer"] },

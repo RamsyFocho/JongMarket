@@ -8,7 +8,7 @@ export const products = [
     name: "Macallan 12 Year Old",
     brand: "Macallan",
     category: "Whiskey",
-    price: 89.99,
+    price: 40.99,
     currentPrice: 89.99,
     originalPrice: 99.99,
     badges: ["sale"],
@@ -502,6 +502,89 @@ export const products = [
   },
 
   {
+    id: 1020,
+    name: "Callack",
+    brand: "Callack",
+    category: "Wine",
+    price: 9.00,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/wine/callac.jpg",
+    slug: "callack",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Callack wine refers to wine produced by Château de Callac in the Graves appellation of Bordeaux, or potentially wines from other winemakers with similar names. Château de Callac produces dry white and red wines. Wines from winemakers like Calvet, Callan Cellars, Calluna Vineyards, and Callia Wines may also be associated with the name Callack, depending on the context and how the name is used.  ",
+    details: {
+      origin: "Georgia",
+      size: "750ml",
+      Flavor: "Rich, creamy, with notes of chocolate and vanilla",
+    },
+  },
+
+  {
+    id: 1021,
+    name: "Calvet",
+    brand: "Calvet",
+    category: "Wine",
+    price: 21.00,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/wine/calvet.jpg",
+    slug: "calvet",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Calvet is a prominent French wine company with roots in the Languedoc region of France. Specifically, its origins can be traced back to the village of Pouzols in the Minervois wine region. Jean-Marie Calvet, who founded Maison Calvet in 1818, established the company in Tain-L'Hermitage in the Rhône Valley.",
+    details: {
+      origin: "France",
+      size: "750ml",
+      Flavor: "Rich, creamy, with notes of chocolate and vanilla",
+    },
+  },
+
+  {
+    id: 1022,
+    name: "Amarula",
+    brand: "Amarula",
+    category: "Wine",
+    price: 15.00,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/wine/amarula.jpg",
+    slug: "amarula",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Amarula is a popular cream liqueur originating from South Africa, specifically the Limpopo province. It's a sweet, creamy, and fruity spirit, made from the fruit of the marula tree, which grows exclusively in sub-Saharan Africa. The marula fruit is fermented, distilled, aged in French oak barrels, and then blended with fresh cream to create the distinctive smooth texture and flavor of Amarula.",
+    details: {
+      origin: "South Africa",
+      size: "750ml",
+      Flavor: "Amarula has a sweet, fruity, and creamy taste with hints of caramel, vanilla, and exotic fruits",
+    },
+  },
+
+  {    id: 1023,
+    name: "Pure Heaven",
+    brand: "Pure Heaven",
+    category: "Wine",
+    price: 9.00,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/wine/heaven.jpg",
+    slug: "heaven",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Pure Heaven is a non-alcoholic sparkling red wine originating from South Africa. It is known for its smooth, easy-drinking flavor and is made from a blend of fruits, often grapes, mangoes, or strawberries. The drink is designed to be refreshing and can be enjoyed on any occasion. ",
+    details: {
+      origin: "South Africa. ",
+      size: "750ml",
+      Flavour: "Often described as smooth, fruity, and refreshing, with notes of grape, cherry, or strawberry. ",
+    },
+  },
+
+  {
     id: 1006,
     name: "Moscato",
     brand: "Moscato",
@@ -548,12 +631,12 @@ export const products = [
       grapeVariety: "Cabernet Sauvignon Blend",
     },
   },
-
+//  champagne
 
   {    id: 1008,
     name: "GH Mumm",
     brand: "Champagne",
-    category: "champagne",
+    category: "Champagne",
     price: 103.34,
     badges: ["new"],
     rating: 4.9,
@@ -571,6 +654,49 @@ export const products = [
       grapeVariety: "RSRV Blanc de Blancs and RSRV Blanc de Noirs",
     },
   },
+
+  {    id: 1024,
+    name: "Veuve Clicquot",
+    brand: "Champagne",
+    category: "Champagne",
+    price: 25.34,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/champagne/veuve.jpg",
+    slug: "veuve",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Veuve Clicquot is an iconic Champagne house known for its distinct yellow label and the pioneering work of Madame Clicquot. Founded in 1772 by Philippe Clicquot, it gained fame under the leadership of his widow, Barbe-Nicole Ponsardin, who revolutionized Champagne production. ",
+    details: {
+      origin: "France",
+      region: "Reims, France",
+      vintage: "1772",
+      size: "750ml",
+    },
+  },
+
+  {    id: 1025,
+    name: "Laurent-Perrier",
+    brand: "Champagne",
+    category: "Champagne",
+    price: 25.34,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/champagne/laurent.jpg",
+    slug: "laurent",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Veuve Clicquot is an iconic Champagne house known for its distinct yellow label and the pioneering work of Madame Clicquot. Founded in 1772 by Philippe Clicquot, it gained fame under the leadership of his widow, Barbe-Nicole Ponsardin, who revolutionized Champagne production. ",
+    details: {
+      origin: "France",
+      region: "Reims, France",
+      vintage: "1772",
+      size: "750ml",
+    },
+  },
+
 
 
   // Beer
