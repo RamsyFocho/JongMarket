@@ -623,9 +623,9 @@ export const products = [
       brewery: "Intafact Beverages Limited",
     },
     relatedImages: [
-      "/images/products/beer/hero-2.jpg",
-      "/images/products/beer/hero-3.jpg",
-      "/images/products/beer/hero-4.jpg",
+      "/images/products/beer/hero.jpg",
+      "/images/products/beer/hero.jpg",
+      "/images/products/beer/hero.jpg",
     ],
   },
 
@@ -1206,7 +1206,219 @@ export const products = [
       care: "Rinse and freeze",
     },
     currency: "USD"
-  }
+  },
+
+  {
+    id: 1041,
+    name: "Hennessy Whiskey Very Special",
+    brand: "Cognac",
+    category: "Whiskey",
+    price: 44.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/hennessy.jpg",
+    slug: "hennessy",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1042,
+    name: "Singleton 12year Old Single Malt Scotch",
+    brand: "Scotch",
+    category: "Whiskey",
+    price: 42.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/singleton.jpg",
+    slug: "singleton",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1043,
+    name: "Glen Moray Classic Single Malt Scotch",
+    brand: "MaltedScotch",
+    category: "Whiskey",
+    price: 30.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/glenmoray.jpg",
+    slug: "glenmoray",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1044,
+    name: "Tamnavulin Single Malt Scotch",
+    brand: "MaltedScotch",
+    category: "Whiskey",
+    price: 34.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/tamnavulin.jfif",
+    slug: "tamnavulin",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },  
+
+  {
+    id: 1045,
+    name: "Signature Rare Green 180ml",
+    brand: "aged whiskey",
+    category: "Whiskey",
+    price: 23.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/signature.webp",
+    slug: "tamnavulin",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },  
+
+  {
+    id: 1046,
+    name: "J&B Rare Blended Scotch Whiskey",
+    brand: "blended whiskey",
+    category: "Whiskey",
+    price: 20.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/jb.avif",
+    slug: "j&b",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+  
+  {
+    id: 1047,
+    name: "Imperial Blue Whiskey 750ml",
+    brand: "aged whiskey",
+    category: "Whiskey",
+    price: 12.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/imperial.jpg",
+    slug: "imperial",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1048,
+    name: "Gordon's London Dry Gin",
+    brand: "dry gin",
+    category: "Whiskey",
+    price: 27.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/gordon.jpg",
+    slug: "gordon",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1049,
+    name: "Merry's Irish Cream",
+    brand: "irish cream",
+    category: "Whiskey",
+    price: 20.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/merry.jpg",
+    slug: "merry",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1050,
+    name: "BV Land Cream Cafe",
+    brand: "cream cafe",
+    category: "Whiskey",
+    price: 33.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/bvcafe.webp",
+    slug: "bvland",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+  
+
 ]
 
 // Categories data
