@@ -13,7 +13,6 @@ interface Product {
   name: string;
   slug: string;
   price: number;
-  description:string;
   originalPrice?: number | null;
   image: string;
   rating: number;
@@ -37,17 +36,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const getBadgeStyle = (badge: string) => {
     const styles: Record<string, string> = {
-      featured: "bg-gradient-to-r from-amber-500 to-yellow-500 text-white",
-      new: "bg-gradient-to-r from-green-500 to-emerald-500 text-white",
-      sale: "bg-gradient-to-r from-red-500 to-pink-500 text-white",
-      "best seller":
-        "bg-gradient-to-r from-purple-500 to-indigo-500 text-white",
-      limited: "bg-gradient-to-r from-orange-500 to-red-500 text-white",
-      "sold-out": "bg-gray-500 text-white",
-      organic: "bg-gradient-to-r from-green-600 to-lime-600 text-white",
-      "hot deal": "bg-gradient-to-r from-pink-500 to-rose-500 text-white",
+      featured: 'bg-gradient-to-r from-amber-500 to-yellow-500 text-white',
+      new: 'bg-gradient-to-r from-green-500 to-emerald-500 text-white',
+      sale: 'bg-gradient-to-r from-red-500 to-pink-500 text-white',
+      'best seller': 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white',
+      limited: 'bg-gradient-to-r from-orange-500 to-red-500 text-white',
+      'sold-out': 'bg-gray-500 text-white',
+      organic: 'bg-gradient-to-r from-green-600 to-lime-600 text-white',
+      'hot deal': 'bg-gradient-to-r from-pink-500 to-rose-500 text-white',
     };
-    return styles[badge.toLowerCase()] || "bg-gray-500 text-white";
+    return styles[badge.toLowerCase()] || 'bg-gray-500 text-white';
   };
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -72,7 +70,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     e.preventDefault();
     if (isWishlisted) {
       removeFromWishlist(product.id);
-
+      
       toast(
         <div>
           <strong>Removed from wishlist</strong>
@@ -88,7 +86,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         slug: product.slug,
         category: product.category,
         rating: product.rating,
-      });
+      });      
       toast(
         <div>
           <strong>Added to wishlist</strong>
@@ -100,13 +98,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   // Defensive guard: do not render if product is missing or incomplete
-  if (
-    !product ||
-    !product.id ||
-    !product.name ||
-    !product.image ||
-    typeof product.price !== "number"
-  ) {
+  if (!product || !product.id || !product.name || !product.image || typeof product.price !== 'number') {
     return (
       <div className="bg-red-100 text-red-700 p-4 rounded">
         Product data is missing or invalid.
@@ -116,11 +108,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <div className=" group relative bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
-      <meta itemProp="name" content={product.name} />
-      <meta itemProp="description" content={product.description} />
-      <meta itemProp="sku" content={`JM-${product.id}`} />
-      <meta itemProp="brand" content="Jong Market" />
-      {/* // <div className=" group relative bg-white border-2 border-red-500 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"> */}
+    {/* // <div className=" group relative bg-white border-2 border-red-500 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"> */}
       {/* Badges */}
       <div className="absolute top-3 left-3 z-20 flex flex-col gap-1">
         {product.badges.map((badge, index) => (

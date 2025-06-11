@@ -1603,6 +1603,18 @@ export const categories = {
       "Explore our collection of premium vodkas from around the world, including classic and flavored varieties from renowned distilleries.",
     products: products.filter((p) => p.category === "Vodka"),
   },
+  water: {
+    title: "Water",
+    description:
+      "Explore our collection of purest and distislled water",
+    products: products.filter((p) => p.category === "Water"),
+  },
+  "soft-drinks": {
+    title: "soft-drinks",
+    description:
+      "Explore our collection of soft drinks",
+    products: products.filter((p) => p.category === "soft-drinks"),
+  },
 }
 
 // Blog posts data
