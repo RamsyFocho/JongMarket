@@ -168,7 +168,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         {/* Product Info */}
         <div className="p-4">
-          <h3 className="text-sm font-medium text-gray-900 mb-2 line-clamp-2 leading-tight">
+          <h3 className="text-sm font-medium text-gray-900 mb-2 line-clamp-2 leading-tight hover:text-amber-600 hover:font-bold">
             {product.name}
           </h3>
 
