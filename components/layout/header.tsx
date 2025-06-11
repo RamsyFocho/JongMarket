@@ -311,7 +311,7 @@ export default function Header() {
                 
                 {/* Search Suggestions */}
                 {showSuggestions && searchQuery.trim() && (
-                  <div className="bg-white rounded-b-lg border-t border-amber-100 max-h-[60vh] overflow-y-auto">
+                  <div className="bg-yellow-200 rounded-b-lg border-t border-amber-100 max-h-[60vh] overflow-y-auto z-5">
                     {suggestions.length > 0 ? (
                       suggestions.map((product) => (
                         <Link
@@ -455,7 +455,7 @@ export default function Header() {
         {/* <div className="border-b border-gray-200 py-2 h-[6rem]"> */}
         <div className=" h-[5.5rem] border-b border-gray-200">
           <div className="container mx-auto px-4 h-full">
-            <div className="flex items-center justify-between overflow-hidden h-full">
+            <div className="flex items-center justify-between h-full">
               {/* Logo - redesigned for desktop */}
               <Link href="/" className="flex items-center">
                 <div
@@ -514,7 +514,7 @@ export default function Header() {
                               src={product.image || "/placeholder.svg"}
                               alt={product.name}
                               fill
-                              className="object-cover"
+                              className="object-contain"
                             />
                           </div>
                           <span className="ml-2 text-sm text-gray-800 truncate">
