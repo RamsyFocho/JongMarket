@@ -697,6 +697,92 @@ export const products = [
     },
   },
 
+  {    id: 1026,
+    name: "Ruinart",
+    brand: "Champagne",
+    category: "Champagne",
+    price: 25.34,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/champagne/ruinart.jpg",
+    slug: "ruinart",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Veuve Clicquot is an iconic Champagne house known for its distinct yellow label and the pioneering work of Madame Clicquot. Founded in 1772 by Philippe Clicquot, it gained fame under the leadership of his widow, Barbe-Nicole Ponsardin, who revolutionized Champagne production. ",
+    details: {
+      origin: "France",
+      region: "Reims, France",
+      vintage: "1772",
+      size: "750ml",
+    },
+  },
+
+  {    id: 1027,
+    name: "Perrier-Jouët",
+    brand: "Champagne",
+    category: "Champagne",
+    price: 25.34,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/champagne/jouet.jpg",
+    slug: "jouet",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Perrier-Jouët is a prestigious champagne house with a rich history, founded in 1811 in Épernay, France. The company is known for its elegant, floral champagne styles and the iconic Art Nouveau-inspired Belle Epoque bottle. Perrier-Jouët's vineyards are located primarily in the heart of the Champagne region, in the Côte des Blancs, known for its chalky soils and exceptional vineyards.  ",
+    details: {
+      origin: "France",
+      region: "Reims, France",
+      vintage: "1772",
+      size: "750ml",
+    },
+  },
+
+  {    id: 1028,
+    name: "Armand de Brignac",
+    brand: "Champagne",
+    category: "Champagne",
+    price: 25.34,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/champagne/armands.jpg",
+    slug: "armands",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Armand de Brignac, often nicknamed Ace of Spades due to its distinctive logo, is a luxury Champagne brand produced by the Cattier family in the Champagne region of France. It's known for its elegant, distinctive bottle design, featuring shiny metallic bottles and hand-finished French pewter labels.",
+    details: {
+      origin: "France",
+      region: "Reims, France",
+      vintage: "1763",
+      size: "750ml",
+    },
+  },
+
+  {    id: 1029,
+    name: "Besserat de Bellefon",
+    brand: "Champagne",
+    category: "Champagne",
+    price: 30.34,
+    badges: ["new"],
+    rating: 4.9,
+    image: "/images/products/champagne/belefon.jpg",
+    slug: "belefon",
+    inStock: true,
+    stockCount: 10,
+    description:
+      "Armand de Brignac, often nicknamed Ace of Spades due to its distinctive logo, is a luxury Champagne brand produced by the Cattier family in the Champagne region of France. It's known for its elegant, distinctive bottle design, featuring shiny metallic bottles and hand-finished French pewter labels.",
+    details: {
+      origin: "France",
+      region: "Reims, France",
+      vintage: "1763",
+      size: "750ml",
+    },
+  },
+
+
+
 
 
   // Beer
