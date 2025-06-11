@@ -305,7 +305,7 @@ export default function CategoryClientPage({ params }: { params: { slug: string 
 
           {filteredProducts.length > 0 ? (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {filteredProducts.map((product, index) => (
+              {filteredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />               
 
                 // <motion.div

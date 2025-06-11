@@ -311,7 +311,7 @@ export default function Header() {
                 
                 {/* Search Suggestions */}
                 {showSuggestions && searchQuery.trim() && (
-                  <div className="bg-yellow-200 rounded-b-lg border-t border-amber-100 max-h-[60vh] overflow-y-auto z-5">
+                  <div className="bg-white rounded-b-lg border-t border-amber-100 max-h-[60vh] overflow-y-auto z-5">
                     {suggestions.length > 0 ? (
                       suggestions.map((product) => (
                         <Link
