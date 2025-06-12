@@ -88,7 +88,7 @@ export const products = [
     image: "/images/products/whiskey/Chivas Regal 12 Year Old - Gift Box _ The Whisky….jpg",
     slug: "chivas-regal-12-year", // This slug seems correct based on server render. The client was expecting "buffalo-trace-bourbon"
     inStock: true,
-    stockCount: 45,
+    stockCount: 5,
     description:
       "Premium blended Scotch (75cl, 12yr); balanced sweet fruit and soft smoke. 12-year-old blended Scotch (Scotland). Smooth and mellow. Flavors of ripe orchard fruits, honey and vanilla, with a hint of heather and butterscotch",
     details: {

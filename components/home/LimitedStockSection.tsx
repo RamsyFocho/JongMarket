@@ -4,10 +4,11 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductCard from '@/components/Card/ProductCard';
 import { products } from '@/data/products';
 
+// check products with limited stock
+const limitedProducts = products
+  .filter((p: any) => p.stockCount>0 && p.stockCount<10);
 
-// filter products with original prices to show discount
-const discountProducts = products.filter((p:any)=> p.originalPrice && p.originalPrice > p.price);
-const DiscountSection = () => {
+const LimitedStockSection = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const [productsPerTab, setProductsPerTab] = useState(4);
   const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
@@ -28,13 +29,13 @@ const DiscountSection = () => {
   }, []);
 
   // Calculate total tabs needed
-  const totalTabs = Math.ceil(discountProducts.length / productsPerTab);
+  const totalTabs = Math.ceil(limitedProducts.length / productsPerTab);
   
   // Get products for current tab
   const getCurrentTabProducts = () => {
     const startIndex = currentTab * productsPerTab;
     const endIndex = startIndex + productsPerTab;
-    return discountProducts.slice(startIndex, endIndex);
+    return limitedProducts.slice(startIndex, endIndex);
   };
 
   const handlePrevious = () => {
@@ -80,7 +81,7 @@ const DiscountSection = () => {
               fontFamily: "'Playfair Display', serif",
             }}
           >
-            Discover The Best Deals🤝
+            Limited Edition🏃🏿⏳
           </h2>
           <div className="flex gap-2">
             <button 
@@ -156,4 +157,4 @@ const DiscountSection = () => {
   );
 };
 
-export default DiscountSection;
+export default LimitedStockSection;
