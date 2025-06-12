@@ -16,8 +16,14 @@ const FeaturedWine = dynamic(() => import("@/components/home/featured-wine"));
 const VodkaSection = dynamic(() => import("@/components/home/VodkaSection"));
 const WaterSection = dynamic(() => import("@/components/home/WaterSection"));
 const GinSection = dynamic(() => import("@/components/home/GinSection"));
-const HotDrinksSection = dynamic(() => import("@/components/home/HotDrinksSection"));
-const SoftDrinksSection = dynamic(() => import("@/components/home/SoftDrinksSection"));
+const LimitedStockSection = dynamic(() => import("@/components/home/LimitedStockSection"));
+const DiscountSection = dynamic(() => import("@/components/home/DiscountSection"));
+const HotDrinksSection = dynamic(
+  () => import("@/components/home/HotDrinksSection")
+);
+const SoftDrinksSection = dynamic(
+  () => import("@/components/home/SoftDrinksSection")
+);
 const ChampagneSection = dynamic(
   () => import("@/components/home/ChampagneSection")
 );
@@ -111,6 +117,14 @@ export default function HomePage() {
             <Suspense fallback={<div>Loading featured Chmpagne...</div>}>
               <SpiritSection />
             </Suspense>
+            <Suspense fallback={<div>Loading featured Chmpagne...</div>}>
+              <DiscountSection />
+            </Suspense>
+            <Suspense fallback={<div>Loading featured Chmpagne...</div>}>
+              <LimitedStockSection />
+            </Suspense>
+
+
             <Suspense fallback={<div>Loading featured categories...</div>}>
               <FeaturedCategories />
             </Suspense>
