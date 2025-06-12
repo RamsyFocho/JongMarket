@@ -75,16 +75,7 @@ export default async function BrandPage({
             {prods.map((product) => (
               <ProductCard key={product.id} product={product} />
 
-              // <Link key={product.id} href={`/product/${product.slug}`} className="group block bg-white rounded-xl border border-gray-100 shadow hover:shadow-lg transition overflow-hidden hover:-translate-y-1">
-              //   <div className="relative w-full h-48 bg-gray-50 flex items-center justify-center">
-              //     <img src={product.image} alt={product.name} className="object-contain w-full h-full transition-transform duration-300 group-hover:scale-105" />
-              //   </div>
-              //   <div className="p-4 flex flex-col gap-1">
-              //     <div className="font-semibold text-gray-900 text-base group-hover:text-amber-700 line-clamp-2 min-h-[2.5rem]">{product.name}</div>
-              //     <div className="text-xs text-gray-500 mb-1">{product.category}</div>
-              //     <div className="font-bold text-lg text-amber-700 mt-1">{formatCurrency(product.price, 'FCFA')}</div>
-              //   </div>
-              // </Link>
+              
             ))}
           </div>
         </div>
