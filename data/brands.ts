@@ -46,5 +46,5 @@ export const brands = [
   { id: 44, name: "Vitale", logo: "/images/brands/vitale-logo.jpg", categories: ["Water"] },
   { id: 45, name: "Fanta", logo: "/images/brands/fanta-logo.jpg", categories: ["soft-drinks"] },
   { id: 46, name: "Pepsi", logo: "/images/brands/pepsi-logo.jpg", categories: ["soft-drinks"] },
-
+  { id: 47, name: "Chivas ", logo: "/images/brands/Chivas12-logo.jpg", categories: ["Spirits"] },
 ];

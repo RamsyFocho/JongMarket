@@ -1226,6 +1226,117 @@ export const products = [
       type: "Cognac",
     },
   },
+
+  {
+    id: 1051,
+    name: "Grand Old Parr 12 years",
+    brand: "Grand Old Parr",
+    category: "Spirits",
+    price: 140.99,
+    badges: ["new"],
+    rating: 4.8,
+    image: "/images/products/Spirits/oldparr.jpg",
+    slug: "oldparr",
+    inStock: true,
+    stockCount: 20,
+    description:
+      "Grand Old Parr is a blended Scotch whisky produced by Diageo in Scotland. It's named after Thomas Parr, a man said to have lived to be 152 years old. The whisky was launched in 1909 and is known for its distinctive bottle design and is widely available in export markets, particularly in Japan, Mexico, South America, and the United States. ",
+    details: {
+      origin: "Scotland",
+      // region: "Cognac",
+      abv: "40%",
+      size: "1L",
+    },
+  },
+
+  {
+    id: 1052,
+    name: "Jack Daniel's",
+    brand: "Jennessee Honey",
+    category: "Spirits",
+    price: 140.99,
+    badges: ["new"],
+    rating: 4.8,
+    image: "/images/products/Spirits/jack.jpg",
+    slug: "jack",
+    inStock: true,
+    stockCount: 20,
+    description:
+      "Jack Daniel's premium Tennessee whiskey is still made using iron-free cave spring water, and is charcoal-mellowed and matured at America's oldest registered distillery, established in 1866 in Lynchburg, Tennessee.",
+    details: {
+      origin: "America",
+      // region: "Cognac",
+      abv: "40%",
+      size: "70cl",
+    },
+  },
+
+  {
+    id: 1053,
+    name: "Chivas Regal 12 years",
+    brand: "Chivas Regal 12 years",
+    category: "Spirits",
+    price: 140.99,
+    badges: ["new"],
+    rating: 4.8,
+    image: "/images/products/Spirits/chivas18.jpg",
+    slug: "jack",
+    inStock: true,
+    stockCount: 20,
+    description:
+      "Chivas Regal 12 Year Old Blended Scotch Whisky is a classic, well-balanced whisky known for its smooth, rich flavors and long finish. It's made from a blend of malt and grain whiskies from across Scotland, aged for at least 12 years, resulting in a golden amber color and notes of honey, ripe fruits, and floral undertones. ",
+    details: {
+      origin: "Scotland",
+      // region: "Cognac",
+      abv: "40%",
+      size: "700ml",
+    },
+  },
+
+  {
+    id: 1054,
+    name: "Dewar's",
+    brand: "Dewar's 12 years",
+    category: "Spirits",
+    price: 140.99,
+    badges: ["new"],
+    rating: 4.8,
+    image: "/images/products/Spirits/dewar.jpg",
+    slug: "dewar",
+    inStock: true,
+    stockCount: 20,
+    description:
+      "Dewar's 12 Years Old is a blended Scotch whisky from Scotland, boasting a 40% alcohol content. It's known for its smooth, well-balanced flavor profile, with notes of caramel, vanilla, and a hint of smoke. The whisky is double-aged in oak barrels, which contributes to its unique character. ",
+    details: {
+      origin: "Scotland",
+      // region: "Cognac",
+      abv: "40%",
+      size: "75.cl",
+    },
+  },
+
+  {
+    id: 1055,
+    name: "Teacher's",
+    brand: "Teacher's 12 years",
+    category: "Spirits",
+    price: 140.99,
+    badges: ["new"],
+    rating: 4.8,
+    image: "/images/products/Spirits/teacher.jpg",
+    slug: "teacher",
+    inStock: true,
+    stockCount: 20,
+    description:
+      "Teacher's Highland Cream is a blended Scotch whisky originating from Scotland. It's a classic blend known for its smooth, well-balanced flavor profile with notes of peat smoke, malt, and honey. With a high malt content and 40% alcohol, it's a robust whisky suitable for sipping or mixing in cocktails.",
+    details: {
+      origin: "Scotland",
+      // region: "Cognac",
+      abv: "40%",
+      size: "75.cl",
+    },
+  },
+
   // Hot Drinks
   {
     id: 101,
