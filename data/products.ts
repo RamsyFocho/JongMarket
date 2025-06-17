@@ -1102,6 +1102,84 @@ export const products = [
       "/images/products/beer/bottled-hero-4.jpg",
     ],
   },
+
+  {
+    id: 1056,
+    name: "Hoegaarden",
+    brand: "Hoegaarden",
+    category: "Beer",
+    price: 3.00,
+    badges: ["new"],
+    rating: 3.9,
+    image: "/images/products/beer/hoegaarden.jpg",
+    slug: "hoegaarden",
+    inStock: true,
+    stockCount: 50,
+    description:
+      "Hoegaarden is a Belgian witbier, known for its cloudy, pale appearance and refreshing, citrusy-spicy flavor profile. It is brewed with malted barley, unmalted wheat, hops, coriander, and orange peel, the latter two ingredients contributing to its distinctive taste. The beer is unfiltered, giving it a hazy appearance, and is known for its crisp, clean finish. ",
+    details: {
+      origin: "Belgium",
+      abv: "4.9%",
+      size: "500ml",
+    },
+    relatedImages: [
+      "/images/products/beer/hoegaarden-1.jpg",
+      "/images/products/beer/hoegaarden-2.jpg",
+      "/images/products/beer/hoegaarden-3.jpg",
+    ],
+  },
+
+  {
+    id: 1057,
+    name: "Budweiser",
+    brand: "Budweiser",
+    category: "Beer",
+    price: 3.05,
+    badges: ["new"],
+    rating: 3.9,
+    image: "/images/products/beer/budweiser.jpg",
+    slug: "budweiser",
+    inStock: true,
+    stockCount: 50,
+    description:
+      "Budweiser is a pale lager, meaning it's a light-colored, bottom-fermented beer with a mild, refreshing flavor. It's known for its crispness and subtle sweetness, often described as having a slightly fruity or bready aroma. ",
+    details: {
+      origin: "America",
+      abv: "5.0%",
+      size: "500ml",
+    },
+    relatedImages: [
+      "/images/products/beer/bud-1.jpg",
+      "/images/products/beer/bud-2.jpg",
+      "/images/products/beer/bud-3.jpg",
+    ],
+  },
+
+  {
+    id: 1058,
+    name: "Carlsberg",
+    brand: "Carlsberg",
+    category: "Beer",
+    price: 3.05,
+    badges: ["new"],
+    rating: 3.9,
+    image: "/images/products/beer/carlsberg.jpg",
+    slug: "carlsberg",
+    inStock: true,
+    stockCount: 50,
+    description:
+      "Carlsberg is a pale lager, typically recognized for its golden color and balanced flavor profile. It is known for its refreshing character and subtle bitterness.",
+    details: {
+      origin: "Copenhagen, Denmark",
+      abv: "5%",
+      size: "500ml",
+    },
+    relatedImages: [
+      "/images/products/beer/carlsberg-1.jpg",
+      "/images/products/beer/carlsberg-2.jpg",
+      "/images/products/beer/carlsberg-3.jpg",
+    ],
+  },
   {
     id: 1013,
     name: "Bavaria",
