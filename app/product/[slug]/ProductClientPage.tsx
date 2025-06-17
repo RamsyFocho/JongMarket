@@ -283,7 +283,7 @@ export default function ProductClientPage({
             transition={{ duration: 0.5 }}
             className="space-y-4 "
           >
-            <div className=" relative aspect-square h-80 md:h-[30rem] 2xl:h-[40rem] 2xl:w-[40rem] rounded-lg overflow-hidden bg-white shadow-md flex items-center justify-center">
+            <div className=" relative aspect-square h-80 md:h-[30rem] 2xl:h-[45rem] 2xl:w-[40rem] rounded-lg overflow-hidden bg-white shadow-md flex items-center justify-center">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeImage}
