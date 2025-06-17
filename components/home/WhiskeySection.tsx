@@ -122,8 +122,8 @@ const WhiskeySection = () => {
             style={{ pointerEvents: animating ? 'none' : 'auto' }}
           >
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {getCurrentTabProducts().map((product) => (
-                <ProductCard key={product.id} product={product} />
+              {getCurrentTabProducts().map((product, index) => (
+                <ProductCard key={product.id} product={product} index={index} />
               ))}
             </div>
           </div>

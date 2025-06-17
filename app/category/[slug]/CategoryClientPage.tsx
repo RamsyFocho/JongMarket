@@ -14,6 +14,7 @@ import WishlistButton from "@/components/product/wishlist-button"
 import { useCart } from "@/context/cart-context"
 import { useToast } from "@/components/ui/use-toast"
 import { getBrandsForCategory } from '@/lib/getBrandsForCategory';
+import ProductCard from "@/components/Card/ProductCard";
 
 export default function CategoryClientPage({ params }: { params: { slug: string } }) {
   const { slug } = params
@@ -303,120 +304,122 @@ export default function CategoryClientPage({ params }: { params: { slug: string 
           </div>
 
           {filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProducts.map((product, index) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                  className="group"
-                  itemScope
-                  itemType="https://schema.org/Product"
-                >
-                  <meta itemProp="name" content={product.name} />
-                  <meta itemProp="description" content={product.description} />
-                  <meta itemProp="sku" content={`JM-${product.id}`} />
-                  <meta itemProp="brand" content="Jong Market" />
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 lg:gap-6 xl:gap-8">
+              {filteredProducts.map((product, index: number) => (
+                <ProductCard key={product.id} product={product} index={index}/>
+                // <motion.div
+                //   key={product.id}
+                //   initial={{ opacity: 0, y: 20 }}
+                //   animate={{ opacity: 1, y: 0 }}
+                //   transition={{ duration: 0.3, delay: index * 0.05 }}
+                //   className="group"
+                //   itemScope
+                //   itemType="https://schema.org/Product"
+                // >
+                //   <meta itemProp="name" content={product.name} />
+                //   <meta itemProp="description" content={product.description} />
+                //   <meta itemProp="sku" content={`JM-${product.id}`} />
+                //   <meta itemProp="brand" content="Jong Market" />
 
-                  <div className="bg-white rounded-lg shadow-md overflow-hidden transition-shadow hover:shadow-lg h-full flex flex-col">
-                    <Link href={`/product/${product.slug}`}>
-                      <div className="relative aspect-square overflow-hidden">
-                        <Image
-                          src={product.image || "/placeholder.svg"}
-                          alt={`${product.name} - ${category.title} - Jong Market`}
-                          fill
-                          className="object-contain transition-transform duration-500 group-hover:scale-105"
-                          itemProp="image"
-                        />
-                        {!product.inStock && (
-                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                            <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                              {t("outOfStock")}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </Link>
+                //   <div className="bg-white rounded-lg shadow-md overflow-hidden transition-shadow hover:shadow-lg h-full flex flex-col">
+                //     <Link href={`/product/${product.slug}`}>
+                //       <div className="relative aspect-square overflow-hidden">
+                //         <Image
+                //           src={product.image || "/placeholder.svg"}
+                //           alt={`${product.name} - ${category.title} - Jong Market`}
+                //           fill
+                //           className="object-contain transition-transform duration-500 group-hover:scale-105"
+                //           itemProp="image"
+                //         />
+                //         {!product.inStock && (
+                //           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                //             <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                //               {t("outOfStock")}
+                //             </span>
+                //           </div>
+                //         )}
+                //       </div>
+                //     </Link>
 
-                    <div className="p-4 flex-1 flex flex-col">
-                      <Link href={`/product/${product.slug}`}>
-                        <h3
-                          className="font-semibold text-lg mt-1 group-hover:text-amber-600 transition-colors"
-                          itemProp="name"
-                        >
-                          {product.name}
-                        </h3>
-                      </Link>
+                //     <div className="p-4 flex-1 flex flex-col">
+                //       <Link href={`/product/${product.slug}`}>
+                //         <h3
+                //           className="font-semibold text-lg mt-1 group-hover:text-amber-600 transition-colors"
+                //           itemProp="name"
+                //         >
+                //           {product.name}
+                //         </h3>
+                //       </Link>
 
-                      <div
-                        className="flex items-center mt-2"
-                        itemProp="aggregateRating"
-                        itemScope
-                        itemType="https://schema.org/AggregateRating"
-                      >
-                        <meta itemProp="ratingValue" content={product.rating.toString()} />
-                        <meta itemProp="reviewCount" content={(product.reviews?.length || 1).toString()} />
-                        <div className="flex text-amber-500">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className="h-4 w-4"
-                              fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-sm text-gray-500 ml-1">({product.rating})</span>
-                      </div>
+                //       <div
+                //         className="flex items-center mt-2"
+                //         itemProp="aggregateRating"
+                //         itemScope
+                //         itemType="https://schema.org/AggregateRating"
+                //       >
+                //         <meta itemProp="ratingValue" content={product.rating.toString()} />
+                //         <meta itemProp="reviewCount" content={(product.reviews?.length || 1).toString()} />
+                //         <div className="flex text-amber-500">
+                //           {[...Array(5)].map((_, i) => (
+                //             <Star
+                //               key={i}
+                //               className="h-4 w-4"
+                //               fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
+                //             />
+                //           ))}
+                //         </div>
+                //         <span className="text-sm text-gray-500 ml-1">({product.rating})</span>
+                //       </div>
 
-                      <div className="mt-auto">
-                        <div
-                          className="flex items-center justify-between mt-4"
-                          itemProp="offers"
-                          itemScope
-                          itemType="https://schema.org/Offer"
-                        >
-                          <meta itemProp="price" content={(product.price * 600).toString()} />
-                          <meta itemProp="priceCurrency" content="XAF" />
-                          <meta
-                            itemProp="availability"
-                            content={product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"}
-                          />
-                          <span className="font-bold text-lg">{formatCurrency(product.price)}</span>
+                //       <div className="mt-auto">
+                //         <div
+                //           className="flex items-center justify-between mt-4"
+                //           itemProp="offers"
+                //           itemScope
+                //           itemType="https://schema.org/Offer"
+                //         >
+                //           <meta itemProp="price" content={(product.price * 600).toString()} />
+                //           <meta itemProp="priceCurrency" content="XAF" />
+                //           <meta
+                //             itemProp="availability"
+                //             content={product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"}
+                //           />
+                //           <span className="font-bold text-lg">{formatCurrency(product.price)}</span>
 
-                          <div className="flex items-center">
-                            <WishlistButton product={product} variant="icon" />
-                            <Button
-                              size="icon"
-                              className="h-9 w-9 rounded-full bg-amber-600 hover:bg-amber-700 ml-2"
-                              disabled={!product.inStock}
-                              onClick={() => {
-                                if (product.inStock) {
-                                  addToCart({
-                                    id: product.id,
-                                    name: product.name,
-                                    price: product.price,
-                                    image: product.image,
-                                    quantity: 1,
-                                  })
-                                  toast({
-                                    title: "Added to cart",
-                                    description: `${product.name} has been added to your cart.`,
-                                  })
-                                }
-                              }}
-                              aria-label={
-                                product.inStock ? `Add ${product.name} to cart` : `${product.name} is out of stock`
-                              }
-                            >
-                              <ShoppingBag className="h-5 w-5" />
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
+                //           <div className="flex items-center">
+                //             <WishlistButton product={product} variant="icon" />
+                //             <Button
+                //               size="icon"
+                //               className="h-9 w-9 rounded-full bg-amber-600 hover:bg-amber-700 ml-2"
+                //               disabled={!product.inStock}
+                //               onClick={() => {
+                //                 if (product.inStock) {
+                //                   addToCart({
+                //                     id: product.id,
+                //                     name: product.name,
+                //                     price: product.price,
+                //                     image: product.image,
+                //                     quantity: 1,
+                //                   })
+                //                   toast({
+                //                     title: "Added to cart",
+                //                     description: `${product.name} has been added to your cart.`,
+                //                   })
+                //                 }
+                //               }}
+                //               aria-label={
+                //                 product.inStock ? `Add ${product.name} to cart` : `${product.name} is out of stock`
+                //               }
+                //             >
+                //               <ShoppingBag className="h-5 w-5" />
+                //             </Button>
+                //           </div>
+                //         </div>
+                //       </div>
+                //     </div>
+                //   </div>
+                // </motion.div>
+                
               ))}
             </div>
           ) : (

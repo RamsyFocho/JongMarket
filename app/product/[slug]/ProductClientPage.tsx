@@ -18,41 +18,42 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCart } from "@/context/cart-context";
-import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/context/language-context";
 import { products, formatCurrency } from "@/data/products";
 import WishlistButton from "@/components/product/wishlist-button";
 import ProductSchema from "@/components/seo/product-schema";
-import { Toaster } from "@/components/ui/toaster";
+import { toast } from "react-toastify";
 
 // Cache for product data and computed values
 const productCache = new Map();
 const relatedProductsCache = new Map();
 
 // Memoized components for better performance
-const MemoizedProductImage = React.memo(({ 
-  src, 
-  alt, 
-  priority = false, 
-  className = "" 
-}: {
-  src: string;
-  alt: string;
-  priority?: boolean;
-  className?: string;
-}) => (
-  <Image
-    src={src || "/placeholder.svg"}
-    alt={alt}
-    fill
-    className={className}
-    priority={priority}
-    // Enable Next.js image optimization and caching
-    quality={85}
-    placeholder="blur"
-    blurDataURL="data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8A0XqoVKjYuUVElpQKiVCpUalQqJUSolQqVCJRKWvAYiVCJRKWvAYiUSlrwGIlQiUSlrwGIlEpa8BiJUIlEpa8BiJRKWvAYiVCpUbFyiolU"
-  />
-));
+const MemoizedProductImage = React.memo(
+  ({
+    src,
+    alt,
+    priority = false,
+    className = "",
+  }: {
+    src: string;
+    alt: string;
+    priority?: boolean;
+    className?: string;
+  }) => (
+    <Image
+      src={src || "/placeholder.svg"}
+      alt={alt}
+      fill
+      className={className}
+      priority={priority}
+      // Enable Next.js image optimization and caching
+      quality={85}
+      placeholder="blur"
+      blurDataURL="data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8A0XqoVKjYuUVElpQKiVCpUalQqJUSolQqVCJRKWvAYiVCJRKWvAYiUSlrwGIlQiUSlrwGIlEpa8BiJUIlEpa8BiJRKWvAYiVCpUbFyiolU"
+    />
+  )
+);
 
 const MemoizedStarRating = React.memo(({ rating }: { rating: number }) => (
   <div className="flex text-amber-500">
@@ -66,71 +67,61 @@ const MemoizedStarRating = React.memo(({ rating }: { rating: number }) => (
   </div>
 ));
 
-const MemoizedRelatedProduct = React.memo(({ 
-  product, 
-  t 
-}: { 
-  product: any; 
-  t: (key: string) => string; 
-}) => (
-  <motion.div
-    whileHover={{ y: -5 }}
-    className="group"
-  >
-    <div className="bg-white rounded-lg shadow-md overflow-hidden transition-shadow hover:shadow-lg">
-      <Link href={`/product/${product.slug}`}>
-        <div className="relative aspect-square overflow-hidden">
-          <MemoizedProductImage
-            src={product.image}
-            alt={product.name}
-            className="object-contain transition-transform duration-500 group-hover:scale-105"
-          />
-        </div>
-      </Link>
-
-      <div className="p-4">
-        {product.category && (
-          <Link
-            href={`/category/${product.category
-              .toLowerCase()
-              .replace(/\s+/g, "-")}`}
-          >
-            <span className="text-xs font-medium text-amber-600 uppercase tracking-wider">
-              {product.category}
-            </span>
-          </Link>
-        )}
-
+const MemoizedRelatedProduct = React.memo(
+  ({ product, t }: { product: any; t: (key: string) => string }) => (
+    <motion.div whileHover={{ y: -5 }} className="group">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden transition-shadow hover:shadow-lg">
         <Link href={`/product/${product.slug}`}>
-          <h3 className="font-semibold text-lg mt-1 group-hover:text-amber-600 transition-colors">
-            {product.name}
-          </h3>
+          <div className="relative aspect-square overflow-hidden">
+            <MemoizedProductImage
+              src={product.image}
+              alt={product.name}
+              className="object-contain transition-transform duration-500 group-hover:scale-105"
+            />
+          </div>
         </Link>
 
-        <div className="flex items-center mt-2">
-          <MemoizedStarRating rating={product.rating} />
-          <span className="text-sm text-gray-500 ml-1">
-            ({product.rating})
-          </span>
-        </div>
-
-        <div className="flex items-center justify-between mt-4">
-          <span className="font-bold text-lg">
-            {formatCurrency(product.price)}
-          </span>
-          <Link href={`/product/${product.slug}`}>
-            <Button
-              size="sm"
-              className="bg-amber-600 hover:bg-amber-700"
+        <div className="p-4">
+          {product.category && (
+            <Link
+              href={`/category/${product.category
+                .toLowerCase()
+                .replace(/\s+/g, "-")}`}
             >
-              {t("viewDetails")}
-            </Button>
+              <span className="text-xs font-medium text-amber-600 uppercase tracking-wider">
+                {product.category}
+              </span>
+            </Link>
+          )}
+
+          <Link href={`/product/${product.slug}`}>
+            <h3 className="font-semibold text-lg mt-1 group-hover:text-amber-600 transition-colors">
+              {product.name}
+            </h3>
           </Link>
+
+          <div className="flex items-center mt-2">
+            <MemoizedStarRating rating={product.rating} />
+            <span className="text-sm text-gray-500 ml-1">
+              ({product.rating})
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between mt-4">
+            <span className="font-bold text-lg">
+              {formatCurrency(product.price)}
+            </span>
+            <Link href={`/product/${product.slug}`}>
+              <Button size="sm" className="bg-amber-600 hover:bg-amber-700">
+                {t("viewDetails")}
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
-  </motion.div>
-));
+    </motion.div>
+  )
+);
 
 // Helper function to get cached product data
 const getCachedProduct = (slug: string) => {
@@ -138,7 +129,7 @@ const getCachedProduct = (slug: string) => {
   if (productCache.has(cacheKey)) {
     return productCache.get(cacheKey);
   }
-  
+
   const product = products.find((p) => p.slug === slug);
   if (product) {
     productCache.set(cacheKey, product);
@@ -152,36 +143,33 @@ const getCachedRelatedProducts = (product: any) => {
   if (relatedProductsCache.has(cacheKey)) {
     return relatedProductsCache.get(cacheKey);
   }
-  
+
   const related = product.relatedProducts
     ? products.filter((p) => product.relatedProducts.includes(p.id))
     : products
         .filter((p) => p.category === product.category && p.id !== product.id)
         .slice(0, 4);
-        
+
   relatedProductsCache.set(cacheKey, related);
   return related;
 };
 
-export default function ProductClientPage({
-  slug,
-}: {slug: string}) {
-  console.log("Slug in PCP "+ slug);
+export default function ProductClientPage({ slug }: { slug: string }) {
+  console.log("Slug in PCP " + slug);
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const { addToCart } = useCart();
-  const { toast } = useToast();
   const { t } = useLanguage();
   const pathname = usePathname();
-  
+
   // Memoized values for better performance
-  const baseUrl = useMemo(() => 
-    typeof window !== "undefined" ? window.location.origin : "", 
+  const baseUrl = useMemo(
+    () => (typeof window !== "undefined" ? window.location.origin : ""),
     []
   );
-  
+
   const fullUrl = useMemo(() => `${baseUrl}${pathname}`, [baseUrl, pathname]);
-  
+
   // Use cached product data
   // const product = useMemo(() => getCachedProduct(slug), [slug]);
   const product = products.find((p) => p.slug === slug);
@@ -190,13 +178,13 @@ export default function ProductClientPage({
     const images = [product?.image, ...(product?.relatedImages || [])];
     return images.slice(0, 4);
   }, [product?.image, product?.relatedImages]);
-  
+
   // Memoized related products
-  const relatedProducts = useMemo(() => 
-    product ? getCachedRelatedProducts(product) : [], 
+  const relatedProducts = useMemo(
+    () => (product ? getCachedRelatedProducts(product) : []),
     [product]
   );
-  
+
   // Memoized product keywords for SEO
   const productKeywords = useMemo(() => {
     if (!product) return "";
@@ -223,11 +211,14 @@ export default function ProductClientPage({
   }, [product]);
 
   // Memoized handlers for better performance
-  const handleQuantityChange = useCallback((value: number) => {
-    if (value < 1) return;
-    if (product.inStock && value > product.stockCount) return;
-    setQuantity(value);
-  }, [product.inStock, product.stockCount]);
+  const handleQuantityChange = useCallback(
+    (value: number) => {
+      if (value < 1) return;
+      if (product.inStock && value > product.stockCount) return;
+      setQuantity(value);
+    },
+    [product.inStock, product.stockCount]
+  );
 
   const handleAddToCart = useCallback(() => {
     if (!product.inStock) return;
@@ -240,17 +231,21 @@ export default function ProductClientPage({
       quantity: quantity,
     });
 
-    toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
-    });
+    toast(
+      <div>
+        <strong>Added to Cart</strong>
+        <div>{product.name} has been added to your cart.</div>
+      </div>
+    );
   }, [product, quantity, addToCart, toast]);
 
   return (
     <>
       {/* Structured Data for SEO */}
       <ProductSchema product={product} url={fullUrl} />
-      <Toaster />
+      <title>{`${product.name} | Premium ${product.category} | Jong Market`}</title>
+      <meta name="description" content={product.description} />
+      <meta name="keywords" content={productKeywords} />
 
       <div className="container mx-auto px-4 py-16">
         {/* Breadcrumb */}
@@ -451,7 +446,7 @@ export default function ProductClientPage({
                   size="icon"
                   className="h-12 w-12"
                   aria-label="Share product"
-                  title = "share"
+                  title="share"
                 >
                   <Share2 className="h-5 w-5" />
                 </Button>
@@ -460,7 +455,7 @@ export default function ProductClientPage({
           </motion.div>
         </div>
 
-        {/* Product Tabs */}  
+        {/* Product Tabs */}
         <div className="mb-16">
           <Tabs defaultValue="description">
             <TabsList className=" grid grid-cols-1 w-full md:grid-cols-3 mb-4 h-[fit]">
@@ -570,7 +565,9 @@ export default function ProductClientPage({
               className="p-6 bg-white rounded-lg shadow-sm mt-4"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-                <h2 className="text-2xl font-bold text-gray-900">Customer Reviews</h2>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Customer Reviews
+                </h2>
                 <button className="w-full md:w-[fit] bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg font-bold transition-colors duration-200">
                   Write a Review
                 </button>
@@ -593,8 +590,9 @@ export default function ProductClientPage({
                   <div className="space-y-2">
                     {[5, 4, 3, 2, 1].map((star) => {
                       const count =
-                        product.reviews?.filter(function(r: any) { return r.rating === star })
-                          .length || 0;
+                        product.reviews?.filter(function (r: any) {
+                          return r.rating === star;
+                        }).length || 0;
                       const percentage = product.reviews?.length
                         ? (count / product.reviews.length) * 100
                         : 0;
@@ -622,7 +620,7 @@ export default function ProductClientPage({
                 <div className="col-span-2">
                   {product.reviews && product.reviews.length > 0 ? (
                     <div className="space-y-6">
-                      {product.reviews.map(function(review: any) {
+                      {product.reviews.map(function (review: any) {
                         return (
                           <motion.div
                             key={review.id}
@@ -653,7 +651,9 @@ export default function ProductClientPage({
                                       itemProp="ratingValue"
                                       content={review.rating.toString()}
                                     />
-                                    <MemoizedStarRating rating={review.rating} />
+                                    <MemoizedStarRating
+                                      rating={review.rating}
+                                    />
                                   </div>
                                   <span
                                     className="text-gray-500 text-sm"
@@ -692,7 +692,7 @@ export default function ProductClientPage({
           <div>
             <h2 className="text-2xl font-bold mb-8">You May Also Like</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedProducts.map(function(relatedProduct: any) {
+              {relatedProducts.map(function (relatedProduct: any) {
                 return (
                   <MemoizedRelatedProduct
                     key={relatedProduct.id}
@@ -723,10 +723,10 @@ export async function generateMetadata({
   params: { slug: string };
 }) {
   const product = getCachedProduct(slug);
-  
+
   if (!product) {
     return {
-      title: 'Product Not Found',
+      title: "Product Not Found",
     };
   }
 
@@ -736,10 +736,10 @@ export async function generateMetadata({
     keywords: [
       product.name,
       product.category,
-      'premium drinks',
-      'buy online',
-      'Cameroon'
-    ].join(', '),
+      "premium drinks",
+      "buy online",
+      "Cameroon",
+    ].join(", "),
     openGraph: {
       title: product.name,
       description: product.description,
