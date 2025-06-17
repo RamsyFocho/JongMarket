@@ -275,15 +275,15 @@ export default function ProductClientPage({
           <span className="text-gray-700 font-medium">{product.name}</span>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 md:gap-12 mb-16">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-12 mb-16 ">
           {/* Product Images */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="space-y-4"
+            className="space-y-4 "
           >
-            <div className="relative aspect-square h-80 md:h-96 rounded-lg overflow-hidden bg-white shadow-md flex items-center justify-center">
+            <div className=" relative aspect-square h-80 md:h-[30rem] 2xl:h-[45rem] 2xl:w-[40rem] rounded-lg overflow-hidden bg-white shadow-md flex items-center justify-center">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeImage}
@@ -303,7 +303,7 @@ export default function ProductClientPage({
               </AnimatePresence>
             </div>
 
-            <div className="flex space-x-2 md:space-x-4 overflow-x-auto pb-2">
+            <div className="flex space-x-2 md:space-x-4 overflow-x-auto pb-2 ">
               {productImages.map((image, index) => (
                 <button
                   key={index}
@@ -451,6 +451,7 @@ export default function ProductClientPage({
                   size="icon"
                   className="h-12 w-12"
                   aria-label="Share product"
+                  title = "share"
                 >
                   <Share2 className="h-5 w-5" />
                 </Button>
@@ -459,11 +460,11 @@ export default function ProductClientPage({
           </motion.div>
         </div>
 
-        {/* Product Tabs */}
+        {/* Product Tabs */}  
         <div className="mb-16">
           <Tabs defaultValue="description">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="description">Description</TabsTrigger>
+            <TabsList className=" grid grid-cols-1 w-full md:grid-cols-3 mb-4 h-[fit]">
+              <TabsTrigger value="description">Descriptions</TabsTrigger>
               <TabsTrigger value="details">
                 Details & Specifications
               </TabsTrigger>
@@ -568,11 +569,11 @@ export default function ProductClientPage({
               value="reviews"
               className="p-6 bg-white rounded-lg shadow-sm mt-4"
             >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold">Customer Reviews</h2>
-                <Button className="bg-amber-600 hover:bg-amber-700">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+                <h2 className="text-2xl font-bold text-gray-900">Customer Reviews</h2>
+                <button className="w-full md:w-[fit] bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg font-bold transition-colors duration-200">
                   Write a Review
-                </Button>
+                </button>
               </div>
 
               <div className="grid md:grid-cols-3 gap-8 mb-8">
