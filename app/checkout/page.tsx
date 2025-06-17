@@ -193,7 +193,7 @@ export default function CheckoutPage() {
     }
     setProductsData(cartItems);
     setShippingData(data);
-    setCheckoutData(prev => [...prev, [data], [cartItems]]);
+    setCheckoutData(prev => [...prev, data, cartItems]);
     setStep('payment');
   }
 
