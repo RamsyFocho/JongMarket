@@ -1,6 +1,6 @@
 // This file contains all brands data for the application
 export const brands = [
-  { id: 1, name: "Coca Cola", logo: "/images/brands/coca-logo.jpg", categories: ["Soft Drinks"] },
+  { id: 1, name: "Coca Cola", logo: "/images/brands/coca-logo.jpg", categories: ["soft-drinks"] },
   { id: 2, name: "Heineken", logo: "/images/brands/heineken-logo.jpg", categories: ["Beer"] },
   { id: 3, name: "Jack Daniels", logo: "/images/brands/jack-daniels.jpg", categories: ["Whiskey"] },
   { id: 4, name: "Absolut", logo: "/images/brands/absolut.jpg", categories: ["Vodka"] },
@@ -18,9 +18,9 @@ export const brands = [
   { id: 16, name: "Ballantine’s", logo: "/images/brands/placeholder-logo.png", categories: ["Whiskey"] },
   { id: 17, name: "Glenrothes", logo: "/images/brands/placeholder-logo.png", categories: ["Whiskey"] },
   { id: 18, name: "Glenfiddich", logo: "/images/brands/placeholder-logo.png", categories: ["Whiskey"] },
-  { id: 19, name: "Château Margaux", logo: "/images/brands/placeholder-logo.png", categories: ["Wine"] },
+  { id: 19, name: "Château Margaux", logo: "/images/brands/chateux.jpg", categories: ["Wine"] },
   { id: 20, name: "Moscato", logo: "/images/brands/moscato.jpg", categories: ["Wine"] },
-  { id: 21, name: "Champagne", logo: "/images/brands/placeholder-logo.png", categories: ["Champagne"] },
+  { id: 21, name: "Moet chandon", logo: "/images/brands/moet.jpg", categories: ["Champagne"] },
   { id: 22, name: "Westvleteren", logo: "/images/brands/west-logo.jpg", categories: ["Beer"] },
   { id: 23, name: "Hennessy", logo: "/images/brands/hennessy-logo.jpg", categories: ["Spirits"] },
   { id: 24, name: "Yirgacheffe", logo: "/images/brands/yirgacheffe-coffee.jpg", categories: ["hot-drinks"] },
@@ -39,5 +39,12 @@ export const brands = [
   { id: 37, name: "Riedel", logo: "/images/brands/riedel-logo.jpg", categories: ["Accessories"] },
   { id: 38, name: "WineTech", logo: "/images/brands/placeholder-logo.png", categories: ["Accessories"] },
   { id: 39, name: "ChillRocks", logo: "/images/brands/chill-logo.jpg", categories: ["Accessories"] },
-  { id: 40, name: "Hero Lager", logo: "/images/brands/hero-logo.jpg", categories: ["Beer"] }
+  { id: 40, name: "Hero Lager", logo: "/images/brands/hero-logo.jpg", categories: ["Beer"] },
+  { id: 41, name: "Supermont", logo: "/images/brands/montlogo.jpg", categories: ["Water"] },
+  { id: 42, name: "Tangui", logo: "/images/brands/tangui-logo.jpg", categories: ["Water"] },
+  { id: 43, name: "Opur", logo: "/images/brands/opur-logo.jpg", categories: ["Water"] },
+  { id: 44, name: "Vitale", logo: "/images/brands/vitale-logo.jpg", categories: ["Water"] },
+  { id: 45, name: "Fanta", logo: "/images/brands/fanta-logo.jpg", categories: ["soft-drinks"] },
+  { id: 46, name: "Pepsi", logo: "/images/brands/pepsi-logo.jpg", categories: ["soft-drinks"] },
+  { id: 47, name: "Chivas ", logo: "/images/brands/Chivas12-logo.jpg", categories: ["Spirits"] },
 ];

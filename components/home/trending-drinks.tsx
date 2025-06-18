@@ -81,7 +81,7 @@ const TrendingDrinks = () => {
   }, [currentTab]);
 
   return (
-    <section className="w-full py-8 px-4 bg-white">
+    <section className="w-full py-8 px-4 bg-white ">
       <div className="max-w-[fit] mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -110,7 +110,7 @@ const TrendingDrinks = () => {
 
         {/* Product Grid - Single row with dynamic tab content */}
         <div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-hidden min-h-[280px] md:min-h-[350px]"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-hidden min-h-[280px] md:min-h-[350px] lg:min-h-[430px]"
           // style={{ minHeight: 450 }}
         >
         

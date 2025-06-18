@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster"
 import { useCart } from "@/context/cart-context"
-
+import ProductCard from '@/components/Card/ProductCard';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
@@ -96,7 +96,7 @@ export default function ProductsClient({
   return (
     <>
       <Toaster />
-      <div className="flex flex-col md:flex-row md:space-x-4">
+      <div className="flex flex-col md:flex-row md:space-x-4 border-2 border-red-500">
         <div className="md:w-1/4">
           {/* Category Filter */}
           <div className="mb-4">
@@ -129,21 +129,22 @@ export default function ProductsClient({
             </Button>
           </form>
           {/* Product grid is NOT inside a form anymore */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {filteredProducts.map((product) => (
-              <div key={product.id} className="bg-white rounded-lg shadow-md p-4 flex flex-col">
-                <Image src={product.image || "/placeholder.svg"} alt={product.name} className="h-40 object-cover mb-2 rounded" />
-                <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
-                <p className="text-gray-500 text-sm mb-2">{product.category}</p>
-                <span className="font-bold text-amber-600 mb-2">{formatCurrency(product.price)}</span>
-                <Button
-                  className="mt-auto bg-amber-600 hover:bg-amber-700"
-                  onClick={() => handleAddToCart(product)}
-                  disabled={product.inStock === false}
-                >
-                  Add to Cart
-                </Button>
-              </div>
+              // <ProductCard key={product.id} product={product} />
+              // <div key={product.id} className="bg-white rounded-lg shadow-md p-4 flex flex-col">
+              //   <Image src={product.image || "/placeholder.svg"} alt={product.name} className="h-40 object-cover mb-2 rounded" />
+              //   <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
+              //   <p className="text-gray-500 text-sm mb-2">{product.category}</p>
+              //   <span className="font-bold text-amber-600 mb-2">{formatCurrency(product.price)}</span>
+              //   <Button
+              //     className="mt-auto bg-amber-600 hover:bg-amber-700"
+              //     onClick={() => handleAddToCart(product)}
+              //     disabled={product.inStock === false}
+              //   >
+              //     Add to Cart
+              //   </Button>
+              // </div>
             ))}
             {filteredProducts.length === 0 && (
               <div className="col-span-full text-center text-gray-500 py-8">No products found.</div>

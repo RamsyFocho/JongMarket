@@ -106,7 +106,7 @@ const VodkaSection = () => {
 
         {/* Product Grid - Single row with dynamic tab content */}
         <div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-hidden min-h-[280px] md:min-h-[350px]"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-hidden min-h-[320px] md:min-h-[350px] lg:min-h-[430px] "
           // style={{ minHeight: 450 }}
         >
         
@@ -121,8 +121,8 @@ const VodkaSection = () => {
             style={{ pointerEvents: animating ? 'none' : 'auto' }}
           >
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {getCurrentTabProducts().map((product) => (
-                <ProductCard key={product.id} product={product} />
+              {getCurrentTabProducts().map((product, index) => (
+                <ProductCard key={product.id} product={product} index={index} />
               ))}
             </div>
           </div>

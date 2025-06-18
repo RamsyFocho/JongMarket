@@ -15,7 +15,8 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useToast } from "@/components/ui/use-toast"
+import { toast } from "react-toastify";
+
 import { useCart } from "@/context/cart-context"
 import { useLanguage } from "@/context/language-context"
 import { formatCurrency } from "@/data/products"
@@ -55,15 +56,24 @@ const paymentFormSchema = z.object({
 type ShippingFormData = z.infer<typeof shippingFormSchema>
 type PaymentFormData = z.infer<typeof paymentFormSchema>
 
+
 export default function CheckoutPage() {
+  
+  const [checkoutData, setCheckoutData] = useState<any[]>([]);
+
+  const [shippingData, setShippingData] = useState<ShippingFormData[]>([]);
+  const [paymentData, setPaymentData] = useState<PaymentFormData[]>([]);
+  const [productsData, setProductsData] = useState<any[]>([]);
+
+
+
   const [step, setStep] = useState<CheckoutStep>("shipping")
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("home-delivery")
   const [isProcessing, setIsProcessing] = useState(false)
   const [cities, setCities] = useState<City[]>([])
   const [quarters, setQuarters] = useState<Quarter[]>([])
   const [selectedCity, setSelectedCity] = useState("")
-    const { cartItems, totalPrice, clearCart } = useCart()
-  const { toast } = useToast()
+  const { cartItems, totalPrice, clearCart } = useCart()
   const router = useRouter()
   const { t } = useLanguage()
 
@@ -118,16 +128,22 @@ export default function CheckoutPage() {
         setCities(citiesData)
       } catch (error) {
         console.error('Failed to load cities:', error)
-        toast({
-          title: "Error loading cities",
-          description: "Please try again later",
-          variant: "destructive",
-        })
+        // toast({
+        //   title: "Error loading cities",
+        //   description: "Please try again later",
+        //   variant: "destructive",
+        // })
+        toast.error(
+          <div>
+            <strong> Error Loading Cities</strong>
+            <div> Please, try again later</div>
+          </div>
+        )
       }
     }
     loadCities()
   }, [toast])
-
+  
   // Load quarters when city changes
   useEffect(() => {
     async function loadQuarters() {
@@ -140,12 +156,14 @@ export default function CheckoutPage() {
         const quartersData = await fetchQuartersByCity(selectedCity)
         setQuarters(quartersData)
       } catch (error) {
-        console.error('Failed to load quarters:', error)
-        toast({
-          title: "Error loading quarters",
-          description: "Please try again later",
-          variant: "destructive",
-        })
+        console.error('Failed to load quarters:', error)        
+        toast.error(
+          <div>
+            <strong> Error Loading Quarters</strong>
+            <div> Please, try again later</div>
+          </div>
+        )
+
       }
     }
     loadQuarters()
@@ -169,14 +187,28 @@ export default function CheckoutPage() {
   // Handle shipping form submission
   const onShippingSubmit = (data: ShippingFormData) => {
     console.log('Shipping data:', data)
-    setStep('payment')
+    if(!cartItems || cartItems == null || cartItems.length == 0){
+      router.push("/products");
+      return;
+    }
+    setProductsData(cartItems);
+    setShippingData(data);
+    setCheckoutData(prev => [...prev, data, cartItems]);
+    setStep('payment');
   }
+
+  useEffect(() => {
+    console.log("Checkout data after shipping submit:", checkoutData);
+  }, [checkoutData]);
+
   // Handle payment form submission
   const onPaymentSubmit = async (data: PaymentFormData) => {
-    console.log('Payment data:', data)
-    setIsProcessing(true)
-    
+    console.log('Payment data:', data);
+    setIsProcessing(true);
+    setPaymentData(data);
+    setCheckoutData(prev => [...prev, data]);
     try {
+      // TODO 
       // Simulate payment processing
       await new Promise(resolve => setTimeout(resolve, 2000))
       
@@ -184,14 +216,21 @@ export default function CheckoutPage() {
       clearCart()
     } catch (error) {
       console.error('Payment failed:', error)
-      toast({
-        title: "Payment failed",
-        description: "Please try again or use a different payment method",
-        variant: "destructive",
-      })
+      toast.error(
+        <div>
+          <strong>Payment failed</strong>
+          <div>Please, try again or use a different payment method</div>  
+        </div>      
+      )
+      
     } finally {
       setIsProcessing(false)
-    }  }
+    }  
+  }
+
+  useEffect(() => {
+    console.log("Checkout data after payment submit:", checkoutData);
+  }, [checkoutData]);
 
   const StepIndicator = ({ icon, label, isActive }: { 
     icon: React.ReactNode; 
@@ -203,7 +242,7 @@ export default function CheckoutPage() {
         <div className="flex items-center justify-center w-8 h-8 rounded-full border-2 border-current">
           {icon}
         </div>
-        <span className="ml-2 font-medium">{label}</span>
+        <span className="ml-2 font-medium hidden md:block ">{label}</span>
       </div>
     )
   }
@@ -212,7 +251,7 @@ export default function CheckoutPage() {
     <div className="container mx-auto px-4 py-16">
       {/* Step indicators */}
       <div className="mb-8 max-w-3xl mx-auto">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center ">
           <StepIndicator
             icon={<Truck className="w-4 h-4" />}
             label={t('Shipping')}
@@ -385,18 +424,18 @@ export default function CheckoutPage() {
                       </Label>
                     </div>
                   </RadioGroup>
-                </div>                <div className="flex justify-between items-center">
+                </div>                <div className="flex justify-between items-center flex-wrap gap-2 w-full md:w-[fit]">
                   
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => router.push('/cart')}
-                    className="flex items-center"
+                    className="flex items-center w-full md:w-[fit]"
                   >
                     <ChevronRight className="mr-2 w-4 h-4 rotate-180" />
                     {t('Back to Cart')}
                   </Button>
-                  <Button type="submit">
+                  <Button type="submit" className="w-full md:w-[fit]">
                     {t('Continue to Payment')} <ChevronRight className="ml-2 w-4 h-4" />
                   </Button>
                 </div>
@@ -613,7 +652,7 @@ export default function CheckoutPage() {
               <span>{formatCurrency(totalPrice)}</span>
             </div>
               {deliveryMethod === "home-delivery" && (
-              <div className="flex justify-between">
+              <div className="flex justify-between text-amber-700 font-bold">
                 <span>{t('Delivery Fee')}</span>
                 <span>{formatCurrency(deliveryFee)}</span>
               </div>

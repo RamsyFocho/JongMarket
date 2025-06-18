@@ -14,7 +14,9 @@ import { products, categories, formatCurrency } from "@/data/products";
 import { useLanguage } from "@/context/language-context";
 import WishlistButton from "@/components/product/wishlist-button";
 import { useCart } from "@/context/cart-context";
-import { useToast } from "@/components/ui/use-toast";
+// import { useToast } from "@/components/ui/use-toast";
+import ProductCard from '@/components/Card/ProductCard'
+
 
 // Type definitions
 interface Product {
@@ -90,7 +92,7 @@ export default function ProductsPage() {
   const [sortOption, setSortOption] = useState<SortOption>("featured");
   const { t } = useLanguage();
   const { addToCart } = useCart();
-  const { toast } = useToast();
+  // const { toast } = useToast();
 
   // Debounced search
   const [debouncedSearchQuery, setDebouncedSearchQuery] =
@@ -229,110 +231,110 @@ export default function ProductsPage() {
     setSearchQuery("");
   }, []);
 
-  const handleAddToCart = useCallback(
-    (product: Product): void => {
-      if (product.inStock) {
-        addToCart({
-          id: product.id,
-          name: product.name,
-          price: product.currentPrice || product.price,
-          image: product.image,
-          quantity: 1,
-        });
-        toast({
-          title: "Added to cart",
-          description: `${product.name} has been added to your cart.`,
-        });
-      }
-    },
-    [addToCart, toast]
-  );
+  // const handleAddToCart = useCallback(
+  //   (product: Product): void => {
+  //     if (product.inStock) {
+  //       addToCart({
+  //         id: product.id,
+  //         name: product.name,
+  //         price: product.currentPrice || product.price,
+  //         image: product.image,
+  //         quantity: 1,
+  //       });
+  //       toast({
+  //         title: "Added to cart",
+  //         description: `${product.name} has been added to your cart.`,
+  //       });
+  //     }
+  //   },
+  //   [addToCart, toast]
+  // );
 
   // Memoized product cards to prevent unnecessary re-renders
-  const ProductCard = useMemo(() => {
-    return ({ product }: { product: Product }) => (
-      <motion.div
-        key={product.id}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="group">
-        <div className="bg-white w-72 rounded-lg shadow-md overflow-hidden transition-shadow hover:shadow-lg">
-          <Link href={`/product/${product.slug}`}>
-            <div className="relative aspect-square overflow-hidden">
-              <Image
-                src={product.image || "/placeholder.svg"}
-                alt={product.name}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              {!product.inStock && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                    {t("outOfStock")}
-                  </span>
-                </div>
-              )}
-            </div>
-          </Link>
+  // const ProductCard = useMemo(() => {
+  //   return ({ product }: { product: Product }) => (
+  //     <motion.div
+  //       key={product.id}
+  //       initial={{ opacity: 0, y: 20 }}
+  //       animate={{ opacity: 1, y: 0 }}
+  //       transition={{ duration: 0.3 }}
+  //       className="group">
+  //       <div className="bg-white w-72 rounded-lg shadow-md overflow-hidden transition-shadow hover:shadow-lg">
+  //         <Link href={`/product/${product.slug}`}>
+  //           <div className="relative aspect-square overflow-hidden">
+  //             <Image
+  //               src={product.image || "/placeholder.svg"}
+  //               alt={product.name}
+  //               fill
+  //               className="object-cover transition-transform duration-500 group-hover:scale-105"
+  //             />
+  //             {!product.inStock && (
+  //               <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+  //                 <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+  //                   {t("outOfStock")}
+  //                 </span>
+  //               </div>
+  //             )}
+  //           </div>
+  //         </Link>
 
-          <div className="p-4">
-            {product.category && (
-              <Link
-                href={`/category/${product.category
-                  .toLowerCase()
-                  .replace(/\s+/g, "-")}`}>
-                <span className="text-xs font-medium text-amber-600 uppercase tracking-wider">
-                  {product.category}
-                </span>
-              </Link>
-            )}
+  //         <div className="p-4">
+  //           {product.category && (
+  //             <Link
+  //               href={`/category/${product.category
+  //                 .toLowerCase()
+  //                 .replace(/\s+/g, "-")}`}>
+  //               <span className="text-xs font-medium text-amber-600 uppercase tracking-wider">
+  //                 {product.category}
+  //               </span>
+  //             </Link>
+  //           )}
 
-            <Link href={`/product/${product.slug}`}>
-              <h3 className="font-semibold text-lg mt-1 group-hover:text-amber-600 transition-colors">
-                {product.name}
-              </h3>
-            </Link>
+  //           <Link href={`/product/${product.slug}`}>
+  //             <h3 className="font-semibold text-lg mt-1 group-hover:text-amber-600 transition-colors">
+  //               {product.name}
+  //             </h3>
+  //           </Link>
 
-            <div className="flex items-center mt-2">
-              <div className="flex text-amber-500">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className="h-4 w-4"
-                    fill={
-                      i < Math.floor(product.rating) ? "currentColor" : "none"
-                    }
-                  />
-                ))}
-              </div>
-              <span className="text-sm text-gray-500 ml-1">
-                ({product.rating})
-              </span>
-            </div>
+  //           <div className="flex items-center mt-2">
+  //             <div className="flex text-amber-500">
+  //               {[...Array(5)].map((_, i) => (
+  //                 <Star
+  //                   key={i}
+  //                   className="h-4 w-4"
+  //                   fill={
+  //                     i < Math.floor(product.rating) ? "currentColor" : "none"
+  //                   }
+  //                 />
+  //               ))}
+  //             </div>
+  //             <span className="text-sm text-gray-500 ml-1">
+  //               ({product.rating})
+  //             </span>
+  //           </div>
 
-            <div className="flex items-center justify-between mt-4">
-              <span className="font-bold text-lg">
-                {formatCurrency(product.currentPrice || product.price)}
-              </span>
+  //           <div className="flex items-center justify-between mt-4">
+  //             <span className="font-bold text-lg">
+  //               {formatCurrency(product.currentPrice || product.price)}
+  //             </span>
 
-              <div className="flex items-center">
-                <WishlistButton product={product} variant="icon" />
-                <Button
-                  title="Add to cart"
-                  size="icon"
-                  className="h-9 w-9 rounded-full bg-amber-600 hover:bg-amber-700 ml-2"
-                  disabled={!product.inStock}
-                  onClick={() => handleAddToCart(product)}>
-                  <ShoppingBag className="h-5 w-5" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    );
-  }, [t, handleAddToCart]);
+  //             <div className="flex items-center">
+  //               <WishlistButton product={product} variant="icon" />
+  //               <Button
+  //                 title="Add to cart"
+  //                 size="icon"
+  //                 className="h-9 w-9 rounded-full bg-amber-600 hover:bg-amber-700 ml-2"
+  //                 disabled={!product.inStock}
+  //                 onClick={() => handleAddToCart(product)}>
+  //                 <ShoppingBag className="h-5 w-5" />
+  //               </Button>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </motion.div>
+  //   );
+  // }, [t, handleAddToCart]);
 
   return (
     <div className="w-full px-4 py-16">
@@ -433,9 +435,9 @@ export default function ProductsPage() {
           </div>
 
           {filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-              {filteredProducts.map((product: Product) => (
-                <ProductCard key={product.id} product={product} />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {filteredProducts.map((product, index) => (
+                <ProductCard key={product.id} product={product} index={index} />
               ))}
             </div>
           ) : (
