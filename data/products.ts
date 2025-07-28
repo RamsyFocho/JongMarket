@@ -2054,6 +2054,257 @@ export const products = [
     currency: "USD"
   },
   
+  {
+    id: 1070,
+    name: "Vodka V21 - 75cl",
+    brand: "vodka",
+    category: "Whiskey",
+    price: 10.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/vodka_v21.jpg",
+    slug: "vodka",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1071,
+    name: "Whisky Grain Classic – Red Sun 75 cl",
+    brand: "vodka",
+    category: "Whiskey",
+    price: 10.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/whisky_red_sun.jpg",
+    slug: "Whisky Grain Classic – Red Sun 75 cl",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1072,
+    name: "Whisky GOA Spirit of Smoothness 1L",
+    brand: "vodka",
+    category: "Whiskey",
+    price: 10.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/goa.jpg",
+    slug: "Whisky GOA Spirit of Smoothness 1L",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1073,
+    name: "GOA Spirit of Smoothness Dry Gin 1L – 42,8%",
+    brand: "vodka",
+    category: "Whiskey",
+    price: 10.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/goa_spirit.jpg",
+    slug: "GOA Spirit of Smoothness Dry Gin 1L – 42,8%",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1074,
+    name: "Whisky Ritz Reserve 75CL – 42,8%",
+    brand: "vodka",
+    category: "Whiskey",
+    price: 10.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/Whisky_ritz.jpg",
+    slug: "Whisky Ritz Reserve 75CL – 42,8%",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1075,
+    name: "North Pole Vodka Chill Filtered – 1L – 40%",
+    brand: "vodka",
+    category: "Whiskey",
+    price: 10.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/north_pole.jpg",
+    slug: "North Pole Vodka Chill Filtered – 1L – 40%",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1076,
+    name: "Whisky Kamanda Premium – Rhum Café – 75cl – 45% Vol.",
+    brand: "vodka",
+    category: "Whiskey",
+    price: 10.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/whisky_kamanda.jpg",
+    slug: "Whisky Kamanda Premium – Rhum Café – 75cl – 45% Vol.",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1077,
+    name: "Royal’s Colonel XXX Rum – 75CL – 42,8%",
+    brand: "vodka",
+    category: "Whiskey",
+    price: 10.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/colonel.jpg",
+    slug: "Royal’s Colonel XXX Rum – 75CL – 42,8%",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1078,
+    name: "Royal’s Special Gold Gin – Premium London Dry Gin 75CL – 42%",
+    brand: "vodka",
+    category: "Whiskey",
+    price: 10.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/royal_gold.jpg",
+    slug: "Whisky Lottery 75CL – 42,8%",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1079,
+    name: "Whisky Royal Special Premium – 42,8% – Bouteille 75cl",
+    brand: "vodka",
+    category: "Whiskey",
+    price: 10.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/royal_special.jpg",
+    slug: "Whisky Lottery 75CL – 42,8%",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1080,
+    name: "Vodka Absolut Raspberri – 75 cl – 38 % vol",
+    brand: "vodka",
+    category: "Whiskey",
+    price: 22.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/vodka_absolut.jpg",
+    slug: "Whisky Lottery 75CL – 42,8%",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
+
+  {
+    id: 1081,
+    name: "Liqueur cream - Pina Colada - 75 cl",
+    brand: "vodka",
+    category: "Whiskey",
+    price: 8.99,
+    badges: ["new"],
+    rating: 4.6,
+    image: "/images/products/whiskey/pina.jpg",
+    slug: "Whisky Lottery 75CL – 42,8%",
+    inStock: true,
+    stockCount: 60,
+    description: "Keep your whiskey cold without dilution. Includes 9 granite stones, tongs, and velvet pouch in a gift box.",
+    details: {
+      material: "Granite",
+      pieces: "9 Stones, 1 Tongs, 1 Pouch",
+      care: "Rinse and freeze",
+    },
+    currency: "USD"
+  },
 
 ]
 
