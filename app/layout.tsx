@@ -1,33 +1,33 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter, Playfair_Display } from "next/font/google"
-import { CartProvider } from "@/context/cart-context"
-import { WishlistProvider } from "@/context/wishlist-context"
-import { LanguageProvider } from "@/context/language-context"
-import Header from "@/components/layout/header"
-import Footer from "@/components/layout/footer"
+import type React from "react";
+import type { Metadata } from "next";
+import { Inter, Playfair_Display } from "next/font/google";
+import { CartProvider } from "@/context/cart-context";
+import { WishlistProvider } from "@/context/wishlist-context";
+import { LanguageProvider } from "@/context/language-context";
+import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 // import { Toaster } from "@/components/ui/toaster"
-import { TooltipProvider } from "@/components/ui/tooltip"
-import OrganizationSchema from "@/components/seo/organization-schema"
-import "./globals.css"
-import LoadingScreen from "@/components/loading-screen"
-import AgeVerification from "@/components/age-verification"
-import ScrollToTop from "@/components/ui/scroll-to-top"
-  import { ToastContainer } from 'react-toastify';
+import { TooltipProvider } from "@/components/ui/tooltip";
+import OrganizationSchema from "@/components/seo/organization-schema";
+import "./globals.css";
+import AgeVerification from "@/components/age-verification";
+import ScrollToTop from "@/components/ui/scroll-to-top";
+import { ToastContainer } from "react-toastify";
+import AppLoader from "@/components/AppLoader";
 // Load fonts properly using next/font
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-inter",
   weight: ["300", "400", "500", "600", "700"],
-})
+});
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-playfair",
   weight: ["400", "500", "600", "700"],
-})
+});
 
 export const metadata: Metadata = {
   title: {
@@ -41,10 +41,12 @@ export const metadata: Metadata = {
   },
   description:
     "Discover our curated selection of premium whiskey, wine, beer, champagne and accessories. Fast delivery and exceptional quality guaranteed.",
-  keywords: "drinks, whiskey, wine, beer, champagne, accessories, online store, premium drinks, Cameroon",
+  keywords:
+    "drinks, whiskey, wine, beer, champagne, accessories, online store, premium drinks, Cameroon",
   openGraph: {
     title: "Jong Market | Premium Drinks & Accessories",
-    description: "Discover our curated selection of premium whiskey, wine, beer, champagne and accessories.",
+    description:
+      "Discover our curated selection of premium whiskey, wine, beer, champagne and accessories.",
     url: "https://jongmarket.com",
     siteName: "Jong Market",
     images: [
@@ -61,7 +63,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Jong Market | Premium Drinks & Accessories",
-    description: "Discover our curated selection of premium whiskey, wine, beer, champagne and accessories.",
+    description:
+      "Discover our curated selection of premium whiskey, wine, beer, champagne and accessories.",
     images: ["/images/og-image.jpg"],
   },
   robots: {
@@ -86,9 +89,13 @@ export const metadata: Metadata = {
     google: "google-site-verification-code",
     yandex: "yandex-verification-code",
   },
-}
+};
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body>
@@ -98,12 +105,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <CartProvider>
               <TooltipProvider>
                 <OrganizationSchema />
-                <LoadingScreen/>
-                <AgeVerification/>
+                <AgeVerification />
                 <div className="block min-h-screen w-full overflow-x-hidden">
-                  <Header />
-                  <main className="flex-1 w-full max-w-full mt-16 md:mt-40 lg:mt-40 xl:mt-40">{children}</main>
-                  <Footer />
+                  <AppLoader>
+                    <Header />
+                    <main className="flex-1 w-full max-w-full mt-16 md:mt-40 lg:mt-40 xl:mt-40">
+                      {children}
+                    </main>
+                    <Footer />
+                  </AppLoader>
                   <ScrollToTop />
                 </div>
               </TooltipProvider>
@@ -112,5 +122,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </LanguageProvider>
       </body>
     </html>
-  )
+  );
 }

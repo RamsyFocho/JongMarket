@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
-export default function JongMarketLoader({ 
+export default function JongMarketLoader({
   isVisible = true, 
   minLoadTime = 1000,
   onLoadComplete,
