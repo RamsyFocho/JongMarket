@@ -1,37 +1,41 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
-import { ChevronRight, ChevronDown, Star } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { useLanguage } from "@/context/language-context"
-import { categories, products, formatCurrency } from "@/data/products"
-import PremiumSlideshow from "@/components/sidebar/premium-slideshow"
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronRight, ChevronDown, Star } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useLanguage } from "@/context/language-context";
+import { categories, products, formatCurrency } from "@/data/products";
+import PremiumSlideshow from "@/components/sidebar/premium-slideshow";
 
 interface SidebarProps {
-  className?: string
+  className?: string;
 }
 
 export default function Sidebar({ className }: SidebarProps) {
-  const { t } = useLanguage()
-  const [expandedCategories, setExpandedCategories] = useState<string[]>([])
+  const { t } = useLanguage();
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
 
   const toggleCategory = (slug: string) => {
-    setExpandedCategories((prev) => (prev.includes(slug) ? prev.filter((item) => item !== slug) : [...prev, slug]))
-  }
+    setExpandedCategories((prev) =>
+      prev.includes(slug)
+        ? prev.filter((item) => item !== slug)
+        : [...prev, slug]
+    );
+  };
   // Get products for a specific category
   const getCategoryProducts = (categorySlug: string) => {
-    const category = categories[categorySlug]
-    return category ? category.products.slice(0, 3) : [] // Limit to 3 products for the dropdown
-  }
+    const category = categories[categorySlug];
+    return category ? category.products.slice(0, 3) : []; // Limit to 3 products for the dropdown
+  };
 
   // Convert categories object to array for easier mapping
   const categoryList = Object.entries(categories).map(([slug, data]) => ({
     slug,
-    ...data
-  }))
+    ...data,
+  }));
 
   return (
     <aside
@@ -58,7 +62,8 @@ export default function Sidebar({ className }: SidebarProps) {
               <span>All Products</span>
               <ChevronRight className="h-4 w-4 text-gray-500" />
             </Link>
-          </li>          {/* Dynamic Categories */}
+          </li>{" "}
+          {/* Dynamic Categories */}
           {categoryList.map(({ slug, title, products }) => (
             <li key={slug}>
               <button
@@ -77,7 +82,11 @@ export default function Sidebar({ className }: SidebarProps) {
                 {expandedCategories.includes(slug) && (
                   <motion.div
                     initial={{ height: 0, opacity: 0, overflow: "hidden" }}
-                    animate={{ height: "auto", opacity: 1, overflow: "visible" }}
+                    animate={{
+                      height: "auto",
+                      opacity: 1,
+                      overflow: "visible",
+                    }}
                     exit={{ height: 0, opacity: 0, overflow: "hidden" }}
                     transition={{ duration: 0.3 }}
                     className="mt-1 bg-gray-50 rounded-md overflow-hidden"
@@ -97,20 +106,30 @@ export default function Sidebar({ className }: SidebarProps) {
                           />
                         </div>
                         <div className="ml-2 flex-1 min-w-0">
-                          <h4 className="text-xs font-medium text-gray-800 truncate">{product.name}</h4>
+                          <h4 className="text-xs font-medium text-gray-800 truncate">
+                            {product.name}
+                          </h4>
                           <div className="flex items-center mt-1">
                             <div className="flex text-amber-500">
                               {[...Array(5)].map((_, i) => (
                                 <Star
                                   key={i}
                                   className="h-2 w-2"
-                                  fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
+                                  fill={
+                                    i < Math.floor(product.rating)
+                                      ? "currentColor"
+                                      : "none"
+                                  }
                                 />
                               ))}
                             </div>
-                            <span className="text-xs text-gray-500 ml-1">({product.rating})</span>
+                            <span className="text-xs text-gray-500 ml-1">
+                              ({product.rating})
+                            </span>
                           </div>
-                          <div className="text-xs font-medium text-amber-600 mt-1">{formatCurrency(product.price)}</div>
+                          <div className="text-xs font-medium text-amber-600 mt-1">
+                            {formatCurrency(product.price)}
+                          </div>
                         </div>
                       </Link>
                     ))}
@@ -132,7 +151,10 @@ export default function Sidebar({ className }: SidebarProps) {
 
       {/* Promotions */}
       <div className="p-4 mt-2 bg-amber-50">
-        <Link href="/promotions" className="block text-amber-800 font-medium hover:text-amber-600">
+        <Link
+          href="/promotions"
+          className="block text-amber-800 font-medium hover:text-amber-600"
+        >
           Special Offers
         </Link>
       </div>
@@ -142,5 +164,5 @@ export default function Sidebar({ className }: SidebarProps) {
         <PremiumSlideshow />
       </div>
     </aside>
-  )
+  );
 }
